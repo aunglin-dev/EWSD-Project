@@ -1,0 +1,22 @@
+Post http://localhost:8800/api/auth/signup
+Content-Type:application/json
+
+{
+ "name":"Test New 4",
+  "email": "TestNew4kmd@.edu.mm",
+  "password": "123456",
+  "DateOFBirth":"dad",
+  "NRC":"adfda",
+  "PhNo":"0232389923",
+  "Address":"afldkajl"
+}
+
+
+####
+Post http://localhost:8800/api/auth/signin 
+Content-Type:application/json
+
+{
+  "email":"TestNew4kmd@.edu.mm",
+  "password": "123456"
+}
