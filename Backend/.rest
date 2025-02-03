@@ -1,9 +1,9 @@
-Post http://localhost:8800/api/auth/signup
+Post http://localhost:8000/api/auth/signup
 Content-Type:application/json
 
 {
- "name":"Test New 4",
-  "email": "TestNew4kmd@.edu.mm",
+ "name":"Test New 6",
+  "email": "TestNew6kmd@.edu.mm",
   "password": "123456",
   "DateOFBirth":"dad",
   "NRC":"adfda",
@@ -13,10 +13,10 @@ Content-Type:application/json
 
 
 ####
-Post http://localhost:8800/api/auth/signin 
+Post http://localhost:8000/api/auth/signin 
 Content-Type:application/json
 
 {
-  "email":"TestNew4kmd@.edu.mm",
+  "email":"TestNew6kmd@.edu.mm",
   "password": "123456"
 }
