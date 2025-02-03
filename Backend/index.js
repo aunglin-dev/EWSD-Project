@@ -25,7 +25,7 @@ app.use("/api/auth", AuthRouter);
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
-  const message = err.message || "Something's wrong";
+  const message = err.message || "Something went wrong.";
   res.status(status).json({
     success: false,
     status,
