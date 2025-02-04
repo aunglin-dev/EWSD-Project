@@ -47,11 +47,34 @@ const TutorSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Middleware to enforce max 10 students rule before saving
-TutorSchema.pre('save', function (next) {
-    if (this.students.length > 10) {
-        return next(new Error('A tutor cannot have more than 10 students.'));
+TutorSchema.pre('save', async function (next) {
+
+    try {
+        const tutor = this;
+        if (tutor.students.length > 10) {
+            return next(new Error('A tutor cannot have more than 10 students.'));
+        }
+
+
+
+        for (const studentId of tutor.students) {
+
+            const existingTutor = await mongoose.model('Tutor').findOne({
+                students: studentId, 
+                _id: { $ne: tutor._id } 
+            });
+
+            // If the student is found in another tutor's list, throw an error
+            if (existingTutor) {
+                return next(new Error(`Student with ID ${studentId} is already allocated to another tutor.`));
+            }
+        }
+
+        next();
+    } catch (error) {
+        next(error);
     }
-    next();
+
 });
 
 
@@ -74,6 +97,22 @@ TutorSchema.pre("findOneAndUpdate", async function (next) {
         if (updatedStudents.length > 10) {
             return next(new Error("A tutor cannot have more than 10 students."));
         }
+
+        // ❌ Reject if student is already assigned to another tutor
+
+        for (const studentId of update.students) {
+
+            const existingTutor = await mongoose.model('Tutor').findOne({
+                students: studentId,
+                _id: { $ne: tutor._id }
+            });
+
+            // If the student is found in another tutor's list, throw an error
+            if (existingTutor) {
+                return next(new Error(`Student with ID ${studentId} is already allocated to another tutor.`));
+            }
+        }
+
 
         const addedStudents = updatedStudents.filter(id => !originalStudents.includes(id));
         const removedStudents = originalStudents.filter(id => !updatedStudents.includes(id));
@@ -158,7 +197,7 @@ TutorSchema.pre('findOneAndDelete', async function (next) {
             const studentEmails = students.map(student => student.email);
             console.log("📧 Notifying students about tutor removal:", studentEmails);
 
-            // Use the imported email template
+       
             const emailContent = tutorRemovalEmail(tutor);
 
             const mailOptions = {
