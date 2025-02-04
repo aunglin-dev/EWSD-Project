@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import tutorRouter from './Routes/tutorRoute.js';
 import meetingRouter from './Routes/meetingRoute.js';
 import studentRouter from './Routes/studentRoute.js';
+import staffRouter from "./Routes/staffRoute.js";
 
 
 
@@ -27,10 +28,12 @@ app.use(cookieParser());
 app.use(express.json());
 
 //Routers
+app.use("/staff", staffRouter);
 app.use("/api/auth", AuthRouter);
 app.use('/tutors', tutorRouter);
 app.use('/meetings', meetingRouter);
 app.use('/students', studentRouter);
+
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
