@@ -9,8 +9,7 @@ import tutorRouter from './Routes/tutorRoute.js';
 import meetingRouter from './Routes/meetingRoute.js';
 import studentRouter from './Routes/studentRoute.js';
 import staffRouter from "./Routes/staffRoute.js";
-
-
+import seeder from "./Seeders/seeder.js";
 
 dotenv.config();
 const app = express();
@@ -21,7 +20,7 @@ mongoose
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.log("Connection error:", err.message));
 
-
+    seeder();
 
 //Middleware
 app.use(cookieParser());
