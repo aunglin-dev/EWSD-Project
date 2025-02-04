@@ -21,6 +21,7 @@ mongoose
     .catch((err) => console.log("Connection error:", err.message));
 
     seeder();
+    console.log(process.env.MONGODB_URI);
 
 //Middleware
 app.use(cookieParser());

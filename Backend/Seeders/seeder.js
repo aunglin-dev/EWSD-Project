@@ -17,4 +17,4 @@ const seeder = async () => {
     }
 };
 
-export default seeder();
+export default seeder;

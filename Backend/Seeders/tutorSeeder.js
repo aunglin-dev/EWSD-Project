@@ -12,9 +12,9 @@ export const seedTutors = async () => {
   try {
     // Check if there are already more than 10 students in the database
     const tutorCount = await Tutor.countDocuments();
-
+    console.log(tutorCount)
     if (tutorCount >= 5) {
-      console.log("There are already 10 or more tutor. Seeding aborted.");
+      console.log("There are already 5 or more tutor. Seeding aborted.");
       return; // Exit the function if more than 10 students exist
     }
 

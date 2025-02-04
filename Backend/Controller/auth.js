@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import Student from "../Model/Student.js";
 import Jwt from "jsonwebtoken";
 import Joi from "joi";
+import dotenv from "dotenv";
 import Tutor from "../Model/Tutor.js";
 import Staff from "../Model/Staff.js";
 
@@ -21,6 +22,7 @@ export const signin = async (req, res) => {
     }
 
     const { email, password } = req.body;
+    console.log(password);
     
     // Check which model the user belongs to
     let userObj = null;
@@ -49,6 +51,8 @@ export const signin = async (req, res) => {
       return res.status(404).json({ message: "User Not Found!" });
     }
 
+    console.log(userObj);
+
     // Check if password is correct
     const isMatch = await bcrypt.compare(password, userObj.password);
     if (!isMatch) {
@@ -67,6 +71,7 @@ export const signin = async (req, res) => {
       .json({ message: "Login Successfully!" });
 
   } catch (e) {
+    console.error(e);
     return res.status(400).json({ message: e.message });
   }
 };

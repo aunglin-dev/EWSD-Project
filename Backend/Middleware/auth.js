@@ -1,4 +1,5 @@
 import jsonwebtoken from "jsonwebtoken";
+import dotenv from "dotenv";
 
 export default function authMiddleware(req, res, next) {
   const token = req.header("x-auth-token");
@@ -7,7 +8,7 @@ export default function authMiddleware(req, res, next) {
   }
 
   try {
-    const decoder = jsonwebtoken.verify(token, "secretkey");
+    const decoder = jsonwebtoken.verify(token, process.env.SECRET);
     req.user = decoder;
     next();
   } catch (e) {
