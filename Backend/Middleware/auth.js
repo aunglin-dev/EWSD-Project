@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 export default function authMiddleware(req, res, next) {
   const token = req.header("x-auth-token");
   if (!token) {
-    return res.status(401).send("Unauthorized!");
+    return res.status(401).json({message : "Unauthorized!"});
   }
 
   try {
@@ -13,6 +13,6 @@ export default function authMiddleware(req, res, next) {
     next();
   } catch (e) {
     console.log(e);
-    return res.status(400).send("Token not match!");
+    return res.status(400).json({message : "Token not match!"});
   }
 }

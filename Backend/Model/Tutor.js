@@ -33,11 +33,6 @@ const TutorSchema = new mongoose.Schema({
         require: false
     }],
 
-    meetings: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Meeting',
-        require: false
-    }],
     documents: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Document',
