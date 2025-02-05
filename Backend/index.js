@@ -9,8 +9,7 @@ import tutorRouter from './Routes/tutorRoute.js';
 import meetingRouter from './Routes/meetingRoute.js';
 import studentRouter from './Routes/studentRoute.js';
 import staffRouter from "./Routes/staffRoute.js";
-
-
+import seeder from "./Seeders/seeder.js";
 
 dotenv.config();
 const app = express();
@@ -21,7 +20,8 @@ mongoose
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.log("Connection error:", err.message));
 
-
+    seeder();
+    console.log(process.env.MONGODB_URI);
 
 //Middleware
 app.use(cookieParser());
@@ -36,13 +36,13 @@ app.use('/students', studentRouter);
 
 
 app.use((err, req, res, next) => {
-    const status = err.status || 500;
-    const message = err.message || "Something's wrong";
-    res.status(status).json({
-        success: false,
-        status,
-        message,
-    });
+  const status = err.status || 500;
+  const message = err.message || "Something went wrong.";
+  res.status(status).json({
+    success: false,
+    status,
+    message,
+  });
 });
 
 //Running Port
