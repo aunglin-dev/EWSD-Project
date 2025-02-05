@@ -1,5 +1,4 @@
 ﻿import mongoose from "mongoose";
-import Meeting from './Meeting.js';
 import { meetingNotificationEmailForTutor } from "../Service/emailTemplates.js";
 import { emailTransporter, emailAddress } from "../Service/emailService.js";
 

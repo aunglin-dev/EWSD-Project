@@ -28,7 +28,6 @@ const TutorSchema = new mongoose.Schema({
         required: true
     },
   
-
     documents: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Document',
@@ -44,6 +43,10 @@ const TutorSchema = new mongoose.Schema({
 
 
 
+
+
+
+
 TutorSchema.pre('findOneAndDelete', async function (next) {
     try {
         //Deleting meeting when tutor deleted
@@ -54,75 +57,34 @@ TutorSchema.pre('findOneAndDelete', async function (next) {
         const tutor = await mongoose.model("Tutor").findById(tutorId);
         if (!tutor) return next();
 
-        // Fetch all allocations associated with this tutor
-        const allocations = await mongoose.model("Allocation").find({ tutor: tutorId });
+        //Sending Email when tutor is deleted
+        const students = await Student.find({ _id: { $in: tutor.students } });
+        if (students.length > 0) {
+            const studentEmails = students.map(student => student.email);
+            console.log("📧 Notifying students about tutor removal:", studentEmails);
 
-        // If there are no allocations, proceed to delete without notifying students
-        if (allocations.length > 0) {
-            // Extract student IDs from the allocations
-            const studentIds = allocations.map(allocation => allocation.student);
+       
+            const emailContent = tutorRemovalEmail(tutor);
 
-            // Fetch student details based on the student IDs
-            const students = await Student.find({ _id: { $in: studentIds } });
-            if (students.length > 0) {
-                const studentEmails = students.map(student => student.email);
-                console.log("📧 Notifying students about tutor removal:", studentEmails);
+            const mailOptions = {
+                from: emailAddress,
+                to: studentEmails.join(","),
+                subject: emailContent.subject,
+                text: emailContent.text,
+                html: emailContent.html
+            };
 
-                // Send email notification to students
-                const emailContent = tutorRemovalEmail(tutor);
-
-                const mailOptions = {
-                    from: emailAddress,
-                    to: studentEmails.join(","),
-                    subject: emailContent.subject,
-                    text: emailContent.text,
-                    html: emailContent.html
-                };
-
-                // Send emails
-                await emailTransporter.sendMail(mailOptions);
-                console.log("✅ Tutor removal emails sent successfully.");
-            }
+            // Send emails
+            await emailTransporter.sendMail(mailOptions);
+            console.log("✅ Tutor removal emails sent successfully.");
         }
-
         next();
     } catch (error) {
         next(error);
     }
 });
 
-///** 🔹 Post-Save Hook: Send Email to Students When Tutor is Assigned */
-//TutorSchema.post("save", async function (doc) {
-//    try {
-//        console.log("✅ Post-save hook triggered for tutor:", doc.name);
 
-//        // Fetch the students' emails
-//        const students = await Student.find({ _id: { $in: doc.students } });
-//        console.log("📧 Number of students assigned:", students.length);
-
-//        if (students.length > 0) {
-//            const studentEmails = students.map(student => student.email);
-//            console.log("📧 Sending email to students:", studentEmails);
-
-//            // Use the imported email template
-//            const emailContent = tutorAssignmentEmail(doc);
-
-//            const mailOptions = {
-//                from: emailAddress,
-//                to: studentEmails.join(","),
-//                subject: emailContent.subject,
-//                text: emailContent.text,
-//                html: emailContent.html
-//            };
-
-//            // Send emails
-//            await emailTransporter.sendMail(mailOptions);
-//            console.log("✅ Tutor assignment emails sent successfully.");
-//        }
-//    } catch (error) {
-//        console.error("❌ Error in post-save hook while sending emails:", error);
-//    }
-//});
 
 const Tutor = mongoose.model('Tutor', TutorSchema);
 
