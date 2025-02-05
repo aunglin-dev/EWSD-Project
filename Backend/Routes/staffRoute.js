@@ -3,16 +3,17 @@ import { createStaff, getAllStaff, getStaffById, updateStaff, deleteStaff } from
 import meetingRouter from "./meetingRoute.js";
 import studentRouter from "./studentRoute.js";
 import tutorRouter from "./tutorRoute.js";
-
+import allocationRouter from "./allocationRoute.js";
 
 const staffRouter = express.Router();
 
 
 
 // Nested routers: allowing staff to access other resources like meetings, students, and tutors
-staffRouter.use("/meeting", meetingRouter);
-staffRouter.use("/student", studentRouter);
-staffRouter.use("/tutor", tutorRouter);
+staffRouter.use("/meetings", meetingRouter);
+staffRouter.use("/students", studentRouter);
+staffRouter.use("/tutors", tutorRouter);
+staffRouter.use("/allocations", allocationRouter);
 
 
 
