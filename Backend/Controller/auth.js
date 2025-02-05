@@ -1,55 +1,116 @@
 import bcrypt from "bcryptjs";
 import Student from "../Model/Student.js";
-import { ErrorHandler } from "../Utils/error.js";
 import Jwt from "jsonwebtoken";
+import Joi from "joi";
+import dotenv from "dotenv";
+import Tutor from "../Model/Tutor.js";
+import Staff from "../Model/Staff.js";
 
-//Registeration
-export const signup = async (req, res, next) => {
+// login schema
+const loginSchema = Joi.object({
+  email: Joi.string().email().trim().lowercase().required(),
+  password: Joi.string().required().min(3).max(255),
+});
+
+// Login
+export const signin = async (req, res) => {
   try {
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(req.body.password, salt);
+    // Validate the request body
+    const { error } = loginSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
 
-    const newUser = new Student({ ...req.body, password: hash });
+    const { email, password } = req.body;
+    console.log(password);
+    
+    // Check which model the user belongs to
+    let userObj = null;
+    let role = null;
 
-    await newUser.save();
-    res.status(200).send("Successfully User added");
-  } catch (err) {
-    next(err);
+    const studentObj = await Student.findOne({ email });
+    if (studentObj) {
+      userObj = studentObj;
+      role = "student";
+    }
+
+    const staffObj = await Staff.findOne({ email });
+    if (staffObj) {
+      userObj = staffObj;
+      role = "staff";
+    }
+
+    const tutorObj = await Tutor.findOne({ email });
+    if (tutorObj) {
+      userObj = tutorObj;
+      role = "tutor";
+    }
+
+    // If user is not found in any model
+    if (!userObj) {
+      return res.status(404).json({ message: "User Not Found!" });
+    }
+
+    console.log(userObj);
+
+    // Check if password is correct
+    const isMatch = await bcrypt.compare(password, userObj.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid Credentials!" });
+    }
+
+    // Generate authentication token with role
+    const Usertoken = { name: userObj.name, id: userObj._id, role };
+    const token = Jwt.sign(Usertoken, process.env.SECRET, { expiresIn: "7d" });
+
+    // Send token in the response headers
+    res.header("Access-Control-Expose-Headers", "x-auth-token");
+
+    return res
+      .header("x-auth-token", token)
+      .json({ message: "Login Successfully!" });
+
+  } catch (e) {
+    console.error(e);
+    return res.status(400).json({ message: e.message });
   }
 };
 
-//Login
-export const signin = async (req, res, next) => {
+export const getMe = async (req, res) => {
   try {
-    const { email } = req.body;
+    const id = req.user.id; // Get the authenticated user's ID from the middleware
+    let userObj = null;
+    let role = null;
 
-    //Find user from database
-    const user = await Student.findOne({ email });
+    // Check which model the user belongs to
+    const studentObj = await Student.findById(id).select('-password');
+    if (studentObj) {
+      userObj = studentObj;
+      role = "student";
+    }
 
-    //Check Password
-    const passwordCorrect =
-      user === null
-        ? false
-        : await bcrypt.compare(req.body.password, user.password);
+    const staffObj = await Staff.findById(id).select('-password');
+    if (staffObj) {
+      userObj = staffObj;
+      role = "staff";
+    }
 
-    if (!(user && passwordCorrect))
-      return next(ErrorHandler(400, "Invalid Username or Password"));
+    const tutorObj = await Tutor.findById(id).select('-password');
+    if (tutorObj) {
+      userObj = tutorObj;
+      role = "tutor";
+    }
 
-    //Create a token
-    const Usertoken = { name: user.name, id: user._id };
+    // If user is not found
+    if (!userObj) {
+      return res.status(404).json({ message: "User Not Found!" });
+    }
 
-    const token = Jwt.sign(Usertoken, process.env.SECRET);
+    // Return user info along with role
+    return res.json({ data: { ...userObj.toObject(), role } });
 
-    //Retrive data except password
-    const { password, ...other } = user._doc;
-
-    res
-      .cookie("access_token", token, {
-        httpOnly: true,
-      })
-      .status(200)
-      .json(other);
-  } catch (err) {
-    next(err);
+  } catch (e) {
+    return res.status(400).json({ message: e.message });
   }
 };
+
