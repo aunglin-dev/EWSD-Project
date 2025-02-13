@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/navigation/navbar";
-import LoginForm from "./components/loginForm/login-form";
-import Home from "./components/home/home-page";
-import AllocatePage from "./components/allocateProcess/allocate-page";
-import BlogPage from "./components/blog/blog-page";
-import MessagePage from "./components/messageProcess/messagePage";
-import MeetingPage from "./components/meetingProcess/meeting";
-import DashboardLayout from "./components/dashboard/dashboard";
+import Navbar from "./Components/navigation/navbar.js";
+import LoginForm from "./Components/loginForm/login-form.js";
+import Home from "./Components/home/home-page.js";
+import AllocatePage from "./Components/allocateProcess/allocate-form.js";
+import BlogPage from "./Components/blog/blog-page.js";
+import MessagePage from "./Components/messageProcess/messagePage.js";
+import MeetingPage from "./Components/meetingProcess/meeting.js";
+import DashboardLayout from "./Components/dashboard/dashboard.js";
 
 const App = () => (
   <Router>
