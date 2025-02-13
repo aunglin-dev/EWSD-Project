@@ -53,39 +53,39 @@ University eTutoring Team`,
 
 
 
-export const tutorNotificationEmail = (tutor, addedStudents, removedStudents) => {
-    return {
-        subject: "Student Allocation Update - eTutoring System",
-        text: `Dear ${tutor.name},
+//export const tutorNotificationEmail = (tutor, addedStudents, removedStudents) => {
+//    return {
+//        subject: "Student Allocation Update - eTutoring System",
+//        text: `Dear ${tutor.name},
 
-Your student allocation has been updated in the eTutoring system.
+//Your student allocation has been updated in the eTutoring system.
 
-🔹 Added Students: ${addedStudents.length > 0 ? addedStudents.join(", ") : "None"}
-🔹 Removed Students: ${removedStudents.length > 0 ? removedStudents.join(", ") : "None"}
+//🔹 Added Students: ${addedStudents.length > 0 ? addedStudents.join(", ") : "None"}
+//🔹 Removed Students: ${removedStudents.length > 0 ? removedStudents.join(", ") : "None"}
 
-Please log in to your account to review the changes.
+//Please log in to your account to review the changes.
 
-Best regards,  
-University eTutoring Team`,
+//Best regards,  
+//University eTutoring Team`,
 
-        html: `
-            <p>Dear ${tutor.name},</p>
-            <p>Your student allocation has been updated in the <strong>eTutoring</strong> system.</p>
-            <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
-                <tr>
-                    <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Added Students</th>
-                    <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Removed Students</th>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${addedStudents.length > 0 ? addedStudents.join("<br>") : "None"}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${removedStudents.length > 0 ? removedStudents.join("<br>") : "None"}</td>
-                </tr>
-            </table>
-            <p>Please <a href="https://etutoring.university.com" style="color: #007bff;">log in to your account</a> to review the changes.</p>
-            <p>Best regards,<br><strong>University eTutoring Team</strong></p>
-        `
-    };
-};
+//        html: `
+//            <p>Dear ${tutor.name},</p>
+//            <p>Your student allocation has been updated in the <strong>eTutoring</strong> system.</p>
+//            <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+//                <tr>
+//                    <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Added Students</th>
+//                    <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Removed Students</th>
+//                </tr>
+//                <tr>
+//                    <td style="border: 1px solid #ddd; padding: 8px;">${addedStudents.length > 0 ? addedStudents.join("<br>") : "None"}</td>
+//                    <td style="border: 1px solid #ddd; padding: 8px;">${removedStudents.length > 0 ? removedStudents.join("<br>") : "None"}</td>
+//                </tr>
+//            </table>
+//            <p>Please <a href="https://etutoring.university.com" style="color: #007bff;">log in to your account</a> to review the changes.</p>
+//            <p>Best regards,<br><strong>University eTutoring Team</strong></p>
+//        `
+//    };
+//};
 
 export const meetingNotificationEmail = (action, tutor, student, meeting) => {
     let subjectStudent;
@@ -226,4 +226,110 @@ export const meetingNotificationEmailForTutor = (action, tutor, student, meeting
     return { subjectTutor, messageTutor };
 };
 
+export const allocationRemovalEmail = (student, tutor) => {
+    return {
+        subject: "⚠️ Your Tutor Allocation Has Been Removed",
+        text: `Dear ${student.name},
 
+We wanted to inform you that your tutor, ${tutor.name}, is no longer assigned to you.
+
+If you have any concerns or need further assistance, please contact support.
+
+Best regards,  
+The Admin Team`,
+        html: `
+            <p>Dear <strong>${student.name}</strong>,</p>
+            <p>We wanted to inform you that your tutor, <strong>${tutor.name}</strong>, is no longer assigned to you.</p>
+            <p>If you have any concerns or need further assistance, please contact support.</p>
+            <p>Best regards,</p>
+            <p><strong>The Admin Team</strong></p>
+        `
+    };
+};
+
+
+export const tutorNotificationEmail = (tutor, removedStudents) => {
+    const studentList = removedStudents.name;
+
+    return {
+        subject: "⚠️ Student Unassigned from Your Tutorship",
+        text: `Dear ${tutor.name},
+
+The following student(s) have been removed from your tutorship:
+
+${studentList}
+
+If you have any questions, please contact the admin team.
+
+Best regards,  
+The Admin Team`,
+        html: `
+            <p>Dear <strong>${tutor.name}</strong>,</p>
+            <p>The following student(s) have been removed from your tutorship:</p>
+            <ul>${studentList}</ul>
+            <p>If you have any questions, please contact the admin team.</p>
+            <p>Best regards,</p>
+            <p><strong>The Admin Team</strong></p>
+        `
+    };
+};
+
+
+
+export const allocationAssignmentEmail = (student, tutor) => {
+    return {
+        subject: "🎉 You’ve Been Assigned a New Tutor!",
+        text: `Dear ${student.name},
+
+We are pleased to inform you that you have been assigned to ${tutor.name} as your tutor. We look forward to your learning journey!
+
+If you have any questions or need further assistance, please contact support.
+
+Best regards,  
+The Admin Team`,
+        html: `
+            <p>Dear <strong>${student.name}</strong>,</p>
+            <p>We are pleased to inform you that you have been assigned to <strong>${tutor.name}</strong> as your tutor. We look forward to your learning journey!</p>
+            <p>If you have any questions or need further assistance, please contact support.</p>
+            <p>Best regards,</p>
+            <p><strong>The Admin Team</strong></p>
+        `
+    };
+};
+
+export function tutorAssignmentNotificationEmail(student, tutor) {
+    const subject = `New Student Assigned to You: ${student.name}`;
+
+    const text = `
+        Hello ${tutor.name},
+
+        You have been assigned a new student: ${student.name}.
+        
+        Here are the details of the student:
+        - Name: ${student.name}
+        - Email: ${student.email}
+        - Contact: ${student.contact}
+
+        Please make sure to reach out to the student to schedule your first meeting.
+
+        Best regards,
+        Your Management Team
+    `;
+
+    const html = `
+        <p>Hello ${tutor.name},</p>
+
+        <p>You have been assigned a new student: <strong>${student.name}</strong>.</p>
+        
+        <p><strong>Student details:</strong><br>
+        Name: ${student.name}<br>
+        Email: ${student.email}<br>
+        Contact: ${student.contact}</p>
+
+        <p>Please make sure to reach out to the student to schedule your first meeting.</p>
+
+        <p>Best regards,<br>Your Management Team</p>
+    `;
+
+    return { subject, text, html };
+}

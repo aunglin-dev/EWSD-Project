@@ -4,12 +4,17 @@ import dotenv from "dotenv";
 import express from "express";
 import cookieParser from "cookie-parser";
 
+//Seeder
+import seeder from "./Seeders/seeder.js";
+
+
 //Allocation Related Router
+import allocationRouter from './Routes/allocationRoute.js';
 import tutorRouter from './Routes/tutorRoute.js';
 import meetingRouter from './Routes/meetingRoute.js';
 import studentRouter from './Routes/studentRoute.js';
 import staffRouter from "./Routes/staffRoute.js";
-import seeder from "./Seeders/seeder.js";
+
 
 dotenv.config();
 const app = express();
@@ -33,7 +38,7 @@ app.use("/api/auth", AuthRouter);
 app.use('/tutors', tutorRouter);
 app.use('/meetings', meetingRouter);
 app.use('/students', studentRouter);
-
+app.use('allocations', allocationRouter);
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;

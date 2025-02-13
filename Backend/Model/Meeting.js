@@ -28,8 +28,14 @@ MeetingSchema.pre("save", async function (next) {
         }
 
 
-        if (!tutor.students.includes(this.student)) {
-            return next(new Error("Student is not assigned to this tutor"));
+        // Check if the student is allocated to the tutor via the Allocation model
+        const allocation = await mongoose.model("Allocation").findOne({
+            tutor: this.tutor,
+            student: this.student,
+        });
+
+        if (!allocation) {
+            return next(new Error("Student is not allocated to this tutor"));
         }
 
 
@@ -39,7 +45,6 @@ MeetingSchema.pre("save", async function (next) {
             student: this.student,
             date: this.date,
             time: this.time,
-            meetingType: this.meetingType, 
         });
 
         if (existingMeeting) {
@@ -95,6 +100,57 @@ MeetingSchema.post("save", async function (doc) {
         console.error("Error sending meeting creation email:", error);
     }
 });
+
+
+MeetingSchema.pre("findOneAndUpdate", async function (next) {
+    try {
+        const update = this.getUpdate();
+        const meetingId = this.getQuery()._id;  // Get the meeting ID being updated
+        const tutorId = update.tutor;  // Tutor ID being updated
+        const studentId = update.student;  // Student ID being updated
+        const newDate = update.date;  // New meeting date
+        const newTime = update.time;  // New meeting time
+
+        if (!tutorId || !studentId) {
+            return next(new Error("Tutor and student IDs must be provided for update"));
+        }
+
+        // Check if the student is assigned to the tutor in the allocation
+        const allocationExists = await mongoose.model("Allocation").findOne({
+            tutor: tutorId,
+            student: studentId,
+        });
+
+        if (!allocationExists) {
+            return next(new Error("This student is not allocated to this tutor. Update aborted."));
+        }
+
+        console.log("✅ Allocation exists. Proceeding with meeting update.");
+
+
+        // Check for duplicate meeting (same date, time, student, tutor)
+        const existingMeeting = await mongoose.model("Meeting").findOne({
+            tutor: tutorId,
+            student: studentId,
+            date: newDate,
+            time: newTime
+        });
+
+        if (existingMeeting) {
+            return next(new Error("A meeting with the same date, time, student, and tutor already exists."));
+        }
+
+
+
+        next();  // Proceed with the update if the allocation exists
+
+    } catch (error) {
+        console.error("Error in pre-update hook for allocation check:", error);
+        next(error);
+    }
+});
+
+
 
 // 🔹 Post-Update Hook: Send Email When Meeting is Updated
 MeetingSchema.post("findOneAndUpdate", async function (doc) {
