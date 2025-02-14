@@ -11,7 +11,7 @@
     "type": "git",
     "url": "FinalYearComputingPjSMEDB-Ibanking"
   },
-  "author": "Aung Lin The Best",
+  "author": "Aung Lin",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

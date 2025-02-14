@@ -1,0 +1,14 @@
+/* Sidebar.css */
+.MuiDrawer-paper {
+  background-color: #343a40;
+  color: white;
+  box-sizing: border-box;
+}
+
+.MuiListItemText-root {
+  white-space: nowrap;
+}
+
+.MuiDrawer-paper.MuiDrawer-paperAnchorLeft {
+  transition: width 0.3s ease;
+}

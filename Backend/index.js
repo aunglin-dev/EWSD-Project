@@ -33,12 +33,12 @@ app.use(cookieParser());
 app.use(express.json());
 
 //Routers
-app.use("/staff", staffRouter);
+app.use("/api/staff", staffRouter);
 app.use("/api/auth", AuthRouter);
-app.use('/tutors', tutorRouter);
-app.use('/meetings', meetingRouter);
-app.use('/students', studentRouter);
-app.use('allocations', allocationRouter);
+app.use('/api/tutors', tutorRouter);
+app.use('/api/meetings', meetingRouter);
+app.use('/api/students', studentRouter);
+app.use('/api/allocations', allocationRouter);
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
@@ -52,7 +52,7 @@ app.use((err, req, res, next) => {
 
 //Running Port
 app.listen(8000, () => {
-  console.log("Port is running on Localhost : 8000");
+    console.log("Port is running on Localhost : 8000");
 });
 
 
