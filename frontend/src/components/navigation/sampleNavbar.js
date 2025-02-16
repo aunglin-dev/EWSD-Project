@@ -13,7 +13,7 @@ import { NavLinks } from "../../constants/static_data";
 
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [activeLink, setActiveLink] = useState("Home");
+  const [activeLink, setActiveLink] = useState("");
   const navigate = useNavigate();
 
   const handleMenuOpen = (event) => {
@@ -44,23 +44,54 @@ export default function Navbar() {
       <Typography variant="h6">E-Tutoring Platform</Typography>
 
       <div style={{ display: "flex", gap: "15px" }}>
-        {NavLinks.map((link) => {
-          const NavPath = link === "Home" ? "/" : `/${link.toLowerCase()}`;
-          return (
-            <Link key={link} to={NavPath} style={{ textDecoration: "none" }}>
-              <Button
-                onClick={() => handleNavClick(link)}
-                sx={{
-                  color: activeLink === link ? "yellow" : "white",
-                  textDecoration: activeLink === link ? "underline" : "none",
-                  "&:hover": { fontWeight: "bold" },
-                }}
-              >
-                {link}
-              </Button>
-            </Link>
-          );
-        })}
+        <Link to={"/"} style={{ textDecoration: "none" }}>
+          <Button
+            onClick={() => handleNavClick("home")}
+            sx={{
+              color: activeLink === "home" ? "yellow" : "white",
+              textDecoration: activeLink === "home" ? "underline" : "none",
+              "&:hover": { fontWeight: "bold" },
+            }}
+          >
+            Home
+          </Button>
+        </Link>
+        <Link to={"/allocate"} style={{ textDecoration: "none" }}>
+          <Button
+            onClick={() => handleNavClick("allocate")}
+            sx={{
+              color: activeLink === "allocate" ? "yellow" : "white",
+              textDecoration: activeLink === "allocate" ? "underline" : "none",
+              "&:hover": { fontWeight: "bold" },
+            }}
+          >
+            Allocate
+          </Button>
+        </Link>
+        <Link to={"/blogs"} style={{ textDecoration: "none" }}>
+          <Button
+            onClick={() => handleNavClick("blog")}
+            sx={{
+              color: activeLink === "blog" ? "yellow" : "white",
+              textDecoration: activeLink === "blog" ? "underline" : "none",
+              "&:hover": { fontWeight: "bold" },
+            }}
+          >
+            Blog
+          </Button>
+        </Link>
+        <Link to={"/meeting"} style={{ textDecoration: "none" }}>
+          <Button
+            onClick={() => handleNavClick("meeting")}
+            sx={{
+              color: activeLink === "meeting" ? "yellow" : "white",
+              textDecoration: activeLink === "meeting" ? "underline" : "none",
+              "&:hover": { fontWeight: "bold" },
+            }}
+          >
+            Meeting
+          </Button>
+        </Link>
       </div>
 
       <Box sx={{ position: "relative", display: "flex", alignItems: "center" }}>
@@ -88,7 +119,9 @@ export default function Navbar() {
           sx={{ mt: 1 }}
         >
           <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-          <MenuItem onClick={() => navigate("/dashboard")}>Dashboard</MenuItem>
+          <MenuItem onClick={() => navigate("/staff-dashboard")}>
+            Dashboard
+          </MenuItem>
           <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
         </Menu>
       </Box>
