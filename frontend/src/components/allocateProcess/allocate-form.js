@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Axios from "axios";
+import { useSelector } from "react-redux";
 
 export default function AllocateForm() {
   const { handleSubmit, setValue } = useForm();
@@ -23,6 +24,9 @@ export default function AllocateForm() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMsg, setSuccessMsg] = useState("");
+
+  //Get Data From Local Storage React
+  const { currentStaff } = useSelector((state) => state.staff);
 
   useEffect(() => {
     console.log("useEffect triggered");
@@ -72,12 +76,13 @@ export default function AllocateForm() {
     const allocationData = {
       tutor: data.tutor ? data.tutor._id : null,
       student: data.students ? data.students.map((student) => student._id) : [],
-      createdStaffId: "67a27305df934d75b205651a", // constant data for now
+      createdStaffId: currentStaff?._id,
       schedule: ["Friday"], //constant data for now
       status: "Pending", // constant data for now
       note: "This is allocation success ", // constant data for now
     };
 
+    console.log(allocationData);
     try {
       const response = await fetch("http://localhost:8000/api/allocations/", {
         method: "POST",

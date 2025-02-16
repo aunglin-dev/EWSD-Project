@@ -68,7 +68,7 @@ export default function LoginForm() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        marginTop: "50px",
+
         height: "100vh",
         backgroundColor: "#f5f5f5",
       }}

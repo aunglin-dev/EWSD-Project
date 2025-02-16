@@ -12,6 +12,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { STUDENT_OBJECTS, TUTOR_OBJECTS } from "../../constants/static_data";
 import Card from "../home/card";
+import { useSelector } from "react-redux";
 
 export default function AllocatePage() {
   const navigate = useNavigate();
