@@ -53,3 +53,34 @@ export const deleteAllocation = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+// Get all allocations for a specific tutor
+
+export const getAllocationsByTutorId = async (req, res) => {
+    try {
+        const { tutorId } = req.params;
+        const allocations = await Allocation.find({ tutor: tutorId })
+            .populate("student")
+            .populate("createdStaffId")
+            .populate("tutor");
+
+        if (!allocations.length) {
+            return res.status(404).json({ message: "No allocations found for this tutor" });
+        }
+        const tutorInfo = allocations[0].tutor;
+        const students = allocations.map(allocation => ({
+            student: allocation.student,
+            createdStaffId: allocation.createdStaffId
+        }));
+
+        res.status(200).json({
+            allocation: {
+                tutor: tutorInfo,
+                students: students
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
