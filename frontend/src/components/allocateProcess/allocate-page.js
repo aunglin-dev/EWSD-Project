@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Autocomplete,
@@ -17,11 +17,110 @@ export default function AllocatePage() {
   const navigate = useNavigate();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [selectedTutor, setSelectedTutor] = useState(null);
+  const [allTutors, setAllTutors] = useState([]);
+  const [allocatedTutess, setAllocatedTutees] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [allocationListdata, setAllocationListData] = useState([]);
 
   const handleTutorChange = (event, newValue) => {
     setSelectedTutor(newValue);
   };
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    const fetchTutors = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/tutors");
+        if (!response.ok) {
+          throw new Error("Failed to fetch tutors");
+        }
+        const data = await response.json();
+        setAllTutors(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTutors();
+  }, []);
 
+  useEffect(() => {
+    if (selectedTutor) {
+      setLoading(true);
+      setError(null);
+
+      const fetchAllocatedStudents = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:8000/api/allocations/tutor/${selectedTutor?._id}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch allocated tutees");
+          }
+          const data = await response.json();
+          setAllocatedTutees(data);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchAllocatedStudents();
+    }
+  }, [selectedTutor]);
+
+  useEffect(() => {
+    const allocationList = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/allocations");
+        if (!response.ok) {
+          throw new Error("Failed to fetch allocation list");
+        }
+        const data = await response.json();
+        setAllocationListData(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    allocationList();
+  }, []);
+
+  const handleRemoveAllocation = async (allocationId) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:8000/api/allocations/${allocationId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete allocation");
+      }
+
+      setAllocatedTutees((prevState) =>
+        prevState.filter((item) => item.allocationId !== allocationId)
+      );
+      console.log(`Allocation ${allocationId} deleted successfully`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  console.log("allocaiton list=>", allocationListdata);
+
+  //console.log("all tutors=>", allTutors);
+  //console.log("selected tutor=>", selectedTutor?._id);
+  console.log("allocated tutess", allocatedTutess?.allocation?.students);
   return (
     <Box
       paddingY={isNonMobileScreens ? "100px" : "70px"}
@@ -51,8 +150,8 @@ export default function AllocatePage() {
             <Box sx={{ mb: 3 }}>
               <Autocomplete
                 id="tutor"
-                options={TUTOR_OBJECTS}
-                getOptionLabel={(option) => option.name}
+                options={allTutors || []}
+                getOptionLabel={(option) => `${option.name}`}
                 value={selectedTutor}
                 onChange={handleTutorChange}
                 renderInput={(params) => (
@@ -61,6 +160,11 @@ export default function AllocatePage() {
                     label="Select Tutor"
                     variant="outlined"
                   />
+                )}
+                renderOption={(props, option) => (
+                  <li {...props}>
+                    {option.name} ({option.email}){" "}
+                  </li>
                 )}
               />
             </Box>
@@ -77,6 +181,11 @@ export default function AllocatePage() {
             >
               Tutees
             </Typography>
+            {allocatedTutess.length < 1 && (
+              <h3 style={{ width: "100%" }}>
+                No allocated students for this tutor {selectedTutor?.name}
+              </h3>
+            )}
             <Box
               display="grid"
               gridTemplateColumns="repeat(auto-fit, 10rem)"
@@ -85,17 +194,26 @@ export default function AllocatePage() {
               justifyContent="start"
               alignItems="start"
             >
-              {STUDENT_OBJECTS.map((student) => (
+              {/* {allocatedTutess.length < 1 && (
+                <h3 style={{width:'100%'}}>
+                  No allocated students for this tutor {selectedTutor?.name}
+                </h3>
+              )} */}
+              {allocatedTutess?.allocation?.students.map((studentData) => (
                 <Box position="relative">
                   <Card
                     sx={{ position: "relative" }}
-                    title={student.name}
-                    subtitle={student.department}
-                    addition={student.email}
+                    title={studentData?.student?.name}
+                    subtitle={studentData?.student?.email}
+                    //addition={student.email}
+                    imgSrc={studentData?.student?.img}
+                    tutorName={selectedTutor?.name}
                   />
                   <RemoveCircleIcon
                     onClick={() =>
-                      console.log(`deleted allocation of ${student.name}`)
+                      handleRemoveAllocation(
+                        studentData?.student?.allocation_id
+                      )
                     }
                     sx={{
                       position: "absolute",

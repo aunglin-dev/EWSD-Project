@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Autocomplete,
@@ -8,12 +8,53 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import Axios from "axios";
 
-export default function AllocateForm({ tutors, students, studentsID }) {
+export default function AllocateForm() {
   const { handleSubmit, setValue } = useForm();
   const [selectedTutor, setSelectedTutor] = useState(null);
   const [selectedStudents, setSelectedStudents] = useState([]);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+
+  const [tutors, setTutors] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [AlreadyAllocatedStudents, setAlreadyAllocatedStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMsg, setSuccessMsg] = useState("");
+
+  useEffect(() => {
+    console.log("useEffect triggered");
+    const fetchData = async () => {
+      try {
+        const tutorResponse = await Axios.get(
+          "http://localhost:8000/api/tutors"
+        );
+        console.log("end fetch tutor");
+        const studentResponse = await Axios.get(
+          "http://localhost:8000/api/students"
+        );
+        const allocationsResponse = await Axios.get(
+          "http://localhost:8000/api/allocations"
+        );
+
+        // console.log("fetched Tutors:", tutorResponse.data);
+        // console.log("fetched Students:", studentResponse.data);
+        //console.log("fetched allocations:", allocationsResponse.data);
+        setTutors(tutorResponse.data);
+        setStudents(studentResponse.data);
+        setAlreadyAllocatedStudents(
+          allocationsResponse.data.map((v) => v.student._id)
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleStudentChange = (event, newValue) => {
     setSelectedStudents(newValue);
@@ -47,7 +88,13 @@ export default function AllocateForm({ tutors, students, studentsID }) {
       });
 
       const result = await response.json();
-      console.log("Allocation Result:", result);
+      if (response.ok) {
+        console.log("Allocation Result:", result);
+        setSuccessMsg("Allocation created successfully");
+      } else {
+        //error message from API
+        setErrorMessage(result.error);
+      }
     } catch (error) {
       console.error("Error allocating students:", error);
     }
@@ -58,6 +105,26 @@ export default function AllocateForm({ tutors, students, studentsID }) {
       paddingY={isNonMobileScreens ? "100px" : "70px"}
       paddingX={isNonMobileScreens ? "20px" : "10px"}
     >
+      <Button href="/allocate" type="button" sx={{ textTransform: "none" }}>
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "7px 13px",
+            borderRadius: "18px",
+            backgroundColor: "#1270b8",
+            gap: 3,
+            color: "white",
+          }}
+        >
+          <KeyboardBackspaceIcon /> Back
+        </span>
+        {successMsg && (
+          <span style={{ fontWeight: "bold", marginLeft: "30px" }}>
+            {successMsg}
+          </span>
+        )}
+      </Button>
       <Typography
         variant={isNonMobileScreens ? "h4" : "h6"}
         sx={{ marginBottom: "30px" }}
@@ -78,7 +145,7 @@ export default function AllocateForm({ tutors, students, studentsID }) {
           />
         </Box>
 
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 4 }}>
           <Autocomplete
             multiple
             id="students"
@@ -87,7 +154,7 @@ export default function AllocateForm({ tutors, students, studentsID }) {
             value={selectedStudents}
             onChange={handleStudentChange}
             renderOption={(props, option) => {
-              const isAllocated = studentsID.includes(option._id);
+              const isAllocated = AlreadyAllocatedStudents.includes(option._id);
               return (
                 <li {...props} style={{ color: isAllocated ? "red" : "black" }}>
                   {option.name}
@@ -96,7 +163,9 @@ export default function AllocateForm({ tutors, students, studentsID }) {
             }}
             renderTags={(value, getTagProps) => {
               return value.map((student, index) => {
-                const isAllocated = studentsID.includes(student._id);
+                const isAllocated = AlreadyAllocatedStudents.includes(
+                  student._id
+                );
                 return (
                   <span
                     key={student._id}
@@ -146,8 +215,14 @@ export default function AllocateForm({ tutors, students, studentsID }) {
             )}
           />
         </Box>
+        {errorMessage && (
+          <Typography color="red" fontSize={"small"}>
+            {errorMessage}
+          </Typography>
+        )}
 
         <Button
+          sx={{ marginTop: 2 }}
           variant="contained"
           color="primary"
           type="submit"

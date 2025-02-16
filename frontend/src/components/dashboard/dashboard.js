@@ -59,7 +59,7 @@ const Sidebar = () => {
         return (
           <div>
             <h1>Staff dashboard</h1>
-            <StaffDashboard data={STAFF_OBJECTS} />
+            <StaffDashboard />
           </div>
         );
       default:
