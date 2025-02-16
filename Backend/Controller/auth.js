@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
 import Student from "../Model/Student.js";
+import Staff from "../Model/Staff.js";
+import Tutor from "../Model/Tutor.js";
 import { ErrorHandler } from "../Utils/error.js";
 import Jwt from "jsonwebtoken";
 
@@ -21,10 +23,15 @@ export const signup = async (req, res, next) => {
 //Login Student
 export const signin = async (req, res, next) => {
   try {
-    const { email } = req.body;
+    const { email, role } = req.body;
 
     //Find user from database
-    const user = await Student.findOne({ email });
+    const user =
+      role === "staff"
+        ? await Staff.findOne({ email })
+        : role === "student"
+        ? await Student.findOne({ email })
+        : await Tutor.findOne({ email });
 
     //Check Password
     const passwordCorrect =

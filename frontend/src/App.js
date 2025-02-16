@@ -14,9 +14,10 @@ const App = () => (
   <Router>
     <Navbar />
     <Routes>
-      <Route path="/login" element={<LoginForm />} />
+      <Route path="/" element={<LoginForm />} />
+      <Route path="/StaffHome" element={<StaffHome />} />
       {/* Staff */}
-      <Route path="/" element={<StaffHome />} />
+
       <Route path="/allocate" element={<AllocatePage />} />
       <Route path="/addAllocation" element={<AllocateForm />} />
       <Route path="/studentDashboard/:id" element={<StudentDashboard />} />

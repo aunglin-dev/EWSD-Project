@@ -65,7 +65,7 @@ export default function Navbar() {
 
       <Box sx={{ position: "relative", display: "flex", alignItems: "center" }}>
         <Button
-          onClick={() => navigate("/login")}
+          onClick={() => navigate("/")}
           sx={{
             padding: "7px 16px",
             border: "1px solid white",

@@ -5,24 +5,61 @@ import {
   Button,
   Typography,
   OutlinedInput,
+  Select,
+  Menu,
+  MenuItem,
   FormControl,
   FormLabel,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import FormErrorMessage from "../error/formErrorMessage";
+import { useDispatch } from "react-redux";
+import {
+  loginStart,
+  loginFailure,
+  loginSuccess,
+} from "../../Storage/StaffSlice";
+import axios from "axios";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const {
-    login,
+    register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("loggin data=>", data);
+  //Call react-redux Dispatch
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const onSubmit = async (data) => {
+    dispatch(loginStart());
+    try {
+      console.log("loggin data=>", data.email);
+      console.log("loggin data=>", data);
+
+      //Call Backend API
+      const res = await axios.post("http://localhost:8000/api/auth/signin", {
+        email: data.email,
+        password: data.password,
+        role: data.role,
+      });
+
+      if (res.status == 200) {
+        window.alert("Welcome From E-Tutoring System ");
+        dispatch(loginSuccess(res.data));
+        navigate("/StaffHome");
+        console.log(res.data);
+      }
+    } catch (err) {
+      window.alert("Staff's Email or Password Is Wrong ");
+      dispatch(loginFailure);
+    }
   };
 
   return (
@@ -31,6 +68,7 @@ export default function LoginForm() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        marginTop: "50px",
         height: "100vh",
         backgroundColor: "#f5f5f5",
       }}
@@ -40,7 +78,8 @@ export default function LoginForm() {
         onSubmit={handleSubmit(onSubmit)}
         style={{
           backgroundColor: "white",
-          padding: "20px",
+          padding: "30px",
+          marginTop: "50px",
           borderRadius: "8px",
           boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
           width: "100%",
@@ -52,6 +91,21 @@ export default function LoginForm() {
         </Typography>
 
         <FormControl fullWidth>
+          <FormLabel>Role</FormLabel>
+          <Select
+            {...register("role", { required: "Role is required" })}
+            defaultValue="student"
+            size="small"
+            fullWidth
+          >
+            <MenuItem value="staff">Staff</MenuItem>
+            <MenuItem value="student">Student</MenuItem>
+            <MenuItem value="tutor">Tutor</MenuItem>
+          </Select>
+          <FormErrorMessage error={errors.role?.message || "Invalid role"} />
+        </FormControl>
+
+        <FormControl fullWidth>
           <FormLabel color="black">Email</FormLabel>
           <OutlinedInput
             type="email"
@@ -59,6 +113,7 @@ export default function LoginForm() {
             placeholder="abc@yahoo.com"
             autoComplete="off"
             fullWidth
+            {...register("email", { required: "Email is required" })}
           />
           <FormErrorMessage error={errors.email?.message || "invalid email"} />
         </FormControl>
@@ -70,6 +125,7 @@ export default function LoginForm() {
             size="small"
             fullWidth
             autoComplete="off"
+            {...register("password", { required: "Password is required" })}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton

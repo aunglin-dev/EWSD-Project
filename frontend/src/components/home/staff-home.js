@@ -1,12 +1,21 @@
-import { Autocomplete, Box, Button, TextField, Typography, useMediaQuery } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { STUDENT_OBJECTS } from "../../constants/static_data";
 import Card from "./card";
+import { useSelector } from "react-redux";
 
 export default function StaffHome() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [selectedStudents, setSelectedStudents] = useState([]);
+  const { currentStaff } = useSelector((state) => state.staff);
   const navigate = useNavigate();
 
   const handleStudentChange = (event, newValue) => {
@@ -18,12 +27,16 @@ export default function StaffHome() {
       paddingY={isNonMobileScreens ? "100px" : "70px"}
       paddingX={isNonMobileScreens ? "20px" : "10px"}
     >
-      <Typography variant={isNonMobileScreens ? "h4" : "h6"} sx={{ marginBottom: "30px" }}>Welcome, Staff Name.</Typography>
+      <Typography
+        variant={isNonMobileScreens ? "h4" : "h6"}
+        sx={{ marginBottom: "30px" }}
+      >
+        Welcome, {currentStaff?.name}
+      </Typography>
 
       <Box>
         <div>
           <form>
-
             <Box sx={{ mb: 3 }}>
               <Autocomplete
                 multiple
@@ -44,7 +57,6 @@ export default function StaffHome() {
           </form>
         </div>
 
-
         {selectedStudents.length > 0 ? (
           <Box>
             <Typography
@@ -63,9 +75,16 @@ export default function StaffHome() {
               justifyContent="start"
               alignItems="start"
             >
-              {selectedStudents.map(student => (
-                <div onClick={() => (navigate(`/studentDashboard/${student.id}`))} style={{ cursor: "pointer" }}>
-                  <Card title={student.name} subtitle={student.department} addition={student.email} />
+              {selectedStudents.map((student) => (
+                <div
+                  onClick={() => navigate(`/studentDashboard/${student.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Card
+                    title={student.name}
+                    subtitle={student.department}
+                    addition={student.email}
+                  />
                 </div>
               ))}
             </Box>
@@ -88,16 +107,22 @@ export default function StaffHome() {
               justifyContent="start"
               alignItems="start"
             >
-              {STUDENT_OBJECTS.map(student => (
-                <div onClick={() => (navigate(`/studentDashboard/${student.id}`))} style={{ cursor: "pointer" }}>
-                  <Card title={student.name} subtitle={student.department} addition={student.email} />
+              {STUDENT_OBJECTS.map((student) => (
+                <div
+                  onClick={() => navigate(`/studentDashboard/${student.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Card
+                    title={student.name}
+                    subtitle={student.department}
+                    addition={student.email}
+                  />
                 </div>
               ))}
             </Box>
           </Box>
         )}
       </Box>
-
     </Box>
   );
 }
