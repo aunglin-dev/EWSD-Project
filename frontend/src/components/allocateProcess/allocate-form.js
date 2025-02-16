@@ -5,12 +5,15 @@ import {
   Button,
   Typography,
   Box,
+  useMediaQuery
 } from "@mui/material";
 import { STUDENT_OBJECTS, TUTOR_OBJECTS } from "../../constants/static_data";
 
 export default function AllocateForm() {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectedTutor, setSelectedTutor] = useState(null);
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+
 
   const handleStudentChange = (event, newValue) => {
     setSelectedStudents(newValue);
@@ -25,7 +28,11 @@ export default function AllocateForm() {
     console.log("To Tutor:", selectedTutor);
   };
   return (
-    <div>
+    <Box
+      paddingY={isNonMobileScreens ? "100px" : "70px"}
+      paddingX={isNonMobileScreens ? "20px" : "10px"}
+    >
+      <Typography variant={isNonMobileScreens ? "h4" : "h6"} sx={{ marginBottom: "30px" }}>Add Allocation</Typography>
       <form>
         <Box sx={{ mb: 3 }}>
           <Autocomplete
@@ -79,6 +86,6 @@ export default function AllocateForm() {
           </Box>
         )}
       </form>
-    </div>
+    </Box>
   );
 }
