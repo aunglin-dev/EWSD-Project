@@ -53,17 +53,17 @@ export default function StaffHome() {
               fontWeight="bold"
               marginBottom="20px"
             >
-              Students Search Result
+              Students
             </Typography>
             <Box
               display="grid"
-              gridTemplateColumns="repeat(auto-fit, 10rem"
+              gridTemplateColumns="repeat(auto-fit, 10rem)"
               gridAutoFlow="dense"
               gap="30px"
               justifyContent="start"
               alignItems="start"
             >
-              {selectedStudents.map((student) => (
+              {selectedStudents.map(student => (
                 <div onClick={() => (navigate(`/studentDashboard/${student.id}`))} style={{ cursor: "pointer" }}>
                   <Card title={student.name} subtitle={student.department} addition={student.email} />
                 </div>
