@@ -4,13 +4,12 @@ import {
   Autocomplete,
   TextField,
   Button,
-  Typography,
   Box,
+  Typography,
 } from "@mui/material";
-import { STUDENT_OBJECTS, TUTOR_OBJECTS } from "../../constants/static_data";
 
-export default function AllocateForm() {
-  const { handleSubmit, setValue, control } = useForm();
+export default function AllocateForm({ tutors, students, studentsID }) {
+  const { handleSubmit, setValue } = useForm();
   const [selectedTutor, setSelectedTutor] = useState(null);
   const [selectedStudents, setSelectedStudents] = useState([]);
 
@@ -26,9 +25,14 @@ export default function AllocateForm() {
 
   const onSubmit = async (data) => {
     console.log("allocate form data=>", data);
+
     const allocationData = {
-      tutorId: data.tutor._id,
-      students: data.students.map((student) => student._id),
+      tutor: data.tutor ? data.tutor._id : null,
+      student: data.students ? data.students.map((student) => student._id) : [],
+      createdStaffId: "67a27305df934d75b205651a", // constant data for now
+      schedule: ["Friday"], //constant data for now
+      status: "Pending", // constant data for now
+      note: "This is allocation success ", // constant data for now
     };
 
     try {
@@ -53,7 +57,7 @@ export default function AllocateForm() {
         <Box sx={{ mb: 3 }}>
           <Autocomplete
             id="tutor"
-            options={TUTOR_OBJECTS}
+            options={tutors || []}
             getOptionLabel={(option) => option.name}
             value={selectedTutor}
             onChange={handleTutorChange}
@@ -67,15 +71,66 @@ export default function AllocateForm() {
           <Autocomplete
             multiple
             id="students"
-            options={STUDENT_OBJECTS}
+            options={students || []}
             getOptionLabel={(option) => option.name}
             value={selectedStudents}
             onChange={handleStudentChange}
+            renderOption={(props, option) => {
+              const isAllocated = studentsID.includes(option._id);
+              return (
+                <li {...props} style={{ color: isAllocated ? "red" : "black" }}>
+                  {option.name}
+                </li>
+              );
+            }}
+            renderTags={(value, getTagProps) => {
+              return value.map((student, index) => {
+                const isAllocated = studentsID.includes(student._id);
+                return (
+                  <span
+                    key={student._id}
+                    {...getTagProps({ index })}
+                    style={{
+                      margin: "3px",
+                      padding: "5px 10px",
+                      backgroundColor: "#e0e0e0",
+                      color: isAllocated ? "red" : "black",
+                    }}
+                  >
+                    {student.name}
+                    <span
+                      style={{
+                        marginLeft: "5px",
+                        cursor: "pointer",
+                        fontSize: "small",
+                        color: "gray",
+                      }}
+                      onClick={() => {
+                        const newSelectedStudents = selectedStudents.filter(
+                          (s) => s._id !== student._id
+                        );
+                        setSelectedStudents(newSelectedStudents);
+                      }}
+                    >
+                      ✖
+                    </span>
+                  </span>
+                );
+              });
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
                 label="Select Students"
                 variant="outlined"
+                sx={{
+                  "& .MuiAutocomplete-tag": {
+                    color: "black",
+                  },
+                  "& .MuiAutocomplete-tag.Mui-focused": {
+                    backgroundColor: "lightgray",
+                  },
+                }}
               />
             )}
           />
@@ -89,19 +144,6 @@ export default function AllocateForm() {
         >
           Allocate
         </Button>
-
-        {selectedStudents.length > 0 && (
-          <Box sx={{ mt: 3 }}>
-            <Typography variant="body1" gutterBottom>
-              Selected Students:
-            </Typography>
-            <ul>
-              {selectedStudents.map((student) => (
-                <li key={student.id}>{student.name}</li>
-              ))}
-            </ul>
-          </Box>
-        )}
       </form>
     </div>
   );

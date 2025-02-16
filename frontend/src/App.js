@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/navigation/navbar.js";
 import LoginForm from "./components/loginForm/login-form.js";
 import Home from "./components/home/home-page.js";
-import AllocatePage from "./components/allocateProcess/allocate-form.js";
+import AllocatePage from "./components/allocateProcess/allocate-page.js";
 import BlogPage from "./components/blog/blog-page.js";
 import MessagePage from "./components/messageProcess/messagePage.js";
 import MeetingPage from "./components/meetingProcess/meeting.js";
