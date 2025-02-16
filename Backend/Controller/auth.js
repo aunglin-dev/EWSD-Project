@@ -18,7 +18,7 @@ export const signup = async (req, res, next) => {
   }
 };
 
-//Login
+//Login Student
 export const signin = async (req, res, next) => {
   try {
     const { email } = req.body;
