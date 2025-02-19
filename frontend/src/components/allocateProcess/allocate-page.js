@@ -7,6 +7,7 @@ import {
   TextField,
   Typography,
   useMediaQuery,
+  CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
@@ -93,35 +94,60 @@ export default function AllocatePage() {
   }, []);
 
   const handleRemoveAllocation = async (allocationId) => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `http://localhost:8000/api/allocations/${allocationId}`,
-        {
-          method: "DELETE",
+    const isConfirmed = window.confirm(
+      `Are you sure you want to delete this allocation ${allocationId}?`
+    );
+
+    if (isConfirmed) {
+      try {
+        setLoading(true);
+        setAllocatedTutees((prevState) => {
+          return {
+            ...prevState,
+            allocation: {
+              ...prevState.allocation,
+              students: prevState.allocation.students.filter(
+                (item) => item.allocationId !== allocationId
+              ),
+            },
+          };
+        });
+        const response = await fetch(
+          `http://localhost:8000/api/allocations/${allocationId}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to delete allocation");
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to delete allocation");
+        console.log(`Allocation ${allocationId} deleted successfully`);
+      } catch (err) {
+        setAllocatedTutees((prevState) => {
+          return {
+            ...prevState,
+            allocation: {
+              ...prevState.allocation,
+              students: [...prevState.allocation.students, { allocationId }],
+            },
+          };
+        });
+
+        setError(err.message);
+        alert("Failed to delete allocation. Please try again.");
+      } finally {
+        setLoading(false);
       }
-
-      setAllocatedTutees((prevState) =>
-        prevState.filter((item) => item.allocationId !== allocationId)
-      );
-      console.log(`Allocation ${allocationId} deleted successfully`);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
-  console.log("allocaiton list=>", allocationListdata);
+  //console.log("allocaiton list=>", allocationListdata);
 
   //console.log("all tutors=>", allTutors);
   //console.log("selected tutor=>", selectedTutor?._id);
-  console.log("allocated tutess", allocatedTutess?.allocation?.students);
+  //console.log("allocated tutess", allocatedTutess?.allocation?.students);
   return (
     <Box
       paddingY={isNonMobileScreens ? "100px" : "70px"}
@@ -182,6 +208,7 @@ export default function AllocatePage() {
             >
               Tutees
             </Typography>
+            {loading && <CircularProgress />}
             {allocatedTutess.length < 1 && (
               <h3 style={{ width: "100%" }}>
                 No allocated students for this tutor {selectedTutor?.name}
