@@ -1,15 +1,39 @@
 import Allocation from "../Model/Allocation.js";
 
+
+
 // Create a new allocation
 export const createAllocation = async (req, res) => {
     try {
-        const allocation = new Allocation(req.body);
-        await allocation.save();
-        res.status(201).json(allocation);
+        const { tutor, student, createdStaffId, schedule, status, note } = req.body;
+
+        if (!Array.isArray(student) || student.length === 0) {
+            return res.status(400).json({ error: "Students field must be an array" });
+        }
+
+
+
+        const allocations = student.map((student) => ({
+            tutor,
+            student,
+            createdStaffId,
+            schedule,
+            status: status || "Pending",
+            note,
+        }));
+
+        const savedAllocations = await Allocation.insertMany(allocations);
+
+        res.status(201).json({
+            message: "Allocations created successfully",
+            data: savedAllocations,
+        });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
+
+
 
 // Get all allocations
 export const getAllAllocations = async (req, res) => {
