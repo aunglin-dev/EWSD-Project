@@ -64,23 +64,31 @@ export const getAllocationsByTutorId = async (req, res) => {
             .populate("createdStaffId")
             .populate("tutor");
 
-        if (!allocations.length) {
-            return res.status(404).json({ message: "No allocations found for this tutor" });
-        }
-        const tutorInfo = allocations[0].tutor;
-        const students = allocations.map(allocation => ({
-            student: allocation.student,
-            createdStaffId: allocation.createdStaffId
-        }));
-
-        res.status(200).json({
-            allocation: {
-                tutor: tutorInfo,
-                students: students
-            }
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    if (!allocations.length) {
+      return res
+        .status(404)
+        .json({ message: "No allocations found for this tutor" });
     }
+    const tutorInfo = allocations[0].tutor;
+
+    // Transform allocations into student objects with allocation_id inside student
+    const students = allocations.map((allocation, index) => ({
+      student: {
+        ...allocation.student.toObject(), // Ensure student is a plain object
+        allocation_id: allocation._id, // Add allocation_id inside student object
+      },
+      createdStaffId: allocation.createdStaffId,
+    }));
+
+    // Send the response with structured data
+    res.status(200).json({
+      allocation: {
+        tutor: tutorInfo,
+        students,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
