@@ -34,7 +34,7 @@ const setupSocketListeners = (io) => {
     try {
         io.on("connection", async (socket) => {
 
-            console.log("User connectedd", socket.id);
+            console.log("User connected", socket.id);
 
             socket.on("joinRoom", async (allocationId) => {
                 try {
@@ -44,6 +44,7 @@ const setupSocketListeners = (io) => {
                     }
 
                     socket.join(allocationId);
+                    socket.emit("success", { message: 'User joined room: ${allocationId}' });
                     console.log(`User joined room: ${allocationId}`);
                 } catch (error) {
                     console.error("Error sending message:", error);
@@ -59,6 +60,7 @@ const setupSocketListeners = (io) => {
                         throw new Error("You are not allocated to this tutor/student.");
                     }
                     socket.leave(allocationId);
+                    socket.emit("success", { message: `User left room: ${allocationId}` });
                     console.log(`User left room: ${allocationId}`);
                 } catch (error) {
                     console.error("Error sending message:", error);
@@ -95,6 +97,7 @@ const setupSocketListeners = (io) => {
                     }
 
                     const messages = await Message.find({ allocationId }).sort({ createdAt: 1 });
+                    console.log(`fetchMessages: ${messages}`);
                     socket.emit("allMessages", messages);
                 } catch (error) {
                     console.error("Error fetching messages:", error);
