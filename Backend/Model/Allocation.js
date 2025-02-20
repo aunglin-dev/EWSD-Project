@@ -210,7 +210,7 @@ allocationSchema.pre("findOneAndUpdate", async function (next) {
 
             // Notify the new tutor
             console.log(`📧 Sending student allocation update email to tutor: ${tutor.email}`);
-            const tutorNotification = tutorNotificationEmail(tutor, student);
+            const tutorNotification = tutorNotificationEmail(tutor, [student]);
 
             await emailTransporter.sendMail({
                 from: emailAddress,
@@ -305,7 +305,7 @@ allocationSchema.pre("findOneAndDelete", async function (next) {
             console.log("✅ Student notified about allocation removal.");
 
             console.log(`📧 Notifying tutor (${tutorEmail}) about student removal`);
-            const tutorEmailContent = tutorNotificationEmail(tutorData, [student]);
+            const tutorEmailContent = tutorNotificationEmail(tutorData, [studentData]);
 
 
             await emailTransporter.sendMail({

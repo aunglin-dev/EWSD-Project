@@ -12,21 +12,48 @@ export const createAllocation = async (req, res) => {
         }
 
 
+        const savedAllocations = [];
 
-        const allocations = student.map((student) => ({
-            tutor,
-            student,
-            createdStaffId,
-            schedule,
-            status: status || "Pending",
-            note,
+        for (const studentObj of student) {
+            const allocation = new Allocation({
+                tutor,
+                student: studentObj,
+                createdStaffId,
+                schedule,
+                status: status || "Pending",
+                note,
+            });
+
+            const savedAllocation = await allocation.save();
+            savedAllocations.push(savedAllocation);
+        }
+
+
+        const allocations = await Allocation.find({ tutor: tutor })
+            .populate("student")
+            .populate("createdStaffId")
+            .populate("tutor");
+
+        const tutorInfo = allocations[0].tutor;
+
+        // Transform allocations into student objects with allocation_id inside student
+        const students = allocations.map((allocation, index) => ({
+            student: {
+                ...allocation.student.toObject(), // Ensure student is a plain object
+                allocation_id: allocation._id, // Add allocation_id inside student object
+            },
+            createdStaffId: allocation.createdStaffId,
         }));
 
-        const savedAllocations = await Allocation.insertMany(allocations);
+        // Send the response with structured data
+        var allocationResult = {
+            tutor: tutorInfo,
+            students,
+        };
 
         res.status(201).json({
             message: "Allocations created successfully",
-            data: savedAllocations,
+            data: allocationResult,
         });
     } catch (error) {
         res.status(400).json({ error: error.message });
