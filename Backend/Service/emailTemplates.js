@@ -1,4 +1,5 @@
-﻿export const tutorAssignmentEmail = (tutor) => {
+﻿
+export const tutorAssignmentEmail = (tutor) => {
     return {
         subject: "You Have Been Assigned a Personal Tutor",
         text: `Dear Student,
@@ -249,7 +250,13 @@ The Admin Team`,
 
 
 export const tutorNotificationEmail = (tutor, removedStudents) => {
-    const studentList = removedStudents.name;
+    // Generate a list of student names
+    const studentList = removedStudents.map(student => student.name).join(", ");
+
+    // Generate the HTML list dynamically
+    const studentHtmlList = removedStudents
+        .map(student => `<li>${student.name}</li>`)
+        .join("");
 
     return {
         subject: "⚠️ Student Unassigned from Your Tutorship",
@@ -266,13 +273,14 @@ The Admin Team`,
         html: `
             <p>Dear <strong>${tutor.name}</strong>,</p>
             <p>The following student(s) have been removed from your tutorship:</p>
-            <ul>${studentList}</ul>
+            <ul>${studentHtmlList}</ul>
             <p>If you have any questions, please contact the admin team.</p>
             <p>Best regards,</p>
             <p><strong>The Admin Team</strong></p>
         `
     };
 };
+
 
 
 

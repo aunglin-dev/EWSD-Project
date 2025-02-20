@@ -27,7 +27,7 @@ const allocationSchema = new mongoose.Schema(
         },
 
         schedule: {
-            type: [String], 
+            type: [String],
             enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
             required: true,
         },
@@ -210,7 +210,7 @@ allocationSchema.pre("findOneAndUpdate", async function (next) {
 
             // Notify the new tutor
             console.log(`📧 Sending student allocation update email to tutor: ${tutor.email}`);
-            const tutorNotification = tutorNotificationEmail(tutor, student);
+            const tutorNotification = tutorNotificationEmail(tutor, [student]);
 
             await emailTransporter.sendMail({
                 from: emailAddress,
@@ -226,12 +226,12 @@ allocationSchema.pre("findOneAndUpdate", async function (next) {
         if (originalStudent !== updatedStudent) {
             console.log("📧 Sending tutor assignment emails to new student:", student.email);
 
-            const tutorAssignmentEmailContent = allocationAssignmentEmail(student, tutor);  
+            const tutorAssignmentEmailContent = allocationAssignmentEmail(student, tutor);
 
             const tutorAssignmentMailOptions = {
                 from: emailAddress,
                 to: student.email,
-                subject: tutorAssignmentEmailContent.subject, 
+                subject: tutorAssignmentEmailContent.subject,
                 text: tutorAssignmentEmailContent.text,
                 html: tutorAssignmentEmailContent.html
             };
@@ -246,7 +246,7 @@ allocationSchema.pre("findOneAndUpdate", async function (next) {
             if (originalStudentEmail) {
                 console.log("📧 Sending tutor removal emails to:", originalStudentEmail);
 
-                const tutorRemovalEmailContent = allocationRemovalEmail(student, tutor);  
+                const tutorRemovalEmailContent = allocationRemovalEmail(student, tutor);
 
                 const tutorRemovalMailOptions = {
                     from: emailAddress,
@@ -305,7 +305,7 @@ allocationSchema.pre("findOneAndDelete", async function (next) {
             console.log("✅ Student notified about allocation removal.");
 
             console.log(`📧 Notifying tutor (${tutorEmail}) about student removal`);
-            const tutorEmailContent = tutorNotificationEmail(tutorData, [student]);
+            const tutorEmailContent = tutorNotificationEmail(tutorData, [studentData]);
 
 
             await emailTransporter.sendMail({
