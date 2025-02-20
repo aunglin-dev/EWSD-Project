@@ -12,7 +12,7 @@ const sendMessage = async (req, res) => {
         await message.save();
 
         // Emit the new message to clients in the allocation room
-        req.app.get("io").to(allocationId.toString()).emit("newMessage", message);
+        req.app.get("io").to(allocationId.toString()).emit("receiveMessage", message);
 
         res.status(201).json(message);
     } catch (error) {
@@ -82,7 +82,7 @@ const setupSocketListeners = (io) => {
 
                     console.log(`sendMessage: ${message}`);
 
-                    io.to(allocationId.toString()).emit("newMessage", message);
+                    io.to(allocationId.toString()).emit("receiveMessage", message);
                 } catch (error) {
                     console.error("Error sending message:", error);
                     socket.emit("error", { message: error.message });
