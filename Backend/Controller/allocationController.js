@@ -11,6 +11,9 @@ export const createAllocation = async (req, res) => {
             return res.status(400).json({ error: "Students field must be an array" });
         }
 
+        if (student.length > 10) {
+            return res.status(400).json({ error: "You cannot allocate more than 10 students at a time." });
+        }
 
         const savedAllocations = [];
 
