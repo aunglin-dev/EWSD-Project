@@ -5,8 +5,11 @@ export const createBlog = async (req, res) => {
     try {
         const { role, allocationId, title, content } = req.body;
 
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
         const newBlog = new Blog({
-            role,
+            role: formattedRole,
             allocationId,
             title,
             content,
@@ -25,6 +28,24 @@ export const getAllBlogs = async (req, res) => {
         const blogs = await Blog.find();
         if (!blogs.length) {
             return res.status(404).json({ error: "No blogs found" });
+        }
+        res.json(blogs);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Get all blogs by role 
+export const getBlogsByRole = async (req, res) => {
+    try {
+        const { role } = req.params;
+
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+        const blogs = await Blog.find({ role: formattedRole });
+        if (!blogs.length) {
+            return res.status(404).json({ error: "No blogs found for the given role" });
         }
         res.json(blogs);
     } catch (error) {
@@ -80,23 +101,7 @@ export const getBlogsByAllocationId = async (req, res) => {
     }
 };
 
-// Get all blogs by role 
-export const getBlogsByRole = async (req, res) => {
-    try {
-        const { role } = req.params;
 
-        // Capitalize first letter of role
-        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
-
-        const blogs = await Blog.find({ role: formattedRole });
-        if (!blogs.length) {
-            return res.status(404).json({ error: "No blogs found for the given role" });
-        }
-        res.json(blogs);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 
 
@@ -111,7 +116,11 @@ export const updateBlog = async (req, res) => {
             return res.status(404).json({ error: "Blog not found" });
         }
 
-        blog.role = role || blog.role;
+
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+        blog.role = formattedRole || blog.role;
         blog.allocationId = allocationId || blog.allocationId;
         blog.title = title || blog.title;
         blog.content = content || blog.content;

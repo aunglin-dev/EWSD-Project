@@ -10,10 +10,12 @@ import {
 const meetingRouter = express.Router();
 
 // Define meeting routes
-meetingRouter.post('/', createMeeting);
-meetingRouter.get('/', getAllMeetings);
-meetingRouter.get('/:id', getMeetingById);
-meetingRouter.put('/:id', updateMeeting);
-meetingRouter.delete('/:id', deleteMeeting);
+meetingRouter.get('/', getAllMeetings); // Get all meetings
+meetingRouter.get('/:id', getMeetingById); // Get a meeting by ID
+
+meetingRouter.post('/', createMeeting); // Create a meeting
+
+meetingRouter.put('/:id', updateMeeting); // Update a meeting
+meetingRouter.delete('/:id', deleteMeeting); // Delete a meeting
 
 export default meetingRouter;

@@ -4,12 +4,16 @@ import upload from "../Service/multerConfig.js";
 
 export const documentRouter = express.Router();
 
-documentRouter.post("/", upload.single("file"), uploadDocument);
-documentRouter.put("/:id", upload.single("file"), uploadDocument);
-documentRouter.get("/", getAllDocuments);
-documentRouter.get("/:id", getDocumentById);
-documentRouter.get("/allocation/:role/:allocationId", getDocumentsByAllocationIdAndRole);
-documentRouter.get("/allocation/:allocationId", getDocumentsByAllocationId);
-documentRouter.delete("/:id", deleteDocument);
+documentRouter.get("/", getAllDocuments); // Get all documents
+documentRouter.get("/:id", getDocumentById); // Get a document by ID
+documentRouter.get("/allocation/:allocationId", getDocumentsByAllocationId); // Get documents by allocationId
+documentRouter.get("/allocation/:role/:allocationId", getDocumentsByAllocationIdAndRole); // Get documents by allocationId and role
+
+
+documentRouter.post("/", upload.single("file"), uploadDocument); // Create a document
+
+documentRouter.put("/:id", upload.single("file"), uploadDocument); // Update a document
+
+documentRouter.delete("/:id", deleteDocument); // Delete a document
 
 export default documentRouter;

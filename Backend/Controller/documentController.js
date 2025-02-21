@@ -17,8 +17,13 @@ export const uploadDocument = async (req, res) => {
         // Generate file URL
         const url = `${SERVER_URL}/uploads/${req.file.filename}`;
 
+
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+
         const newDocument = new Document({
-            role,
+            role: formattedRole,
             allocationId,
             docType,
             description,
@@ -113,7 +118,12 @@ export const updateDocument = async (req, res) => {
             url = `${SERVER_URL}/uploads/${req.file.filename}`;
         }
 
-        document.role = role || document.role;
+
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+
+        document.role = formattedRole || document.role;
         document.allocationId = allocationId || document.allocationId;
         document.docType = docType || document.docType;
         document.description = description || document.description;

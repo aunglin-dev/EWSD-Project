@@ -5,7 +5,11 @@ import DocumentComment from "../Model/DocumentComment.js";
 export const addComment = async (req, res) => {
     try {
         const { documentId, role, comment } = req.body;
-        const newComment = new DocumentComment({ documentId, role, comment });
+
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+        const newComment = new DocumentComment({ documentId, role: formattedRole, comment });
         await newComment.save();
         res.status(201).json(newComment);
     } catch (error) {
@@ -102,9 +106,12 @@ export const updateComment = async (req, res) => {
         const { id } = req.params;
         const { role, comment } = req.body;
 
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
         const updatedComment = await DocumentComment.findByIdAndUpdate(
             id,
-            { role, comment },
+            { role: formattedRole, comment },
             { new: true }
         );
 

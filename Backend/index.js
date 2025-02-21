@@ -23,6 +23,7 @@ import { messageRouter } from "./Routes/messageRoute.js";
 import documentRouter from "./Routes/documentRoute.js";
 import documentCommentRouter from "./Routes/documentCommentRoute.js";
 import blogRouter from "./Routes/blogRoute.js";
+import blogCommentRouter from "./Routes/blogCommentRoute.js";
 
 dotenv.config();
 const app = express();
@@ -62,6 +63,8 @@ app.use("/api/messages", messageRouter);
 app.use("/api/documents", documentRouter);
 app.use("/api/documentcomments", documentCommentRouter);
 app.use("/api/blogs", blogRouter);
+app.use("/api/blogcomments", blogCommentRouter);
+
 
 app.use((err, req, res, next) => {
     const status = err.status || 500;

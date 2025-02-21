@@ -14,15 +14,20 @@ import {
 
 export const blogRouter = express.Router();
 
-blogRouter.post("/", createBlog);
-blogRouter.get("/", getAllBlogs);
-blogRouter.get("/:id", getBlogById);
-blogRouter.get("/allocation/:role/:allocationId", getBlogsByRoleAndAllocationId);
-blogRouter.get("/allocation/:allocationId", getBlogsByAllocationId);
-blogRouter.get("/role/:role", getBlogsByRole);
-blogRouter.put("/:id", updateBlog);
-blogRouter.delete("/:id", deleteBlog);
-blogRouter.delete("/allocation/:allocationId", deleteBlogsByAllocationId);
-blogRouter.delete("/allocation/:role/:allocationId", deleteBlogsByAllocationIdAndRole);
+
+blogRouter.get("/", getAllBlogs); // Get all blogs
+blogRouter.get("/:id", getBlogById); // Get a blog by ID
+blogRouter.get("/role/:role", getBlogsByRole); // Get blogs by role
+blogRouter.get("/allocation/:allocationId", getBlogsByAllocationId); // Get blogs by allocationId
+blogRouter.get("/allocation/:role/:allocationId", getBlogsByRoleAndAllocationId); // Get blogs by role and allocationId
+
+
+blogRouter.post("/", createBlog); // Create a blog
+
+blogRouter.put("/:id", updateBlog); // Update blog by ID
+
+blogRouter.delete("/:id", deleteBlog); // Delete blog by ID
+blogRouter.delete("/allocation/:allocationId", deleteBlogsByAllocationId); // Delete blogs by allocationId
+blogRouter.delete("/allocation/:role/:allocationId", deleteBlogsByAllocationIdAndRole); // Delete blogs by role and allocationId
 
 export default blogRouter;
