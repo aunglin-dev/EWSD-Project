@@ -27,22 +27,7 @@ const TutorSchema = new mongoose.Schema(
     department: {
       type: String,
       required: true,
-    },
-
-    documents: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Document",
-        require: false,
-      },
-    ],
-    blogs: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Blog",
-        require: false,
-      },
-    ],
+    }
   },
   { timestamps: true }
 );
