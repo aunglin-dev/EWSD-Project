@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
+import roleTypes from "./roleType.js";
 
 const messageSchema = new mongoose.Schema(
     {
         role: {
             type: String,
-            enum: ["Student", "Tutor", "Staff"],
+            enum: roleTypes,
             required: true,
         },
         allocationId: {

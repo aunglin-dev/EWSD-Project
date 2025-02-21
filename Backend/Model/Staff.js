@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import roleTypes from "./roleType.js";
 
 const staffSchema = new mongoose.Schema(
     {
@@ -17,7 +18,7 @@ const staffSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ["Tutor", "Student", "Staff"], 
+            enum: roleTypes, 
             required: true,
         },
         phNo: {

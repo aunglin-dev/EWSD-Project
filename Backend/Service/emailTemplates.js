@@ -54,40 +54,6 @@ University eTutoring Team`,
 
 
 
-//export const tutorNotificationEmail = (tutor, addedStudents, removedStudents) => {
-//    return {
-//        subject: "Student Allocation Update - eTutoring System",
-//        text: `Dear ${tutor.name},
-
-//Your student allocation has been updated in the eTutoring system.
-
-//🔹 Added Students: ${addedStudents.length > 0 ? addedStudents.join(", ") : "None"}
-//🔹 Removed Students: ${removedStudents.length > 0 ? removedStudents.join(", ") : "None"}
-
-//Please log in to your account to review the changes.
-
-//Best regards,  
-//University eTutoring Team`,
-
-//        html: `
-//            <p>Dear ${tutor.name},</p>
-//            <p>Your student allocation has been updated in the <strong>eTutoring</strong> system.</p>
-//            <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
-//                <tr>
-//                    <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Added Students</th>
-//                    <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Removed Students</th>
-//                </tr>
-//                <tr>
-//                    <td style="border: 1px solid #ddd; padding: 8px;">${addedStudents.length > 0 ? addedStudents.join("<br>") : "None"}</td>
-//                    <td style="border: 1px solid #ddd; padding: 8px;">${removedStudents.length > 0 ? removedStudents.join("<br>") : "None"}</td>
-//                </tr>
-//            </table>
-//            <p>Please <a href="https://etutoring.university.com" style="color: #007bff;">log in to your account</a> to review the changes.</p>
-//            <p>Best regards,<br><strong>University eTutoring Team</strong></p>
-//        `
-//    };
-//};
-
 export const meetingNotificationEmail = (action, tutor, student, meeting) => {
     let subjectStudent;
     let messageStudent;
@@ -99,10 +65,8 @@ export const meetingNotificationEmail = (action, tutor, student, meeting) => {
             <p>A new meeting has been scheduled with your tutor.</p>
             <ul>
                 <li><strong>Tutor:</strong> ${tutor.name}</li>
-                <li><strong>Date:</strong> ${meeting.date.toDateString()}</li>
-                <li><strong>Time:</strong> ${meeting.time}</li>
-                <li><strong>Type:</strong> ${meeting.meetingType}</li>
-                ${meeting.meetingType === 'virtual' ? `<li><strong>Link:</strong> <a href="${meeting.virtualLink}">${meeting.virtualLink}</a></li>` : `<li><strong>Location:</strong> ${meeting.location}</li>`}
+                <li><strong>Date & Time:</strong> ${meeting.dateTime}</li>
+                <li><strong>Meeting Type:</strong> ${meeting.type}</li>
             </ul>
             <p>Please be on time.</p>
             <p>Best regards,<br><strong>University eTutoring Team</strong></p>
@@ -114,10 +78,8 @@ export const meetingNotificationEmail = (action, tutor, student, meeting) => {
             <p>Your meeting with your tutor has been updated.</p>
             <ul>
                 <li><strong>Tutor:</strong> ${tutor.name}</li>
-                <li><strong>New Date:</strong> ${meeting.date.toDateString()}</li>
-                <li><strong>New Time:</strong> ${meeting.time}</li>
-                <li><strong>Type:</strong> ${meeting.meetingType}</li>
-                ${meeting.meetingType === 'virtual' ? `<li><strong>Link:</strong> <a href="${meeting.virtualLink}">${meeting.virtualLink}</a></li>` : `<li><strong>Location:</strong> ${meeting.location}</li>`}
+                <li><strong>Date & Time:</strong> ${meeting.dateTime}</li>
+                <li><strong>Meeting Type:</strong> ${meeting.type}</li>
             </ul>
             <p>Please check your schedule.</p>
             <p>Best regards,<br><strong>University eTutoring Team</strong></p>
@@ -152,11 +114,8 @@ export const meetingNotificationEmailForTutor = (action, tutor, student, meeting
                 <ul>
                     <li><strong>Student Name:</strong> ${student.name}</li>
                     <li><strong>Email:</strong> ${student.email}</li>
-                    <li><strong>Date:</strong> ${meeting.date.toDateString()}</li>
-                    <li><strong>Time:</strong> ${meeting.time}</li>
-                    ${meeting.meetingType === 'virtual'
-                    ? `<li><strong>Virtual Link:</strong> ${meeting.virtualLink}</li>`
-                    : `<li><strong>Location:</strong> ${meeting.location}</li>`}
+                    <li><strong>Date & Time:</strong> ${meeting.dateTime}</li>
+                    <li><strong>Meeting Type:</strong> ${meeting.type}</li>
                 </ul>
                 <p>Please make the necessary preparations.</p>
                 <p>Best regards,<br><strong>University eTutoring Team</strong></p>
@@ -171,11 +130,8 @@ export const meetingNotificationEmailForTutor = (action, tutor, student, meeting
                 <ul>
                     <li><strong>Student Name:</strong> ${student.name}</li>
                     <li><strong>Email:</strong> ${student.email}</li>
-                    <li><strong>Date:</strong> ${meeting.date.toDateString()}</li>
-                    <li><strong>Time:</strong> ${meeting.time}</li>
-                    ${meeting.meetingType === 'virtual'
-                    ? `<li><strong>Virtual Link:</strong> ${meeting.virtualLink}</li>`
-                    : `<li><strong>Location:</strong> ${meeting.location}</li>`}
+                    <li><strong>Date & Time:</strong> ${meeting.dateTime}</li>
+                    <li><strong>Meeting Type:</strong> ${meeting.type}</li>
                 </ul>
                 <p>Please make the necessary preparations.</p>
                 <p>Best regards,<br><strong>University eTutoring Team</strong></p>
@@ -190,11 +146,8 @@ export const meetingNotificationEmailForTutor = (action, tutor, student, meeting
                 <ul>
                     <li><strong>Student Name:</strong> ${student.name}</li>
                     <li><strong>Email:</strong> ${student.email}</li>
-                    <li><strong>New Date:</strong> ${meeting.date.toDateString()}</li>
-                    <li><strong>New Time:</strong> ${meeting.time}</li>
-                    ${meeting.meetingType === 'virtual'
-                    ? `<li><strong>Updated Virtual Link:</strong> ${meeting.virtualLink}</li>`
-                    : `<li><strong>Updated Location:</strong> ${meeting.location}</li>`}
+                     <li><strong>Date & Time:</strong> ${meeting.dateTime}</li>
+                    <li><strong>Meeting Type:</strong> ${meeting.type}</li>
                 </ul>
                 <p>Please check the new meeting details.</p>
                 <p>Best regards,<br><strong>University eTutoring Team</strong></p>
@@ -209,11 +162,8 @@ export const meetingNotificationEmailForTutor = (action, tutor, student, meeting
                 <ul>
                     <li><strong>Student Name:</strong> ${student.name}</li>
                     <li><strong>Email:</strong> ${student.email}</li>
-                    <li><strong>Cancelled Date:</strong> ${meeting.date.toDateString()}</li>
-                    <li><strong>Cancelled Time:</strong> ${meeting.time}</li>
-                    ${meeting.meetingType === 'virtual'
-                    ? `<li><strong>Virtual Link:</strong> ${meeting.virtualLink}</li>`
-                    : `<li><strong>Location:</strong> ${meeting.location}</li>`}
+                           <li><strong>Date & Time:</strong> ${meeting.dateTime}</li>
+                    <li><strong>Meeting Type:</strong> ${meeting.type}</li>
                 </ul>
                 <p>If you have any concerns, please contact the administration.</p>
                 <p>Best regards,<br><strong>University eTutoring Team</strong></p>

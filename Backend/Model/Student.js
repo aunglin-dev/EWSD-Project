@@ -1,6 +1,7 @@
 ﻿import mongoose from "mongoose";
 import { meetingNotificationEmailForTutor } from "../Service/emailTemplates.js";
 import { emailTransporter, emailAddress } from "../Service/emailService.js";
+import roleTypes from "./roleType.js";
 
 const studentSchema = new mongoose.Schema(
   {

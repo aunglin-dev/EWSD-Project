@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import roleTypes from "./roleType.js";
 
 const documentCommentSchema = new mongoose.Schema(
     {
@@ -9,7 +10,7 @@ const documentCommentSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ["Student", "Tutor", "Staff"],
+            enum: roleTypes,
             required: true,
         },
         comment: {

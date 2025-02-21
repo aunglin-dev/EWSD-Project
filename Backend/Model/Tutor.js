@@ -3,6 +3,7 @@ import Meeting from "./Meeting.js";
 import Student from "./Student.js";
 import { emailTransporter, emailAddress } from "../Service/emailService.js";
 import { tutorRemovalEmail } from "../Service/emailTemplates.js";
+import roleTypes from "./roleType.js";
 
 const TutorSchema = new mongoose.Schema(
   {

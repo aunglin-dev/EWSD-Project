@@ -14,7 +14,7 @@ import {
 
 export const blogRouter = express.Router();
 
-
+//Define Route For Blog Collection
 blogRouter.get("/", getAllBlogs); // Get all blogs
 blogRouter.get("/:id", getBlogById); // Get a blog by ID
 blogRouter.get("/role/:role", getBlogsByRole); // Get blogs by role
