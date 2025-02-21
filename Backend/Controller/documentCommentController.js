@@ -30,7 +30,11 @@ export const getAllComments = async (req, res) => {
 export const getCommentsByRole = async (req, res) => {
     try {
         const { role } = req.params;
-        const comments = await DocumentComment.find({ role }).populate("documentId");
+
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+        const comments = await DocumentComment.find({ role: formattedRole }).populate("documentId");
 
         if (!comments.length) {
             return res.status(404).json({ error: "No comments found for the given role" });
