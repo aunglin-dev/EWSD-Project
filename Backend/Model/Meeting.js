@@ -7,7 +7,7 @@ const MeetingSchema = new mongoose.Schema({
     tutor: { type: mongoose.Schema.Types.ObjectId, ref: 'Tutor', required: true },
     student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
     date: { type: Date, required: true },
-    time: { type: String, required: true },  // Example: "14:00"
+    time: { type: String, required: true },  
     location: { type: String }, // Optional for real meetings
     meetingType: { type: String, enum: ['real', 'virtual'], required: true },
     virtualLink: { type: String } // Optional for virtual meetings

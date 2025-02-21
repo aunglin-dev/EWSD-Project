@@ -20,6 +20,7 @@ import meetingRouter from "./Routes/meetingRoute.js";
 import studentRouter from "./Routes/studentRoute.js";
 import staffRouter from "./Routes/staffRoute.js";
 import { messageRouter } from "./Routes/messageRoute.js";
+import documentRouter from "./Routes/documentRoute.js";
 
 dotenv.config();
 const app = express();
@@ -46,6 +47,7 @@ console.log(process.env.MONGODB_URI);
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
+app.use("/uploads", express.static("uploads")); // Serve uploaded files as static assets
 
 //Routers
 app.use("/api/staff", staffRouter);
@@ -55,6 +57,7 @@ app.use("/api/meetings", meetingRouter);
 app.use("/api/students", studentRouter);
 app.use("/api/allocations", allocationRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/documents", documentRouter);
 
 app.use((err, req, res, next) => {
     const status = err.status || 500;
