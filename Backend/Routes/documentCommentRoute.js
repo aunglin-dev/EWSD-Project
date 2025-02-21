@@ -3,6 +3,7 @@ import {
     addComment,
     getAllComments,
     getCommentsById,
+    getCommentsByRole,
     getDocumentCommentsByDocumentId,
     getDocumentCommentsByDocumentIdAndRole,
     updateComment,
