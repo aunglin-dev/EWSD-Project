@@ -5,7 +5,7 @@ import Allocation from "../Model/Allocation.js";
 // Create a new allocation
 export const createAllocation = async (req, res) => {
     try {
-        const { tutor, student, createdStaffId, schedule, status, note } = req.body;
+        const { tutor, student, createdStaffId } = req.body;
 
         if (!Array.isArray(student) || student.length === 0) {
             return res.status(400).json({ error: "Students field must be an array" });
@@ -21,10 +21,7 @@ export const createAllocation = async (req, res) => {
             const allocation = new Allocation({
                 tutor,
                 student: studentObj,
-                createdStaffId,
-                schedule,
-                status: status || "Pending",
-                note,
+                createdStaffId
             });
 
             const savedAllocation = await allocation.save();
@@ -35,7 +32,8 @@ export const createAllocation = async (req, res) => {
         const allocations = await Allocation.find({ tutor: tutor })
             .populate("student")
             .populate("createdStaffId")
-            .populate("tutor");
+            .populate("tutor")
+            .populate("meetings");
 
         const tutorInfo = allocations[0].tutor;
 
@@ -68,7 +66,8 @@ export const createAllocation = async (req, res) => {
 // Get all allocations
 export const getAllAllocations = async (req, res) => {
     try {
-        const allocations = await Allocation.find().populate("tutor").populate("student").populate("createdStaffId");
+        const allocations = await Allocation.find().populate("tutor").populate("student").populate("createdStaffId").populate("meetings");
+        if (!allocations.length) return res.status(404).json({ message: "Allocation not found" });
         res.status(200).json(allocations);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -78,7 +77,7 @@ export const getAllAllocations = async (req, res) => {
 // Get a single allocation by ID
 export const getAllocationById = async (req, res) => {
     try {
-        const allocation = await Allocation.findById(req.params.id).populate("student tutor createdStaffId");
+        const allocation = await Allocation.findById(req.params.id).populate("student tutor createdStaffId").populate("meetings");;
         if (!allocation) return res.status(404).json({ message: "Allocation not found" });
         res.status(200).json(allocation);
     } catch (error) {
@@ -89,7 +88,7 @@ export const getAllocationById = async (req, res) => {
 // Update an allocation by ID
 export const updateAllocation = async (req, res) => {
     try {
-        const allocation = await Allocation.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }).populate("student tutor createdStaffId");
+        const allocation = await Allocation.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }).populate("student tutor createdStaffId").populate("meetings");;
         if (!allocation) return res.status(404).json({ message: "Allocation not found" });
         res.status(200).json(allocation);
     } catch (error) {
@@ -116,7 +115,8 @@ export const getAllocationsByTutorId = async (req, res) => {
         const allocations = await Allocation.find({ tutor: tutorId })
             .populate("student")
             .populate("createdStaffId")
-            .populate("tutor");
+            .populate("tutor")
+            .populate("meetings");
 
         if (!allocations.length) {
             return res

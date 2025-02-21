@@ -26,8 +26,20 @@ const blogSchema = new mongoose.Schema(
             default: Date.now,
         },
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true } 
+    }
 );
+
+// Virtual field to retrieve comments related to the blog post
+blogSchema.virtual("comments", {
+    ref: "BlogComment",  // Reference the BlogComment model
+    localField: "_id",   // Match _id of Blog
+    foreignField: "blogId", // Match blogId field in BlogComment
+    justOne: false       // Retrieve multiple comments
+});
 
 const Blog = mongoose.model("Blog", blogSchema);
 

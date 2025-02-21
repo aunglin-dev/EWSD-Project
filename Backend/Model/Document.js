@@ -26,8 +26,22 @@ const documentSchema = new mongoose.Schema(
             required: true,
         }
     },
-    { timestamps: true } 
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true } 
+    } 
 );
+
+
+// Virtual field to retrieve comments related to the document
+documentSchema.virtual("comments", {
+    ref: "DocumentComment",   // Reference the DocumentComment model
+    localField: "_id",        // Match _id of Document
+    foreignField: "documentId", // Match documentId field in DocumentComment
+    justOne: false            // Retrieve multiple comments
+});
+
 
 const Document = mongoose.model("Document", documentSchema);
 

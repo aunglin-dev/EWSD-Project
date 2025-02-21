@@ -40,7 +40,7 @@ export const uploadDocument = async (req, res) => {
 // Get all documents
 export const getAllDocuments = async (req, res) => {
     try {
-        const documents = await Document.find();
+        const documents = await Document.find().populate("comments");
         if (!documents) return res.status(404).json({ message: 'Documents not found' });
         res.json(documents);
     } catch (error) {
@@ -52,7 +52,7 @@ export const getAllDocuments = async (req, res) => {
 export const getDocumentById = async (req, res) => {
     try {
         const { id } = req.params;
-        const document = await Document.findById(id);
+        const document = await Document.findById(id).populate("comments");
         if (!document) {
             return res.status(404).json({ error: "Document not found" });
         }
@@ -67,7 +67,7 @@ export const getDocumentById = async (req, res) => {
 export const getDocumentsByAllocationId = async (req, res) => {
     try {
         const { allocationId } = req.params;
-        const documents = await Document.find({ allocationId });
+        const documents = await Document.find({ allocationId }).populate("comments");
         if (!documents.length) {
             return res.status(404).json({ error: "No documents found for the given allocationId" });
         }
@@ -86,7 +86,7 @@ export const getDocumentsByAllocationIdAndRole = async (req, res) => {
         // Capitalize first letter of role
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
 
-        const documents = await Document.find({ allocationId, role: formattedRole });
+        const documents = await Document.find({ allocationId, role: formattedRole }).populate("comments");
         if (!documents.length) {
             return res.status(404).json({ error: "No documents found for the given allocationId and role" });
         }
@@ -96,13 +96,32 @@ export const getDocumentsByAllocationIdAndRole = async (req, res) => {
     }
 };
 
+// Get documents by role
+export const getAllDocumentsByRole = async (req, res) => {
+    try {
+        const { role } = req.params;
+
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+        const documents = await Document.find({ role: formattedRole }).populate("comments");
+        if (!documents.length) {
+            return res.status(404).json({ error: "No documents found for the given role" });
+        }
+        res.json(documents);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 // Update a document
 export const updateDocument = async (req, res) => {
     try {
         const { id } = req.params;
         const { role, allocationId, docType, description } = req.body;
 
-        const document = await Document.findById(id);
+        const document = await Document.findById(id).populate("comments");
         if (!document) {
             return res.status(404).json({ error: "Document not found" });
         }

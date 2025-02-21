@@ -16,6 +16,7 @@ export const createTutor = async (req, res) => {
 export const getAllTutors = async (req, res) => {
     try {
         const tutors = await Tutor.find();
+        if (!tutors.length) return res.status(404).json({ message: 'Tutors not found' });
         res.status(200).json(tutors);
     } catch (error) {
         res.status(500).json({ error: error.message });

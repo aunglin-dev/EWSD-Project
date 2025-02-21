@@ -28,7 +28,9 @@ const meetingSchema = new mongoose.Schema({
         type: String,
         default: ""
     }
-}, { timestamps: true });
+}, {
+    timestamps: true,
+});
 
 
 meetingSchema.pre("save", async function (next) {

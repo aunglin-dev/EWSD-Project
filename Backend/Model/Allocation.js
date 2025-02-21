@@ -24,27 +24,21 @@ const allocationSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Staff",
             required: true,
-        },
-
-        schedule: {
-            type: [String],
-            enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            required: true,
-        },
-
-        status: {
-            type: String,
-            enum: ["Pending", "Approved", "Rejected"],
-            default: "Pending",
-        },
-
-        note: {
-            type: String,
-            required: false,
-        },
+        }
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true } 
+    }
 );
+
+// Virtual field for meetings
+allocationSchema.virtual("meetings", {
+    ref: "Meeting",
+    localField: "_id",
+    foreignField: "allocationId",
+});
 
 
 // Middleware to enforce allocation rules before saving

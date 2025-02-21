@@ -15,6 +15,7 @@ export const createStudent = async (req, res) => {
 export const getAllStudents = async (req, res) => {
     try {
         const students = await Student.find();
+        if (!students.length) return res.status(404).json({ message: 'Students not found' });
         res.status(200).json(students);
     } catch (error) {
         res.status(500).json({ error: error.message });

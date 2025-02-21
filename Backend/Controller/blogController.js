@@ -25,7 +25,7 @@ export const createBlog = async (req, res) => {
 // Get all blog posts
 export const getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find();
+        const blogs = await Blog.find().populate("comments");
         if (!blogs.length) {
             return res.status(404).json({ error: "No blogs found" });
         }
@@ -43,7 +43,7 @@ export const getBlogsByRole = async (req, res) => {
         // Capitalize first letter of role
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
 
-        const blogs = await Blog.find({ role: formattedRole });
+        const blogs = await Blog.find({ role: formattedRole }).populate("comments");
         if (!blogs.length) {
             return res.status(404).json({ error: "No blogs found for the given role" });
         }
@@ -57,7 +57,7 @@ export const getBlogsByRole = async (req, res) => {
 export const getBlogById = async (req, res) => {
     try {
         const { id } = req.params;
-        const blog = await Blog.findById(id);
+        const blog = await Blog.findById(id).populate("comments");
         if (!blog) {
             return res.status(404).json({ error: "Blog not found" });
         }
@@ -76,7 +76,7 @@ export const getBlogsByRoleAndAllocationId = async (req, res) => {
         // Capitalize first letter of role
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
 
-        const blogs = await Blog.find({ role: formattedRole, allocationId });
+        const blogs = await Blog.find({ role: formattedRole, allocationId }).populate("comments");
         if (!blogs.length) {
             return res.status(404).json({ error: "No blogs found for the given role and allocationId" });
         }
@@ -91,7 +91,7 @@ export const getBlogsByAllocationId = async (req, res) => {
     try {
         const {allocationId } = req.params;
 
-        const blogs = await Blog.find({ allocationId });
+        const blogs = await Blog.find({ allocationId }).populate("comments");
         if (!blogs.length) {
             return res.status(404).json({ error: "No blogs found for the given allocationId" });
         }
@@ -111,7 +111,7 @@ export const updateBlog = async (req, res) => {
         const { id } = req.params;
         const { role, allocationId, title, content } = req.body;
 
-        const blog = await Blog.findById(id);
+        const blog = await Blog.findById(id).populate("comments");
         if (!blog) {
             return res.status(404).json({ error: "Blog not found" });
         }
