@@ -133,14 +133,27 @@ const checkStudents = async () => {
     }
 };
 
+
+// Define the function to be executed
 const startWorker = async () => {
-    await connectToMongoDB();
-    await checkStudents();
-    parentPort.postMessage({ status: 'Email Sent!' });
+    try {
+
+        await connectToMongoDB();
+        await checkStudents();
+
+        parentPort.postMessage({ status: 'Email Sent!' });
+
+    } catch (error) {
+        console.error('Error executing startWorker:', error);
+        parentPort.postMessage({ status: 'error', message: error.message });
+    }
 };
 
-startWorker().catch((err) => {
-    console.error('Worker encountered an error:', err);
-    parentPort.postMessage({ status: 'error', message: 'Worker encountered an error' });
-    process.exit(1);
+// Listen for messages from the parent thread
+parentPort.on('message', (message) => {
+    if (message.action === 'startTask') { // Execute the function when the 'startTask' message is received
+        startWorker().then(() => {
+            parentPort.postMessage({ status: 'Re-running task after completion' });
+        });
+    }
 });

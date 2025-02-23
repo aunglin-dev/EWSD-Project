@@ -108,7 +108,7 @@ const startWorker = () => {
         worker = new Worker(new URL('./Service/lastInteractionEmailWorker.js', import.meta.url));
 
         worker.on('message', (message) => {
-            console.log('Worker message:', message.status);
+            console.log('Worker Message:', message.status);
         });
 
         worker.on('error', (error) => {
