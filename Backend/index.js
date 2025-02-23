@@ -120,11 +120,15 @@ const startWorker = () => {
     });
 };
 
-// Run the email worker every 5 minute (for testing)
-cron.schedule('*/5 * * * *', () => {
-    taskCounter++;  
-    console.log('Running periodic task every 5 minutes...');
-    startWorker(); 
+// Run the email worker every 1 minute (for testing)
+cron.schedule('*/1 * * * *', () => {
+    try {
+        taskCounter++;
+        console.log('Running periodic task every 1 minutes...');
+        startWorker();
+    } catch (error) {
+        console.error('Error starting worker:', error);
+    }
 });
 
 //Running Port
