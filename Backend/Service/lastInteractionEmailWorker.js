@@ -36,37 +36,69 @@ const connectToMongoDB = async () => {
 };
 
 const sendEmail = (email, name, role) => {
-    const mailOptions = {
-        from: emailAddress,
-        to: email,
-        subject: 'Reminder: Check your account',
-        text: `Hello ${name},\n\nIt has been 28 days since your last interaction. This is a reminder to check with each other.`
-    };
+    try {
+        let subject, text;
 
-    emailTransporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log('Error sending email:', error);
-        } else {
-            console.log(`${role} email sent: ${info.response}`);
+        // Define role-specific subject and body content
+        if (role === 'Tutor') {
+            subject = 'Reminder: Time to Check In with Your Student';
+            text = `Hello ${name},\n\nIt has been 28 days since your last interaction with your student. This is a reminder to check in and offer any additional support or resources. Keeping your student engaged is key to their success.\n\nBest regards,\nYour Teaching Platform`;
+        } else if (role === 'Student') {
+            subject = 'Reminder: Time to Connect with Your Tutor';
+            text = `Hello ${name},\n\nIt has been 28 days since your last session with your tutor. This is a reminder to schedule your next tutoring session and keep progressing towards your learning goals.\n\nBest regards,\nYour Learning Platform`;
         }
-    });
+
+        const mailOptions = {
+            from: emailAddress,
+            to: email,
+            subject: subject,
+            text: text
+        };
+
+        emailTransporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Error sending email:', error);
+            } else {
+                console.log(`${role} email sent: ${info.response}`);
+            }
+        });
+
+    } catch (err) {
+        console.error('Error sending email:', err);
+    }
 };
 
 const sendMeetingReminder = (email, name, role) => {
-    const mailOptions = {
-        from: emailAddress,
-        to: email,
-        subject: 'Meeting Reminder: Schedule or Check your meetings',
-        text: `Hello ${name},\n\nIt has been 28 days since your last meeting or there is no meeting scheduled. Please schedule a meeting or check the existing ones.`
-    };
 
-    emailTransporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log('Error sending meeting reminder:', error);
-        } else {
-            console.log(`${role} meeting reminder sent: ${info.response}`);
+    try {
+        let subject, text;
+
+        // Define role-specific subject and body content for the meeting reminder
+        if (role === 'Tutor') {
+            subject = 'Meeting Reminder: Schedule a Check-In with Your Student';
+            text = `Hello ${name},\n\nIt has been 28 days since your last meeting with your student. Please make sure to schedule a meeting to discuss their progress and provide any additional guidance.\n\nBest regards,\nYour Teaching Platform`;
+        } else if (role === 'Student') {
+            subject = 'Meeting Reminder: Schedule a Session with Your Tutor';
+            text = `Hello ${name},\n\nIt has been 28 days since your last session with your tutor. Please ensure that you schedule your next session to keep up with your learning and development.\n\nBest regards,\nYour Learning Platform`;
         }
-    });
+
+        const mailOptions = {
+            from: emailAddress,
+            to: email,
+            subject: subject,
+            text: text
+        };
+
+        emailTransporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Error sending meeting reminder:', error);
+            } else {
+                console.log(`${role} meeting reminder sent: ${info.response}`);
+            }
+        });
+    } catch (err) {
+        console.error('Error sending meeting email:', err);
+    }
 };
 
 const checkStudents = async () => {
@@ -113,10 +145,11 @@ const startWorker = async () => {
     await connectToMongoDB();
     await checkStudents();
     parentPort.postMessage({ status: 'done' });
+    process.exit(0);  // Exit with code 0 to indicate successful completion
 };
 
 startWorker().catch((err) => {
     console.error('Worker encountered an error:', err);
     parentPort.postMessage({ status: 'error', message: 'Worker encountered an error' });
-    process.exit(1);
+    process.exit(1); // Exit with code 1 to indicate failure
 });
