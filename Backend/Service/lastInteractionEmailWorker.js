@@ -35,7 +35,7 @@ const connectToMongoDB = async () => {
     }
 };
 
-const sendEmail = (email, name, role) => {
+const sendEmail = async (email, name, role) => {
     let subject, text;
 
     // Define role-specific subject and body content
@@ -63,7 +63,7 @@ const sendEmail = (email, name, role) => {
     });
 };
 
-const sendMeetingReminder = (email, name, role) => {
+const sendMeetingReminder = async (email, name, role) => {
 
     let subject, text;
 
@@ -103,28 +103,29 @@ const checkStudents = async () => {
 
         // Changed forEach to for...of to handle async/await properly
         for (const student of students) {
-            sendEmail(student.email, student.name, 'Student');
+            await sendEmail(student.email, student.name, 'Student');
 
             const allocation = await Allocation.findOne({ student: student._id });
             if (allocation) {
                 const tutor = await Tutor.findById(allocation.tutor);
                 if (tutor) {
-                    sendEmail(tutor.email, tutor.name, 'Tutor');
+                    await sendEmail(tutor.email, tutor.name, 'Tutor');
                 }
 
                 const meeting = await Meeting.findOne({ allocationId: allocation._id });
                 if (meeting) {
                     const meetingDate = new Date(meeting.dateTime);
                     if (meetingDate <= date28DaysAgo) {
-                        sendMeetingReminder(student.email, student.name, 'Student');
-                        if (tutor) sendMeetingReminder(tutor.email, tutor.name, 'Tutor');
+                        await sendMeetingReminder(student.email, student.name, 'Student');
+                        if (tutor) await sendMeetingReminder(tutor.email, tutor.name, 'Tutor');
                     }
                 } else {
-                    sendMeetingReminder(student.email, student.name, 'Student');
-                    if (tutor) sendMeetingReminder(tutor.email, tutor.name, 'Tutor');
+                    await sendMeetingReminder(student.email, student.name, 'Student');
+                    if (tutor) await sendMeetingReminder(tutor.email, tutor.name, 'Tutor');
                 }
             }
         }
+
     } catch (err) {
         console.error('Error fetching students:', err);
         parentPort.postMessage({ status: 'error', message: 'Error fetching students' });
@@ -135,8 +136,7 @@ const checkStudents = async () => {
 const startWorker = async () => {
     await connectToMongoDB();
     await checkStudents();
-    parentPort.postMessage({ status: 'done' });
-    process.exit(0);
+    parentPort.postMessage({ status: 'Email Sent!' });
 };
 
 startWorker().catch((err) => {

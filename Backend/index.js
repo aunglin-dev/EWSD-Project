@@ -98,36 +98,52 @@ app.use((err, req, res, next) => {
 setupSocketListeners(io);
 
 
-// Initialize a counter to track the number of times email worker runs
-let taskCounter = 0;
+
+// Create the worker once and keep it running
+let worker;
 
 // Function to start the email worker
 const startWorker = () => {
-    const worker = new Worker(new URL('./Service/lastInteractionEmailWorker.js', import.meta.url)); 
+    if (!worker) {
+        worker = new Worker(new URL('./Service/lastInteractionEmailWorker.js', import.meta.url));
 
-    worker.on('message', (message) => {
-        console.log('Worker finished:', message.status);
-    });
+        worker.on('message', (message) => {
+            console.log('Worker message:', message.status);
+        });
 
-    worker.on('error', (error) => {
-        console.error('Error from worker:', error);
-    });
+        worker.on('error', (error) => {
+            console.error('Error from worker:', error);
+        });
 
-    worker.on('exit', (code) => {
-        if (code !== 0) {
-            console.log(`Worker stopped with exit code ${code}`);
-        }
-    });
+        worker.on('exit', (code) => {
+            if (code !== 0) {
+                console.log(`Worker stopped with exit code ${code}`);
+            }
+        });
+    } else {
+        console.log("Email worker already created!")
+    }
 };
 
-// Run the email worker every 1 minute (for testing)
+
+try {
+    startWorker();
+} catch (err) {
+    console.error('Error starting worker:', err);
+    worker = null;
+}
+
+// Send a message to the worker every minute
 cron.schedule('*/1 * * * *', () => {
     try {
-        taskCounter++;
-        console.log('Running periodic task every 1 minutes...');
-        startWorker();
+        console.log('Sending message to worker every 1 minute...');
+        if (worker) {
+            worker.postMessage({ action: 'startTask' });  // Send a message to the worker to start the task
+        } else {
+            console.error('Worker is not initialized');
+        }
     } catch (error) {
-        console.error('Error starting worker:', error);
+        console.error('Error sending message to worker:', error);
     }
 });
 
