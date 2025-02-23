@@ -2,38 +2,21 @@ Post http://localhost:8000/api/auth/signup
 Content-Type:application/json
 
 {
- "name":"Test New 7",
-  "email": "TestNew6@gmail.com",
-  "role": "staff",
+ "name":"Test New 6",
+  "email": "TestNew6kmd@.edu.mm",
   "password": "123456",
   "DateOFBirth":"dad",
   "NRC":"adfda",
   "PhNo":"0232389923",
   "Address":"afldkajl"
 }
-###
-Post http://localhost:8000/api/staff/
-Content-Type:application/json
 
-{
-  
-"name":"Staff Htet2SoeZin",
-"email":"Nadi@example.com",
-"password":"KMD@12345",
-"role": "staff",
-"phNo": "1234567890",
-"NRC":"12/ABC(N)123456",
-"address":"123 Main St",
-"img":"https://example.com/john.jpg",
-"DateOfBirth":"1990-01-01T00:00:00.000+00:00"
-}
 
 ####
 Post http://localhost:8000/api/auth/signin 
 Content-Type:application/json
 
 {
-  "role": "staff",
-  "email":"test1@example.com",
-  "password": "KMD@12345"
+  "email":"TestNew6kmd@.edu.mm",
+  "password": "123456"
 }
