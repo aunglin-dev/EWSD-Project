@@ -1,6 +1,4 @@
 ﻿import mongoose from "mongoose";
-import { meetingNotificationEmailForTutor } from "../Service/emailTemplates.js";
-import { emailTransporter, emailAddress } from "../Service/emailService.js";
 import roleTypes from "./roleType.js";
 
 const studentSchema = new mongoose.Schema(
@@ -26,10 +24,14 @@ const studentSchema = new mongoose.Schema(
        unique: false,
     },
     role: {
-        type: String,
-        enum: roleTypes,
-        default: "Student",
-        required: false,
+       type: String,
+       enum: roleTypes,
+       default: "Student",
+       required: false,
+    },
+    lastInteractionDate: {
+        type: Date,
+        default: Date.now,
     }
   },
   { timestamps: true }
