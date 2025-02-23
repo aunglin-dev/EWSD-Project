@@ -29,8 +29,15 @@ import blogRouter from "./Routes/blogRoute.js";
 import blogCommentRouter from "./Routes/blogCommentRoute.js";
 
 dotenv.config();
+
+//Initialize Express
 const app = express();
+
+
+//Initialize Server
 const server = http.createServer(app);
+
+// Set up socket.io server
 const io = new Server(server,{
     cors: {
         origin: "*",
@@ -38,6 +45,9 @@ const io = new Server(server,{
 });
 app.set("io", io);
 
+
+//Connect to MongoDB
+console.log(process.env.MONGODB_URI);
 mongoose
     .connect(process.env.MONGODB_URI, {
         useNewUrlParser: true,
@@ -46,8 +56,12 @@ mongoose
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.log("Connection error:", err.message));
 
+
+
+// Seed Database
 seeder();
-console.log(process.env.MONGODB_URI);
+
+
 
 //Middleware
 app.use(cookieParser());
@@ -84,8 +98,6 @@ app.use((err, req, res, next) => {
 setupSocketListeners(io);
 
 
-
-
 // Initialize a counter to track the number of times email worker runs
 let taskCounter = 0;
 
@@ -119,5 +131,6 @@ cron.schedule('*/5 * * * *', () => {
 server.listen(8000, () => {
     console.log("Port is running on Localhost : 8000");
 });
+
 
 export default app;
