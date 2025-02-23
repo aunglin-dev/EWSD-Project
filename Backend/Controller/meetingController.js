@@ -3,7 +3,7 @@ import Meeting from "../Model/Meeting.js";
 //  Create a new meeting
 export const createMeeting = async (req, res) => {
     try {
-        const {role, allocationId, dateTime, type, note } = req.body;
+        const { role, allocationId, dateTime, type, note, meetingLink, meetingLocation, meetingPlatform } = req.body;
 
         // Capitalize first letter of role
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
@@ -13,7 +13,10 @@ export const createMeeting = async (req, res) => {
             allocationId,
             dateTime,
             type,
-            note
+            note,
+            meetingLink,
+            meetingLocation,
+            meetingPlatform
         });
 
         await newMeeting.save();
@@ -27,6 +30,10 @@ export const createMeeting = async (req, res) => {
 export const getAllMeetings = async (req, res) => {
     try {
         const meetings = await Meeting.find();
+
+        if (!meetings.length) {
+            return res.status(404).json({ error: "No meetings found for this role and allocation ID" });
+        }
         res.json(meetings);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -110,7 +117,7 @@ export const getMeetingsByAllocationId = async (req, res) => {
 export const updateMeeting = async (req, res) => {
     try {
         const { id } = req.params;
-        const { role, allocationId, dateTime, type, note } = req.body;
+        const { role, allocationId, dateTime, type, note, meetingLink, meetingLocation, meetingPlatform } = req.body;
 
 
         // Capitalize first letter of role
@@ -118,7 +125,7 @@ export const updateMeeting = async (req, res) => {
 
         const updatedMeeting = await Meeting.findByIdAndUpdate(
                 id,
-            { role: formattedRole, allocationId, dateTime, type, note },
+            { role: formattedRole, allocationId, dateTime, type, note, meetingLink, meetingLocation, meetingPlatform },
             { new: true }
         );
 

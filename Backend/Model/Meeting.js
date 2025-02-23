@@ -27,6 +27,18 @@ const meetingSchema = new mongoose.Schema({
     note: {
         type: String,
         default: ""
+    },
+    meetingLink: { // For online meetings
+        type: String,
+        default: "", // Empty string for in-person meetings
+    },
+    meetingLocation: { // For in-person meetings
+        type: String,
+        default: "", // Empty string for online meetings
+    },
+    meetingPlatform: { // For online meetings
+        type: String,
+        default: '', // Empty string for in-person meetings
     }
 }, {
     timestamps: true,

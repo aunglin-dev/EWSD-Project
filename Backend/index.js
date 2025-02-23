@@ -6,6 +6,9 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { Server } from "socket.io";
 import http from "http";
+import cron from 'node-cron';
+import { Worker } from 'worker_threads';
+
 //Seeder
 import seeder from "./Seeders/seeder.js";
 
@@ -79,6 +82,38 @@ app.use((err, req, res, next) => {
 
 // Set up socket.io listeners For Message Between Tutor and Student
 setupSocketListeners(io);
+
+
+
+
+// Initialize a counter to track the number of times email worker runs
+let taskCounter = 0;
+
+// Function to start the email worker
+const startWorker = () => {
+    const worker = new Worker(new URL('./Service/lastInteractionEmailWorker.js', import.meta.url)); 
+
+    worker.on('message', (message) => {
+        console.log('Worker finished:', message.status);
+    });
+
+    worker.on('error', (error) => {
+        console.error('Error from worker:', error);
+    });
+
+    worker.on('exit', (code) => {
+        if (code !== 0) {
+            console.log(`Worker stopped with exit code ${code}`);
+        }
+    });
+};
+
+// Run the email worker every 5 minute (for testing)
+cron.schedule('*/5 * * * *', () => {
+    taskCounter++;  
+    console.log('Running periodic task every 5 minutes...');
+    startWorker(); 
+});
 
 //Running Port
 server.listen(8000, () => {
