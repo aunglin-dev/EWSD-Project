@@ -133,10 +133,28 @@ try {
     worker = null;
 }
 
-// Send a message to the worker every minute
-cron.schedule('*/1 * * * *', () => {
+
+//Manually Trigger Email Sending Functionality To Student & Tutor Whose Interaction is More Than 28 day old
+app.get("/api/checkinteractiondate", (req, res) => {
     try {
-        console.log('Sending message to worker every 1 minute...');
+        if (worker) {
+            worker.postMessage({ action: "startTask" });
+            res.status(200).json({ message: "Worker task started successfully checking interaction date & sending email notification" });
+        } else {
+            console.error("Worker is not initialized");
+            res.status(500).json({ message: "Worker is not initialized" });
+        }
+    } catch (error) {
+        console.error("Error triggering worker:", error);
+        res.status(500).json({ message: "Error triggering worker", error });
+    }
+});
+
+// Using Worker & Corn Automatially Trigger Email Sending Functionality To Student & Tutor Whose Interaction is More Than 28 day old
+
+cron.schedule('*/10 * * * *', () => {
+    try {
+        console.log('Sending message to worker every 10 minute...');
         if (worker) {
             worker.postMessage({ action: 'startTask' });  // Send a message to the worker to start the task
         } else {
