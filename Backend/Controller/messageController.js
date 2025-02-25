@@ -24,11 +24,58 @@ const getMessages = async (req, res) => {
     try {
         const { allocationId } = req.params;
         const messages = await Message.find({ allocationId }).sort({ createdAt: 1 });
+        if (!messages.length) {
+            return res.status(404).json({ error: "No messages found for this role and allocation ID" });
+        }
         res.status(200).json(messages);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+const deleteMessage = async (req, res) => {
+    try {
+        const { messageId } = req.params;
+        const message = await Message.findByIdAndDelete(messageId);
+        if (!message) {
+            return res.status(404).json({ error: "Message not found" });
+        }
+
+        req.app.get("io").to(message.allocationId.toString()).emit("messageDeleted", messageId);
+        res.status(200).json({ message: "Message deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const deleteAllMessages = async (req, res) => {
+    try {
+        const { allocationId } = req.params;
+        await Message.deleteMany({ allocationId });
+        req.app.get("io").to(allocationId.toString()).emit("allMessagesDeleted", allocationId);
+        res.status(200).json({ message: "All messages deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const updateMessage = async (req, res) => {
+    try {
+        const { messageId } = req.params;
+        const { text } = req.body;
+        const message = await Message.findByIdAndUpdate(messageId, { text }, { new: true });
+        if (!message) {
+            return res.status(404).json({ error: "Message not found" });
+        }
+
+        req.app.get("io").to(message.allocationId.toString()).emit("messageUpdated", message);
+        res.status(200).json(message);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 const setupSocketListeners = (io) => {
     try {
@@ -89,6 +136,42 @@ const setupSocketListeners = (io) => {
                 }
             });
 
+            socket.on("deleteAllMessages", async (allocationId) => {
+                try {
+                    await Message.deleteMany({ allocationId });
+                    io.to(allocationId.toString()).emit("allMessagesDeleted", allocationId);
+                } catch (error) {
+                    socket.emit("error", { message: error.message });
+                }
+            });
+
+            socket.on("deleteMessage", async (messageId) => {
+                try {
+                    const message = await Message.findByIdAndDelete(messageId);
+                    if (!message) {
+                        throw new Error("Message not found");
+                    }
+                    io.to(message.allocationId.toString()).emit("messageDeleted", messageId);
+                } catch (error) {
+                    socket.emit("error", { message: error.message });
+                }
+            });
+
+            socket.on("updateMessage", async (data) => {
+                try {
+                    const { messageId, text } = data;
+                    const message = await Message.findByIdAndUpdate(messageId, { text }, { new: true });
+                    if (!message) {
+                        throw new Error("Message not found");
+                    }
+                    io.to(message.allocationId.toString()).emit("messageUpdated", message);
+                } catch (error) {
+                    socket.emit("error", { message: error.message });
+                }
+            });
+
+
+
             socket.on("fetchMessages", async (allocationId) => {
                 try {
                     const allocation = await Allocation.findById(allocationId);
@@ -119,4 +202,4 @@ const setupSocketListeners = (io) => {
     }
 };
 
-export { sendMessage, getMessages, setupSocketListeners };
+export { sendMessage, getMessages, deleteMessage, deleteAllMessages, updateMessage, setupSocketListeners };

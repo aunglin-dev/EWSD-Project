@@ -35,17 +35,23 @@ const connectToMongoDB = async () => {
     }
 };
 
-const sendEmail = async (email, name, role) => {
+const formatDate = (date) => {
+    return date ? new Date(date).toLocaleDateString("en-GB") : "No record";
+};
+
+
+const sendEmail = async (email, name, role, lastInteractionDate) => {
     let subject, text;
 
     // Define role-specific subject and body content
     if (role === 'Tutor') {
         subject = 'Reminder: Time to Check In with Your Student';
-        text = `Hello ${name},\n\nIt has been 28 days since your last interaction with your student. This is a reminder to check in and offer any additional support or resources. Keeping your student engaged is key to their success.\n\nBest regards,\nYour Teaching Platform`;
+        text = `Hello ${name},\n\nIt has been 28 days since your last interaction with your student.\n\nThis is a reminder to check in and offer any additional support or resources. Keeping your student engaged is key to their success.\n\nBest regards,\nYour Teaching Platform`;
     } else if (role === 'Student') {
         subject = 'Reminder: Time to Connect with Your Tutor';
-        text = `Hello ${name},\n\nIt has been 28 days since your last session with your tutor. This is a reminder to schedule your next tutoring session and keep progressing towards your learning goals.\n\nBest regards,\nYour Learning Platform`;
+        text = `Hello ${name},\n\nIt has been 28 days since your last session with your tutor. Below is the last recorded date:\n\n- Last Interaction Date: ${formatDate(lastInteractionDate)}\n\nThis is a reminder to schedule your next tutoring session and keep progressing towards your learning goals.\n\nBest regards,\nYour Learning Platform`;
     }
+
 
     const mailOptions = {
         from: emailAddress,
@@ -63,18 +69,19 @@ const sendEmail = async (email, name, role) => {
     });
 };
 
-const sendMeetingReminder = async (email, name, role) => {
+const sendMeetingReminder = async (email, name, role, lastMeetingDate) => {
 
     let subject, text;
 
     // Define role-specific subject and body content for the meeting reminder
     if (role === 'Tutor') {
         subject = 'Meeting Reminder: Schedule a Check-In with Your Student';
-        text = `Hello ${name},\n\nIt has been 28 days since your last meeting with your student. Please make sure to schedule a meeting to discuss their progress and provide any additional guidance.\n\nBest regards,\nYour Teaching Platform`;
+        text = `Hello ${name},\n\nIt has been 28 days since your last meeting with your student. Below is the last recorded meeting date:\n\n- Last Meeting Date: ${formatDate(lastMeetingDate)}\n\nPlease make sure to schedule a meeting to discuss their progress and provide any additional guidance.\n\nBest regards,\nYour Teaching Platform`;
     } else if (role === 'Student') {
         subject = 'Meeting Reminder: Schedule a Session with Your Tutor';
-        text = `Hello ${name},\n\nIt has been 28 days since your last session with your tutor. Please ensure that you schedule your next session to keep up with your learning and development.\n\nBest regards,\nYour Learning Platform`;
+        text = `Hello ${name},\n\nIt has been 28 days since your last session with your tutor. Below is the last recorded meeting date:\n\n- Last Meeting Date: ${formatDate(lastMeetingDate)}\n\nPlease ensure that you schedule your next session to keep up with your learning and development.\n\nBest regards,\nYour Learning Platform`;
     }
+
 
     const mailOptions = {
         from: emailAddress,
@@ -101,27 +108,30 @@ const checkStudents = async () => {
             lastInteractionDate: { $lte: date28DaysAgo },
         });
 
-        // Changed forEach to for...of to handle async/await properly
+
         for (const student of students) {
-            await sendEmail(student.email, student.name, 'Student');
+            let lastMeetingDate = null;
+
+            await sendEmail(student.email, student.name, 'Student', student.lastInteractionDate);
 
             const allocation = await Allocation.findOne({ student: student._id });
             if (allocation) {
                 const tutor = await Tutor.findById(allocation.tutor);
                 if (tutor) {
-                    await sendEmail(tutor.email, tutor.name, 'Tutor');
+                    await sendEmail(tutor.email, tutor.name, 'Tutor', student.lastInteractionDate);
                 }
 
                 const meeting = await Meeting.findOne({ allocationId: allocation._id });
                 if (meeting) {
+                    lastMeetingDate = meeting.dateTime;
                     const meetingDate = new Date(meeting.dateTime);
                     if (meetingDate <= date28DaysAgo) {
-                        await sendMeetingReminder(student.email, student.name, 'Student');
-                        if (tutor) await sendMeetingReminder(tutor.email, tutor.name, 'Tutor');
+                        await sendMeetingReminder(student.email, student.name, 'Student', lastMeetingDate);
+                        if (tutor) await sendMeetingReminder(tutor.email, tutor.name, 'Tutor', lastMeetingDate);
                     }
                 } else {
-                    await sendMeetingReminder(student.email, student.name, 'Student');
-                    if (tutor) await sendMeetingReminder(tutor.email, tutor.name, 'Tutor');
+                    await sendMeetingReminder(student.email, student.name, 'Student', lastMeetingDate);
+                    if (tutor) await sendMeetingReminder(tutor.email, tutor.name, 'Tutor', lastMeetingDate);
                 }
             }
         }

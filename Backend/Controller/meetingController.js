@@ -117,17 +117,20 @@ export const getMeetingsByAllocationId = async (req, res) => {
 export const updateMeeting = async (req, res) => {
     try {
         const { id } = req.params;
-        const { role, allocationId, dateTime, type, note, meetingLink, meetingLocation, meetingPlatform } = req.body;
+        const meetingDocument = req.body;
 
 
         // Capitalize first letter of role
-        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+        const formattedRole = meetingDocument?.role
+            ? meetingDocument.role.charAt(0).toUpperCase() + meetingDocument.role.slice(1)
+            : undefined;
 
         const updatedMeeting = await Meeting.findByIdAndUpdate(
-                id,
-            { role: formattedRole, allocationId, dateTime, type, note, meetingLink, meetingLocation, meetingPlatform },
+            id,
+            { ...meetingDocument, ...(formattedRole && { role: formattedRole }) }, // Only update role if it exists
             { new: true }
         );
+
 
         if (!updatedMeeting) {
             return res.status(404).json({ error: "Meeting not found" });
