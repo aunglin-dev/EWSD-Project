@@ -120,11 +120,15 @@ meetingSchema.pre("findOneAndUpdate", async function (next) {
         const dateTime = update.dateTime; // New meeting date
         const type = update.type; // New Meeting Type
 
+        // Get the current document's ID
+        const meetingId = this.getQuery()._id;
+
         // Check for duplicate meeting (same date, time, student, tutor)
         const existingMeeting = await mongoose.model("Meeting").findOne({
             allocationId: allocationId,
             dateTime: dateTime,
             type: type,
+            _id: { $ne: meetingId },  // Exclude the current meeting
         });
 
         if (existingMeeting) {
