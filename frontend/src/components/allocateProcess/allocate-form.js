@@ -39,6 +39,10 @@ export default function AllocateForm() {
         const studentResponse = await Axios.get(
           "http://localhost:8000/api/students"
         );
+
+        setTutors(tutorResponse.data);
+        setStudents(studentResponse.data);
+
         const allocationsResponse = await Axios.get(
           "http://localhost:8000/api/allocations"
         );
@@ -46,8 +50,6 @@ export default function AllocateForm() {
         // console.log("fetched Tutors:", tutorResponse.data);
         // console.log("fetched Students:", studentResponse.data);
         //console.log("fetched allocations:", allocationsResponse.data);
-        setTutors(tutorResponse.data);
-        setStudents(studentResponse.data);
         setAlreadyAllocatedStudents(
           allocationsResponse.data.map((v) => v.student._id)
         );
