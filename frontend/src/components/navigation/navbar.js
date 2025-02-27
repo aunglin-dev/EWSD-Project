@@ -8,22 +8,42 @@ import {
   Box,
   useMediaQuery,
 } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { useNavigate } from "react-router-dom";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { NavLinks } from "../../constants/static_data";
+import { current } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { Stafflogout } from "../../Storage/StaffSlice";
 
 export default function Navbar() {
-  const navigate = useNavigate();
-  const { currentStaff } = useSelector((state) => state.staff);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [activeLink, setActiveLink] = useState("");
+  const { currentStaff } = useSelector((state) => state.staff);
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
-  const LogOut = () => {
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleNavClick = (link) => {
+    setActiveLink(link);
+  };
+
+  const logOut = () => {
+    handleMenuClose();
     dispatch(Stafflogout());
     navigate("/");
   };
+
+  const location = useLocation();
+  const path = location.pathname;
 
   return (
     <Box
@@ -41,32 +61,66 @@ export default function Navbar() {
     >
       <Typography
         variant="h6"
-        onClick={() => navigate("/StaffHome")}
+        onClick={() => { currentStaff ? navigate("/StaffHome") : navigate("/") }}
         sx={{ cursor: "pointer" }}
       >
-        ETutoring
+        E-Tutoring Platform
       </Typography>
 
       {currentStaff && (
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Button
-            onClick={() => navigate("/allocate")}
-            sx={{
-              padding: "7px 16px",
-              border: "1px solid white",
-              borderRadius: "17px",
-              backgroundColor: "white",
-              color: "black",
-              "&:hover": { backgroundColor: "#ddd" },
-            }}
-          >
-            Allocate
-          </Button>
+        <>
+          <div style={{ display: "flex", gap: "15px", justifyContent: "space-between", alignItems: "center" }}>
+            <Link to={"/StaffHome"} style={{ textDecoration: "none" }}>
+              <Button
+                onClick={() => handleNavClick("home")}
+                sx={{
+                  color: path === "/StaffHome" ? "yellow" : "white",
+                  textDecoration: path === "/StaffHome" ? "underline" : "none",
+                  "&:hover": { fontWeight: "bold" },
+                }}
+              >
+                Home
+              </Button>
+            </Link>
+            <Link to={"/allocate"} style={{ textDecoration: "none", width: "100px" }}>
+              <Button
+                onClick={() => handleNavClick("allocate")}
+                sx={{
+                  width: "100%",
 
-          <IconButton onClick={() => LogOut()} color="inherit" sx={{ ml: 1 }}>
-            <LogoutIcon sx={{ color: "white" }} />
-          </IconButton>
-        </Box>
+                  color: path === "/allocate" ? "yellow" : "white",
+                  textDecoration:
+                    path === "/allocate" ? "underline" : "none",
+                  "&:hover": { fontWeight: "bold" },
+                }}
+              >
+                Allocation
+              </Button>
+            </Link>
+
+            <Box
+              sx={{ position: "relative", display: "flex", alignItems: "center" }}
+            >
+
+              <IconButton onClick={handleMenuOpen} color="inherit" sx={{ ml: 1 }}>
+                <AccountCircleIcon sx={{ color: "white" }} />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                sx={{ mt: 1 }}
+              >
+                <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={() => navigate("/staff-dashboard")}>
+                  Dashboard
+                </MenuItem>
+                <MenuItem onClick={() => logOut()}>Logout</MenuItem>
+              </Menu>
+            </Box>
+          </div>
+
+        </>
       )}
     </Box>
   );

@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import { STUDENT_OBJECTS, TUTOR_OBJECTS } from "../../constants/static_data";
 import Card from "../home/card";
 import { useSelector } from "react-redux";
 
@@ -200,19 +199,21 @@ export default function AllocatePage() {
 
         {selectedTutor ? (
           <Box>
-            <Typography
-              variant="h6"
-              textTransform="uppercase"
-              fontWeight="bold"
-              marginBottom="20px"
-            >
-              Tutees
-            </Typography>
+
             {loading && <CircularProgress />}
-            {allocatedTutess.length < 1 && (
+            {allocatedTutess.length < 1 ? (
               <h3 style={{ width: "100%" }}>
                 No allocated students for this tutor {selectedTutor?.name}
               </h3>
+            ) : (
+              <Typography
+                variant="h6"
+                textTransform="uppercase"
+                fontWeight="bold"
+                marginBottom="20px"
+              >
+                Tutees
+              </Typography>
             )}
             <Box
               display="grid"

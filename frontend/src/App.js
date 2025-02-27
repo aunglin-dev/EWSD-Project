@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/navigation/sampleNavbar.js";
+import Navbar from "./components/navigation/navbar.js";
 import LoginForm from "./components/loginForm/login-form.js";
 import StaffHome from "./components/home/staff-home.js";
 import AllocatePage from "./components/allocateProcess/allocate-page.js";

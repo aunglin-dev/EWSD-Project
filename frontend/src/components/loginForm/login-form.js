@@ -25,6 +25,7 @@ import {
 import axios from "axios";
 
 export default function LoginForm() {
+
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -51,13 +52,17 @@ export default function LoginForm() {
       });
 
       if (res.status == 200) {
-        window.alert("Welcome From E-Tutoring System ");
+        // window.alert("Welcome From E-Tutoring System ");
         dispatch(loginSuccess(res.data));
         navigate("/StaffHome");
         console.log(res.data);
       }
     } catch (err) {
-      window.alert("Staff's Email or Password Is Wrong ");
+      data.role === "staff" ?
+        window.alert("Staff's email or password is wrong.") :
+        data.role === "student" ?
+          window.alert("Student's email or password is wrong.") :
+          window.alert("Tutor's email or password is wrong.");
       dispatch(loginFailure);
     }
   };
@@ -86,8 +91,8 @@ export default function LoginForm() {
           maxWidth: "400px",
         }}
       >
-        <Typography variant="h5" align="center" gutterBottom>
-          Login
+        <Typography variant="h5" align="left" gutterBottom>
+          Login to access your portal
         </Typography>
 
         <FormControl fullWidth>
@@ -102,20 +107,26 @@ export default function LoginForm() {
             <MenuItem value="student">Student</MenuItem>
             <MenuItem value="tutor">Tutor</MenuItem>
           </Select>
-          <FormErrorMessage error={errors.role?.message || "Invalid role"} />
+          {/* <FormErrorMessage error={errors.role?.message || "Invalid role"} /> */}
         </FormControl>
 
-        <FormControl fullWidth>
+        <FormControl fullWidth sx={{ mt: 2 }}>
           <FormLabel color="black">Email</FormLabel>
           <OutlinedInput
-            type="email"
+            // type="email"
             size="small"
             placeholder="abc@yahoo.com"
             autoComplete="off"
             fullWidth
-            {...register("email", { required: "Email is required" })}
+            {...register("email", {
+              pattern: {
+                value: /^[a-zA-Z0-9_.±]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/,
+                message: "Invalid Email Format",
+              },
+              required: "* Email is required"
+            })}
           />
-          <FormErrorMessage error={errors.email?.message || "invalid email"} />
+          <FormErrorMessage error={errors.email?.message || ""} />
         </FormControl>
 
         <FormControl fullWidth sx={{ mt: 2 }}>
@@ -125,7 +136,13 @@ export default function LoginForm() {
             size="small"
             fullWidth
             autoComplete="off"
-            {...register("password", { required: "Password is required" })}
+            {...register("password", {
+              pattern: {
+                value: /.{8,}/,
+                message: "Invalid Password Format",
+              },
+              required: "* Password is required"
+            })}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -138,7 +155,7 @@ export default function LoginForm() {
             }
           />
           <FormErrorMessage
-            error={errors.password?.message || "Invalid password"}
+            error={errors.password?.message || ""}
           />
         </FormControl>
 
@@ -148,14 +165,14 @@ export default function LoginForm() {
           color="primary"
           fullWidth
           sx={{
-            mt: 2,
+            mt: 4,
             py: 1.5,
             fontWeight: "bold",
           }}
         >
           Login
         </Button>
-        <div
+        {/* <div
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -168,7 +185,7 @@ export default function LoginForm() {
           <Button type="button" sx={{ textTransform: "none" }}>
             Need Help?
           </Button>
-        </div>
+        </div> */}
       </form>
     </div>
   );
