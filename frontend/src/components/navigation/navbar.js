@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { NavLinks } from "../../constants/static_data";
@@ -50,7 +51,7 @@ export default function Navbar() {
 
   return (
     <Box
-      backgroundColor="#000"
+      backgroundColor="primary.main"
       color="#fff"
       width="100%"
       position="fixed"
@@ -60,10 +61,10 @@ export default function Navbar() {
       justifyContent="space-between"
       alignItems="center"
       boxSizing="border-box"
-      padding={isNonMobileScreens ? "20px 15px" : "10px"}
+      padding={isNonMobileScreens ? "15px" : "10px"}
     >
       <Typography
-        variant={isNonMobileScreens ? "h3" : "h5"}
+        variant={isNonMobileScreens ? "h3" : "h4"}
         py={isNonMobileScreens ? "" : "12px"}
         onClick={() => { currentStaff ? navigate("/StaffHome") : navigate("/") }}
         sx={{ cursor: "pointer" }}
@@ -84,18 +85,18 @@ export default function Navbar() {
                   "&:hover": { fontWeight: "600" },
                 }}
               >
-                Home
+                Dashboard
               </Button>
             </Link>
-            <Link to={"/allocate"} style={{ textDecoration: "none", width: "100px" }}>
+            <Link to={"/allocate"} style={{ textDecoration: "none", width: "126px" }}>
               <Button
                 onClick={() => handleNavClick("allocate")}
                 sx={{
                   width: "100%",
                   color: "#fff",
-                  fontWeight: path === "/allocate" ? "600" : "400",
+                  fontWeight: path === "/allocate" || "addAllocation" ? "600" : "400",
                   textDecoration:
-                    path === "/allocate" ? "underline" : "none",
+                    path === "/allocate" || "addAllocation" ? "underline" : "none",
                   "&:hover": { fontWeight: "600" },
                 }}
               >
@@ -103,7 +104,42 @@ export default function Navbar() {
               </Button>
             </Link>
 
-            <Box
+            {/* <Link to={"/blogs"} style={{ textDecoration: "none" }}>
+              <Button
+                onClick={() => handleNavClick("blog")}
+                sx={{
+                  color: "#fff",
+                  fontWeight: path === "/blogs" ? "600" : "400",
+                  textDecoration:
+                    path === "/blogs" ? "underline" : "none",
+                  "&:hover": { fontWeight: "600" },
+                }}
+              >
+                Blog
+              </Button>
+            </Link>
+            <Link to={"/meeting"} style={{ textDecoration: "none", width: "92px" }}>
+              <Button
+                onClick={() => handleNavClick("meeting")}
+                sx={{
+                  color: "#fff",
+                  fontWeight: path === "/meeting" ? "600" : "400",
+                  textDecoration:
+                    path === "/meeting" ? "underline" : "none",
+                  "&:hover": { fontWeight: "600" },
+                }}
+              >
+                Meeting
+              </Button>
+            </Link> */}
+
+            <IconButton
+              onClick={() => logOut()}
+            >
+              <LogoutIcon sx={{ color: "#fff" }} />
+            </IconButton>
+
+            {/* <Box
               sx={{ position: "relative", display: "flex", alignItems: "center" }}
             >
 
@@ -122,7 +158,7 @@ export default function Navbar() {
                 </MenuItem>
                 <MenuItem onClick={() => logOut()}>Logout</MenuItem>
               </Menu>
-            </Box>
+            </Box> */}
           </div>
         ) : (
           <IconButton
@@ -144,7 +180,7 @@ export default function Navbar() {
             zIndex="999"
             maxWidth="500px"
             minWidth="300px"
-            backgroundColor="#000"
+            backgroundColor="primary.main"
           >
             {/* CLOSE ICON */}
             <Box display="flex" justifyContent="flex-end" p="1rem">
@@ -157,23 +193,24 @@ export default function Navbar() {
 
             {/* MENU ITEMS */}
             <div style={{ display: "flex", flexDirection: "column", gap: "15px", justifyContent: "space-between", alignItems: "center" }}>
-              <Link to={"/StaffHome"} style={{ textDecoration: "none" }}>
+              <Link to={"/StaffHome"} style={{ textDecoration: "none", width: "100%" }}>
                 <Button
                   onClick={() => {
                     setIsMobileMenuToggled(!isMobileMenuToggled);
                     handleNavClick("home")
                   }}
                   sx={{
+                    width: "100%",
                     color: "#fff",
                     fontWeight: path === "/StaffHome" ? "600" : "400",
                     textDecoration: path === "/StaffHome" ? "underline" : "none",
                     "&:hover": { fontWeight: "600" },
                   }}
                 >
-                  Home
+                  Dashboard
                 </Button>
               </Link>
-              <Link to={"/allocate"} style={{ textDecoration: "none", width: "100px" }}>
+              <Link to={"/allocate"} style={{ textDecoration: "none", width: "100%" }}>
                 <Button
                   onClick={() => {
                     setIsMobileMenuToggled(!isMobileMenuToggled);
@@ -191,14 +228,13 @@ export default function Navbar() {
                   Allocation
                 </Button>
               </Link>
-              <Link to={"/staff-dashboard"} style={{ textDecoration: "none", width: "100px" }}>
+              {/* <Link to={"/staff-dashboard"} style={{ textDecoration: "none"}}>
                 <Button
                   onClick={() => {
                     setIsMobileMenuToggled(!isMobileMenuToggled);
                     handleNavClick("allocate")
                   }}
                   sx={{
-                    width: "100%",
                     color: "#fff",
                     fontWeight: path === "/staff-dashboard" ? "600" : "400",
                     textDecoration:
@@ -208,7 +244,7 @@ export default function Navbar() {
                 >
                   Dashboard
                 </Button>
-              </Link>
+              </Link> */}
               <Button
                 onClick={() => {
                   setIsMobileMenuToggled(!isMobileMenuToggled);
