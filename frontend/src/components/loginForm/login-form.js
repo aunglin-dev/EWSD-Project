@@ -6,10 +6,10 @@ import {
   Typography,
   OutlinedInput,
   Select,
-  Menu,
   MenuItem,
   FormControl,
   FormLabel,
+  useMediaQuery
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -25,7 +25,7 @@ import {
 import axios from "axios";
 
 export default function LoginForm() {
-
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -73,7 +73,6 @@ export default function LoginForm() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-
         height: "100vh",
         backgroundColor: "#f5f5f5",
       }}
@@ -91,33 +90,39 @@ export default function LoginForm() {
           maxWidth: "400px",
         }}
       >
-        <Typography variant="h5" align="left" gutterBottom>
+        <Typography variant={isNonMobileScreens ? "h2" : "h3"}
+        >
+          E-Tutoring Platform
+        </Typography>
+        <Typography variant="subtitle1" marginBottom="20px" gutterBottom>
           Login to access your portal
         </Typography>
 
         <FormControl fullWidth>
-          <FormLabel>Role</FormLabel>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>Role</FormLabel>
           <Select
             {...register("role", { required: "Role is required" })}
             defaultValue="student"
             size="small"
             fullWidth
+            sx={{ fontSize: "16px", fontWeight: "400" }}
           >
-            <MenuItem value="staff">Staff</MenuItem>
-            <MenuItem value="student">Student</MenuItem>
-            <MenuItem value="tutor">Tutor</MenuItem>
+            <MenuItem sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }} value="staff">Staff</MenuItem>
+            <MenuItem sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }} value="student">Student</MenuItem>
+            <MenuItem sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }} value="tutor">Tutor</MenuItem>
           </Select>
           {/* <FormErrorMessage error={errors.role?.message || "Invalid role"} /> */}
         </FormControl>
 
         <FormControl fullWidth sx={{ mt: 2 }}>
-          <FormLabel color="black">Email</FormLabel>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }} color="black">Email</FormLabel>
           <OutlinedInput
             // type="email"
             size="small"
             placeholder="abc@yahoo.com"
             autoComplete="off"
             fullWidth
+            sx={{ fontSize: "16px", fontWeight: "400" }}
             {...register("email", {
               pattern: {
                 value: /^[a-zA-Z0-9_.±]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/,
@@ -130,12 +135,13 @@ export default function LoginForm() {
         </FormControl>
 
         <FormControl fullWidth sx={{ mt: 2 }}>
-          <FormLabel color="black">Password</FormLabel>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>Password</FormLabel>
           <OutlinedInput
             type={showPassword ? "text" : "password"}
             size="small"
             fullWidth
             autoComplete="off"
+            sx={{ fontSize: "16px", fontWeight: "400" }}
             {...register("password", {
               pattern: {
                 value: /.{8,}/,
@@ -166,8 +172,7 @@ export default function LoginForm() {
           fullWidth
           sx={{
             mt: 4,
-            py: 1.5,
-            fontWeight: "bold",
+            // py: 1.5,
           }}
         >
           Login
