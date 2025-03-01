@@ -77,6 +77,7 @@ export default function StaffHome() {
             >
               {selectedStudents.map((student) => (
                 <div
+                  key={student.email}
                   onClick={() => navigate(`/studentDashboard/${student.id}`)}
                   style={{ cursor: "pointer" }}
                 >
@@ -109,6 +110,7 @@ export default function StaffHome() {
             >
               {STUDENT_OBJECTS.map((student) => (
                 <div
+                  key={student.email}
                   onClick={() => navigate(`/studentDashboard/${student.id}`)}
                   style={{ cursor: "pointer" }}
                 >

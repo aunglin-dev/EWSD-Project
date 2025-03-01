@@ -6,10 +6,10 @@ import {
   Typography,
   OutlinedInput,
   Select,
-  Menu,
   MenuItem,
   FormControl,
   FormLabel,
+  useMediaQuery
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -25,6 +25,7 @@ import {
 import axios from "axios";
 
 export default function LoginForm() {
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -51,13 +52,17 @@ export default function LoginForm() {
       });
 
       if (res.status == 200) {
-        window.alert("Welcome From E-Tutoring System ");
+        // window.alert("Welcome From E-Tutoring System ");
         dispatch(loginSuccess(res.data));
         navigate("/StaffHome");
         console.log(res.data);
       }
     } catch (err) {
-      window.alert("Staff's Email or Password Is Wrong ");
+      data.role === "staff" ?
+        window.alert("Staff's email or password is wrong.") :
+        data.role === "student" ?
+          window.alert("Student's email or password is wrong.") :
+          window.alert("Tutor's email or password is wrong.");
       dispatch(loginFailure);
     }
   };
@@ -68,7 +73,6 @@ export default function LoginForm() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-
         height: "100vh",
         backgroundColor: "#f5f5f5",
       }}
@@ -86,46 +90,65 @@ export default function LoginForm() {
           maxWidth: "400px",
         }}
       >
-        <Typography variant="h5" align="center" gutterBottom>
-          Login
+        <Typography variant={isNonMobileScreens ? "h2" : "h3"}
+        >
+          E-Tutoring Platform
+        </Typography>
+        <Typography variant="subtitle1" marginBottom="20px" gutterBottom>
+          Login to access your portal
         </Typography>
 
         <FormControl fullWidth>
-          <FormLabel>Role</FormLabel>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>Role</FormLabel>
           <Select
             {...register("role", { required: "Role is required" })}
             defaultValue="student"
             size="small"
             fullWidth
+            sx={{ fontSize: "16px", fontWeight: "400" }}
           >
-            <MenuItem value="staff">Staff</MenuItem>
-            <MenuItem value="student">Student</MenuItem>
-            <MenuItem value="tutor">Tutor</MenuItem>
+            <MenuItem sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }} value="staff">Staff</MenuItem>
+            <MenuItem sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }} value="student">Student</MenuItem>
+            <MenuItem sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }} value="tutor">Tutor</MenuItem>
           </Select>
-          <FormErrorMessage error={errors.role?.message || "Invalid role"} />
+          {/* <FormErrorMessage error={errors.role?.message || "Invalid role"} /> */}
         </FormControl>
 
-        <FormControl fullWidth>
-          <FormLabel color="black">Email</FormLabel>
+        <FormControl fullWidth sx={{ mt: 2 }}>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }} color="black">Email</FormLabel>
           <OutlinedInput
-            type="email"
+            // type="email"
             size="small"
             placeholder="abc@yahoo.com"
             autoComplete="off"
             fullWidth
-            {...register("email", { required: "Email is required" })}
+            sx={{ fontSize: "16px", fontWeight: "400" }}
+            {...register("email", {
+              pattern: {
+                value: /^[a-zA-Z0-9_.±]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/,
+                message: "Invalid Email Format",
+              },
+              required: "* Email is required"
+            })}
           />
-          <FormErrorMessage error={errors.email?.message || "invalid email"} />
+          <FormErrorMessage error={errors.email?.message || ""} />
         </FormControl>
 
         <FormControl fullWidth sx={{ mt: 2 }}>
-          <FormLabel color="black">Password</FormLabel>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>Password</FormLabel>
           <OutlinedInput
             type={showPassword ? "text" : "password"}
             size="small"
             fullWidth
             autoComplete="off"
-            {...register("password", { required: "Password is required" })}
+            sx={{ fontSize: "16px", fontWeight: "400" }}
+            {...register("password", {
+              pattern: {
+                value: /.{8,}/,
+                message: "Password must be more than 8 characters.",
+              },
+              required: "* Password is required"
+            })}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -138,7 +161,7 @@ export default function LoginForm() {
             }
           />
           <FormErrorMessage
-            error={errors.password?.message || "Invalid password"}
+            error={errors.password?.message || ""}
           />
         </FormControl>
 
@@ -148,14 +171,13 @@ export default function LoginForm() {
           color="primary"
           fullWidth
           sx={{
-            mt: 2,
-            py: 1.5,
-            fontWeight: "bold",
+            mt: 4,
+            // py: 1.5,
           }}
         >
           Login
         </Button>
-        <div
+        {/* <div
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -168,7 +190,7 @@ export default function LoginForm() {
           <Button type="button" sx={{ textTransform: "none" }}>
             Need Help?
           </Button>
-        </div>
+        </div> */}
       </form>
     </div>
   );
