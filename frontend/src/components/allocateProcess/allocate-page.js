@@ -9,8 +9,11 @@ import {
   useMediaQuery,
   CircularProgress,
 } from "@mui/material";
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import CircleIcon from '@mui/icons-material/Circle';
 import Card from "../home/card";
 import { useSelector } from "react-redux";
 
@@ -142,31 +145,42 @@ export default function AllocatePage() {
     }
   };
 
-  //console.log("allocaiton list=>", allocationListdata);
+  const allocatedTutorStudents = allTutors.map(tutor => {
+    const students = allocationListdata.filter(allocation => allocation.tutor._id === tutor._id && allocation.student);
+    return { "tutor": tutor.name, "students": students }
+  });
 
-  //console.log("all tutors=>", allTutors);
+  // console.log("allocaiton list=>", allocationListdata);
+
+  // console.log("all tutors=>", allTutors);
   //console.log("selected tutor=>", selectedTutor?._id);
-  //console.log("allocated tutess", allocatedTutess?.allocation?.students);
+  // console.log("allocated tutess", allocatedTutess?.allocation?.students);
   return (
     <Box
-      paddingY={isNonMobileScreens ? "100px" : "70px"}
+      paddingY="100px"
       paddingX={isNonMobileScreens ? "20px" : "10px"}
     >
       <Box
-        style={{
-          display: "flex",
-          width: "100%",
-          justifyContent: "end",
-          marginBottom: "40px",
-        }}
+        display="flex"
+        flexDirection={isNonMobileScreens ? "row" : "column"}
+        width="100%"
+        justifyContent="space-between"
+        alignItems={isNonMobileScreens ? "center" : "start"}
+        gap="20px"
+        marginBottom="40px"
       >
+        <Box>
+          <Typography variant={isNonMobileScreens ? "h2" : "h3"}>Tutor/Student Allocation</Typography>
+          <Typography variant="subtitle1">Allocate the student to each tutor</Typography>
+        </Box>
+
         <Button
           variant="contained"
           color="primary"
           onClick={() => navigate("/addAllocation")}
         >
-          <AddIcon sx={{ marginRight: "10px" }} />
-          <Typography>Allocate</Typography>
+          <AddIcon sx={{ width: "24px", height: "24px", marginRight: "3px" }} />
+          Allocate
         </Button>
       </Box>
 
@@ -183,19 +197,33 @@ export default function AllocatePage() {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Select Tutor"
+                    label="Search Tutor"
                     variant="outlined"
+                    sx={{
+                      ".MuiInputLabel-root": {
+                        fontSize: "16px"
+                      },
+                      ".MuiOutlinedInput-root": {
+                        input: {
+                          fontSize: "16px",
+                          fontWeight: "400"
+                        }
+                      }
+                    }}
                   />
                 )}
                 renderOption={(props, option) => (
-                  <li {...props}>
+                  <li {...props} style={{ fontSize: "16px", fontWeight: "400" }}>
                     {option.name} ({option.email}){" "}
                   </li>
                 )}
+
               />
             </Box>
           </form>
         </div>
+
+
 
         {selectedTutor ? (
           <Box>
@@ -259,14 +287,55 @@ export default function AllocatePage() {
             </Box>
           </Box>
         ) : (
-          <Typography
-            variant="h6"
-            textTransform="uppercase"
-            fontWeight="bold"
-            marginBottom="20px"
-          >
-            No tutor is selected.
-          </Typography>
+          <>
+            <Box display="flex" justifyContent="start" alignItems="center" gap="15px" mt="50px">
+              <Button variant="contained" sx={{ fontSize: "16px" }}>All</Button>
+              <Button variant="outlined" sx={{ fontSize: "16px" }}>Assigned</Button>
+              <Button variant="outlined" sx={{ fontSize: "16px" }}>Not Assigned</Button>
+            </Box>
+            {allocatedTutorStudents && (
+              <Box
+                display="flex" flexDirection="column"
+                gap="10px"
+                mt="20px"
+              >
+                {allocatedTutorStudents.map((allocation, index) => (
+                  <Box key={index} display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    padding={isNonMobileScreens ? "12px 30px" : "10px 15px"} backgroundColor="#d9d9d9"
+                    borderRadius="3px"
+                  >
+                    <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
+                      justifyContent="space-between" alignContent="center" flex="2">
+                      <Typography>{allocation.tutor}</Typography>
+                      {allocation.students.length ? (
+                        <Typography variant="subtitle2" display="flex" alignItems="center" gap="4px">
+                          <CircleIcon sx={{ color: "#009900", width: "18px", height: "18px" }} />            {allocation.students.length} students assigned</Typography>
+                      ) : (
+                        <Typography variant="subtitle2">Not assigned</Typography>
+                      )}
+                    </Box>
+                    <Box flex="1" display="flex" justifyContent="end">
+                      {allocation.students.length ? (
+                        <Button variant="outlined"
+                          sx={{
+                            backgroundColor: "#fff",
+                            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                          }}>Reallocate</Button>
+                      ) : (
+                        <Button variant="outlined" sx={{
+                          backgroundColor: "#fff",
+                          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                        }}>Allocate</Button>
+                      )}
+                    </Box>
+
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </>
         )}
       </Box>
     </Box>

@@ -94,9 +94,9 @@ export default function Navbar() {
                 sx={{
                   width: "100%",
                   color: "#fff",
-                  fontWeight: path === "/allocate" || "addAllocation" ? "600" : "400",
+                  fontWeight: path === "/allocate" ? "600" : "400",
                   textDecoration:
-                    path === "/allocate" || "addAllocation" ? "underline" : "none",
+                    path === "/allocate" ? "underline" : "none",
                   "&:hover": { fontWeight: "600" },
                 }}
               >

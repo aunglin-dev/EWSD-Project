@@ -12,7 +12,7 @@ export const themeSettings = {
     },
     typography: {
         fontFamily: ["Poppins", "sans-serif"].join(","),
-        fontSize: 18,
+        fontSize: 16,
         h1: {
             fontSize: 40,
             fontWeight: 700,
@@ -39,7 +39,9 @@ export const themeSettings = {
             color: "#939090",
         },
         button: {
-            fontWeight: 600,
+            fontSize: 18,
+            textTransform: "Capitalize",
+            fontWeight: 500,
         }
     }
 };
