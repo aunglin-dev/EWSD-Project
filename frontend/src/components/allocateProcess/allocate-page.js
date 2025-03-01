@@ -26,10 +26,13 @@ export default function AllocatePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [allocationListdata, setAllocationListData] = useState([]);
+  const [assigned, setAssigned] = useState(false);
+  const [notAssigned, setNotAssigned] = useState(false);
 
   const handleTutorChange = (event, newValue) => {
     setSelectedTutor(newValue);
   };
+
   useEffect(() => {
     setLoading(true);
     setError(null);
@@ -147,13 +150,13 @@ export default function AllocatePage() {
 
   const allocatedTutorStudents = allTutors.map(tutor => {
     const students = allocationListdata.filter(allocation => allocation.tutor._id === tutor._id && allocation.student);
-    return { "tutor": tutor.name, "students": students }
+    return { "tutor": tutor, "students": students }
   });
 
   // console.log("allocaiton list=>", allocationListdata);
 
   // console.log("all tutors=>", allTutors);
-  //console.log("selected tutor=>", selectedTutor?._id);
+  // console.log("selected tutor=>", selectedTutor?._id);
   // console.log("allocated tutess", allocatedTutess?.allocation?.students);
   return (
     <Box
@@ -226,72 +229,107 @@ export default function AllocatePage() {
 
 
         {selectedTutor ? (
-          <Box>
-
-            {loading && <CircularProgress />}
-            {allocatedTutess.length < 1 ? (
-              <h3 style={{ width: "100%" }}>
-                No allocated students for this tutor {selectedTutor?.name}
-              </h3>
-            ) : (
-              <Typography
-                variant="h6"
-                textTransform="uppercase"
-                fontWeight="bold"
-                marginBottom="20px"
-              >
-                Tutees
-              </Typography>
-            )}
-            <Box
-              display="grid"
-              gridTemplateColumns="repeat(auto-fit, 10rem)"
-              gridAutoFlow="dense"
-              gap="30px"
-              justifyContent="start"
-              alignItems="start"
-            >
-              {/* {allocatedTutess.length < 1 && (
-                <h3 style={{width:'100%'}}>
-                  No allocated students for this tutor {selectedTutor?.name}
-                </h3>
-              )} */}
-              {allocatedTutess?.allocation?.students.map((studentData) => (
-                <Box position="relative">
-                  <Card
-                    sx={{ position: "relative" }}
-                    title={studentData?.student?.name}
-                    subtitle={studentData?.student?.email}
-                    //addition={student.email}
-                    imgSrc={studentData?.student?.img}
-                    tutorName={selectedTutor?.name}
-                  />
-                  <RemoveCircleIcon
-                    onClick={() =>
-                      handleRemoveAllocation(
-                        studentData?.student?.allocation_id
-                      )
-                    }
-                    sx={{
-                      position: "absolute",
-                      cursor: "pointer",
-                      right: "-10px",
-                      top: "-10px",
-                      width: "30px",
-                      height: "30px",
-                      color: "red",
-                    }}
-                  />
+          // <Box>
+          //   {loading && <CircularProgress />}
+          //   {allocatedTutess.length < 1 ? (
+          //     <h3 style={{ width: "100%" }}>
+          //       No allocated students for this tutor {selectedTutor?.name}
+          //     </h3>
+          //   ) : (
+          //     <Typography
+          //       variant="h6"
+          //       textTransform="uppercase"
+          //       fontWeight="bold"
+          //       marginBottom="20px"
+          //     >
+          //       Tutees
+          //     </Typography>
+          //   )}
+          //   <Box
+          //     display="grid"
+          //     gridTemplateColumns="repeat(auto-fit, 10rem)"
+          //     gridAutoFlow="dense"
+          //     gap="30px"
+          //     justifyContent="start"
+          //     alignItems="start"
+          //   >
+          //     {/* {allocatedTutess.length < 1 && (
+          //       <h3 style={{width:'100%'}}>
+          //         No allocated students for this tutor {selectedTutor?.name}
+          //       </h3>
+          //     )} */}
+          //     {allocatedTutess?.allocation?.students.map((studentData) => (
+          //       <Box position="relative">
+          //         <Card
+          //           sx={{ position: "relative" }}
+          //           title={studentData?.student?.name}
+          //           subtitle={studentData?.student?.email}
+          //           //addition={student.email}
+          //           imgSrc={studentData?.student?.img}
+          //           tutorName={selectedTutor?.name}
+          //         />
+          //         <RemoveCircleIcon
+          //           onClick={() =>
+          //             handleRemoveAllocation(
+          //               studentData?.student?.allocation_id
+          //             )
+          //           }
+          //           sx={{
+          //             position: "absolute",
+          //             cursor: "pointer",
+          //             right: "-10px",
+          //             top: "-10px",
+          //             width: "30px",
+          //             height: "30px",
+          //             color: "red",
+          //           }}
+          //         />
+          //       </Box>
+          //     ))}
+          //   </Box>
+          // </Box>
+          <>
+            {allocatedTutorStudents?.filter((selected) => (
+              selected.tutor._id === selectedTutor._id)).map((allocation, index) => (
+                <Box Box key={index} display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  padding={isNonMobileScreens ? "12px 30px" : "10px 15px"} backgroundColor="#d9d9d9"
+                  borderRadius="3px"
+                >
+                  <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
+                    justifyContent="space-between" alignContent="center" flex="2">
+                    <Typography>{allocation.tutor.name}</Typography>
+                    {allocation.students.length ? (
+                      <Typography variant="subtitle2" display="flex" alignItems="center" gap="4px">
+                        <CircleIcon sx={{ color: "#009900", width: "18px", height: "18px" }} />            {allocation.students.length} students assigned</Typography>
+                    ) : (
+                      <Typography variant="subtitle2">Not assigned</Typography>
+                    )}
+                  </Box>
+                  <Box flex="1" display="flex" justifyContent="end">
+                    {allocation.students.length ? (
+                      <Button variant="outlined"
+                        sx={{
+                          backgroundColor: "#fff",
+                          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                        }}>Reallocate</Button>
+                    ) : (
+                      <Button variant="outlined" sx={{
+                        backgroundColor: "#fff",
+                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                      }}>Allocate</Button>
+                    )}
+                  </Box>
                 </Box>
               ))}
-            </Box>
-          </Box>
+          </>
         ) : (
           <>
             <Box display="flex" justifyContent="start" alignItems="center" gap="15px" mt="50px">
-              <Button variant="contained" sx={{ fontSize: "16px" }}>All</Button>
-              <Button variant="outlined" sx={{ fontSize: "16px" }}>Assigned</Button>
-              <Button variant="outlined" sx={{ fontSize: "16px" }}>Not Assigned</Button>
+              <Button variant={!assigned && !notAssigned ? "contained" : "outlined"} sx={{ fontSize: "16px" }} onClick={() => { setAssigned(false); setNotAssigned(false); }}>All</Button>
+              <Button variant={assigned ? "contained" : "outlined"} sx={{ fontSize: "16px" }} onClick={() => { setAssigned(true); setNotAssigned(false); }}>Assigned</Button>
+              <Button variant={notAssigned ? "contained" : "outlined"} sx={{ fontSize: "16px" }} onClick={() => { setAssigned(false); setNotAssigned(true); }}>Not Assigned</Button>
             </Box>
             {allocatedTutorStudents && (
               <Box
@@ -299,45 +337,123 @@ export default function AllocatePage() {
                 gap="10px"
                 mt="20px"
               >
-                {allocatedTutorStudents.map((allocation, index) => (
-                  <Box key={index} display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    padding={isNonMobileScreens ? "12px 30px" : "10px 15px"} backgroundColor="#d9d9d9"
-                    borderRadius="3px"
-                  >
-                    <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
-                      justifyContent="space-between" alignContent="center" flex="2">
-                      <Typography>{allocation.tutor}</Typography>
-                      {allocation.students.length ? (
-                        <Typography variant="subtitle2" display="flex" alignItems="center" gap="4px">
-                          <CircleIcon sx={{ color: "#009900", width: "18px", height: "18px" }} />            {allocation.students.length} students assigned</Typography>
-                      ) : (
-                        <Typography variant="subtitle2">Not assigned</Typography>
+                {assigned ? (
+                  <>
+                    {allocatedTutorStudents.filter(assigned => (
+                      assigned.students.length))?.map((allocation, index) =>
+                        <Box key={index} display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          padding={isNonMobileScreens ? "12px 30px" : "10px 15px"} backgroundColor="#d9d9d9"
+                          borderRadius="3px"
+                        >
+                          <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
+                            justifyContent="space-between" alignContent="center" flex="2">
+                            <Typography>{allocation.tutor.name}</Typography>
+                            {allocation.students.length ? (
+                              <Typography variant="subtitle2" display="flex" alignItems="center" gap="4px">
+                                <CircleIcon sx={{ color: "#009900", width: "18px", height: "18px" }} />            {allocation.students.length} students assigned</Typography>
+                            ) : (
+                              <Typography variant="subtitle2">Not assigned</Typography>
+                            )}
+                          </Box>
+                          <Box flex="1" display="flex" justifyContent="end">
+                            {allocation.students.length ? (
+                              <Button variant="outlined"
+                                sx={{
+                                  backgroundColor: "#fff",
+                                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                                }}>Reallocate</Button>
+                            ) : (
+                              <Button variant="outlined" sx={{
+                                backgroundColor: "#fff",
+                                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                              }}>Allocate</Button>
+                            )}
+                          </Box>
+                        </Box>
                       )}
-                    </Box>
-                    <Box flex="1" display="flex" justifyContent="end">
-                      {allocation.students.length ? (
-                        <Button variant="outlined"
-                          sx={{
-                            backgroundColor: "#fff",
-                            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                          }}>Reallocate</Button>
-                      ) : (
-                        <Button variant="outlined" sx={{
-                          backgroundColor: "#fff",
-                          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                        }}>Allocate</Button>
+                  </>
+                ) : notAssigned ? (
+                  <>
+                    {allocatedTutorStudents.filter(notAssigned => (
+                      notAssigned.students.length < 1))?.map((allocation, index) =>
+                        <Box key={index} display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          padding={isNonMobileScreens ? "12px 30px" : "10px 15px"} backgroundColor="#d9d9d9"
+                          borderRadius="3px"
+                        >
+                          <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
+                            justifyContent="space-between" alignContent="center" flex="2">
+                            <Typography>{allocation.tutor.name}</Typography>
+                            {allocation.students.length ? (
+                              <Typography variant="subtitle2" display="flex" alignItems="center" gap="4px">
+                                <CircleIcon sx={{ color: "#009900", width: "18px", height: "18px" }} />            {allocation.students.length} students assigned</Typography>
+                            ) : (
+                              <Typography variant="subtitle2">Not assigned</Typography>
+                            )}
+                          </Box>
+                          <Box flex="1" display="flex" justifyContent="end">
+                            {allocation.students.length ? (
+                              <Button variant="outlined"
+                                sx={{
+                                  backgroundColor: "#fff",
+                                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                                }}>Reallocate</Button>
+                            ) : (
+                              <Button variant="outlined" sx={{
+                                backgroundColor: "#fff",
+                                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                              }}>Allocate</Button>
+                            )}
+                          </Box>
+                        </Box>
                       )}
-                    </Box>
+                  </>
+                ) : (
+                  <>
+                    {allocatedTutorStudents.map((allocation, index) => (
+                      <Box key={index} display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        padding={isNonMobileScreens ? "12px 30px" : "10px 15px"} backgroundColor="#d9d9d9"
+                        borderRadius="3px"
+                      >
+                        <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
+                          justifyContent="space-between" alignContent="center" flex="2">
+                          <Typography>{allocation.tutor.name}</Typography>
+                          {allocation.students.length ? (
+                            <Typography variant="subtitle2" display="flex" alignItems="center" gap="4px">
+                              <CircleIcon sx={{ color: "#009900", width: "18px", height: "18px" }} />            {allocation.students.length} students assigned</Typography>
+                          ) : (
+                            <Typography variant="subtitle2">Not assigned</Typography>
+                          )}
+                        </Box>
+                        <Box flex="1" display="flex" justifyContent="end">
+                          {allocation.students.length ? (
+                            <Button variant="outlined"
+                              sx={{
+                                backgroundColor: "#fff",
+                                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                              }}>Reallocate</Button>
+                          ) : (
+                            <Button variant="outlined" sx={{
+                              backgroundColor: "#fff",
+                              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                            }}>Allocate</Button>
+                          )}
+                        </Box>
 
-                  </Box>
-                ))}
+                      </Box>
+                    ))}
+                  </>
+                )}
               </Box>
             )}
           </>
         )}
       </Box>
-    </Box>
+    </Box >
   );
 }

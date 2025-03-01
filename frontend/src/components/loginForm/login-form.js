@@ -145,7 +145,7 @@ export default function LoginForm() {
             {...register("password", {
               pattern: {
                 value: /.{8,}/,
-                message: "Invalid Password Format",
+                message: "Password must be more than 8 characters.",
               },
               required: "* Password is required"
             })}
