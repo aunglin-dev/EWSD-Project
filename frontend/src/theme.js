@@ -29,7 +29,7 @@ export const themeSettings = {
             fontSize: 20,
         },
         h5: {
-            fontSize: 16,
+            fontSize: 18,
         },
         h6: {
             fontSize: 14,
