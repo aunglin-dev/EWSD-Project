@@ -161,7 +161,7 @@ export default function AllocateForm() {
       paddingY="100px"
       paddingX={isNonMobileScreens ? "20px" : "10px"}
     >
-      <Box display="flex" justifyContent="start" alignItems="center" gap="10px">
+      <Box display="flex" flexDirection={isSmallestScreens && "column"} justifyContent="start" alignItems={isSmallestScreens ? "start" : "center"} gap="10px">
         <Button href="/allocate" type="button" variant="text" sx={{ padding: 0, fontSize: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "5px" }}>
           {/* <span
           style={{
@@ -178,7 +178,7 @@ export default function AllocateForm() {
           {/* </span> */}
         </Button>
         {successMsg && (
-          <span style={{ fontSize: "14px", fontWeight: "500", marginLeft: "30px", padding: "5px 25px", borderRadius: "20px", backgroundColor: "rgba(0, 200, 0, 0.4)", }}>
+          <span style={{ fontSize: "14px", fontWeight: "500", marginLeft: isSmallestScreens ? "0px" : "30px", padding: "5px 25px", borderRadius: "20px", backgroundColor: "rgba(0, 200, 0, 0.4)", }}>
             {successMsg}
           </span>
         )}
