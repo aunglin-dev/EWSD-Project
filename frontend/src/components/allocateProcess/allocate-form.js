@@ -7,6 +7,7 @@ import {
   Box,
   Typography,
   useMediaQuery,
+  CircularProgress
 } from "@mui/material";
 import CircleIcon from '@mui/icons-material/Circle';
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
@@ -26,6 +27,7 @@ export default function AllocateForm() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMsg, setSuccessMsg] = useState("");
+  const [success, setSuccess] = useState(false);
 
   //Get Data From Local Storage React
   const { currentStaff } = useSelector((state) => state.staff);
@@ -50,7 +52,7 @@ export default function AllocateForm() {
         );
 
         const allocations = tutorResponse.data.map(tutor => {
-          const allocations = allocationsResponse.data.filter(allocation => allocation.tutor._id === tutor._id && allocation);
+          const allocations = allocationsResponse.data?.filter(allocation => allocation.tutor._id === tutor._id && allocation);
           return { "tutor": tutor, "allocations": allocations }
         });
         setAllocatedTutorStudents(allocations);
@@ -64,10 +66,11 @@ export default function AllocateForm() {
         console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
+        setSuccess(false);
       }
     };
     fetchData();
-  }, [successMsg]);
+  }, [success]);
 
   const handleStudentChange = (event, newValue) => {
     setSelectedStudents(newValue);
@@ -77,6 +80,7 @@ export default function AllocateForm() {
   const handleTutorChange = (event, newValue) => {
     setSelectedTutor(newValue);
     setValue("tutor", newValue);
+    console.log("tutor", newValue);
   };
 
   const onSubmit = async (data) => {
@@ -93,6 +97,7 @@ export default function AllocateForm() {
 
     console.log(allocationData);
     try {
+      setLoading(true);
       const response = await fetch("http://localhost:8000/api/allocations/", {
         method: "POST",
         headers: {
@@ -112,6 +117,9 @@ export default function AllocateForm() {
 
     } catch (error) {
       console.error("Error allocating students:", error);
+    } finally {
+      setLoading(false);
+      setSuccess(true);
     }
   };
 
@@ -143,11 +151,10 @@ export default function AllocateForm() {
         alert("Failed to delete allocation. Please try again.");
       } finally {
         setLoading(false);
+        setSuccess(true);
       }
     }
   };
-
-  console.log(allocatedTutorStudents);
 
   return (
     <Box
@@ -317,54 +324,57 @@ export default function AllocateForm() {
         </form>
 
         <Box>
-          {selectedTutor && (
-            <>
-              {allocatedTutorStudents?.filter((selected) => (
-                selected.tutor._id === selectedTutor._id)).map((allocation, index) => (
-                  <Box key={index} >
-                    <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="30px" width="100%">
-                      <Typography variant="h5" fontWeight="600">Tutees</Typography>
-                      <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} display="flex" alignItems="center" gap="4px">
-                        <CircleIcon sx={{ color: "#009900", width: "18px", height: "18px" }} />
-                        {allocation.allocations.length} students assigned
-                      </Typography>
-                    </Box>
-                    <Box display="flex" flexDirection="column" gap="30px">
-                      {allocation.allocations.length ? allocation.allocations.map(allocated => (
-                        <Box key={index} display="flex"
-                          justifyContent="space-between"
-                          alignItems="end"
-                          gap="10px"
-                        >
-                          <Box flex="2" overflow="hidden">
-                            <Typography fontWeight="500">{allocated.student.name}</Typography>
-                            <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} display="flex" alignItems="center" gap="4px">
-                              {allocated.student.email}
-                            </Typography>
+          {loading ?
+            <CircularProgress />
+            :
+            selectedTutor && (
+              <>
+                {allocatedTutorStudents?.filter((selected) => (
+                  selected.tutor._id === selectedTutor._id)).map((allocation, index) => (
+                    <Box key={index} >
+                      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="30px" width="100%">
+                        <Typography variant="h5" fontWeight="600">Tutees</Typography>
+                        <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} display="flex" alignItems="center" gap="4px">
+                          <CircleIcon sx={{ color: "#009900", width: "18px", height: "18px" }} />
+                          {allocation.allocations.length} students assigned
+                        </Typography>
+                      </Box>
+                      <Box display="flex" flexDirection="column" gap="30px">
+                        {allocation.allocations.length ? allocation.allocations.map(allocated => (
+                          <Box key={index} display="flex"
+                            justifyContent="space-between"
+                            alignItems="end"
+                            gap="10px"
+                          >
+                            <Box flex="2" overflow="hidden">
+                              <Typography fontWeight="500">{allocated.student.name}</Typography>
+                              <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} display="flex" alignItems="center" gap="4px">
+                                {allocated.student.email}
+                              </Typography>
+                            </Box>
+                            <Box flex="1" display="flex" justifyContent="end">
+                              <Button variant="outlined"
+                                sx={{
+                                  backgroundColor: "#fff",
+                                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                                  fontSize: isSmallestScreens && "16px",
+                                }}
+                                onClick={() =>
+                                  handleRemoveAllocation(
+                                    allocated._id
+                                  )
+                                }
+                              >Remove</Button>
+                            </Box>
                           </Box>
-                          <Box flex="1" display="flex" justifyContent="end">
-                            <Button variant="outlined"
-                              sx={{
-                                backgroundColor: "#fff",
-                                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                                fontSize: isSmallestScreens && "16px",
-                              }}
-                              onClick={() =>
-                                handleRemoveAllocation(
-                                  allocated._id
-                                )
-                              }
-                            >Remove</Button>
-                          </Box>
-                        </Box>
-                      )) : (
-                        <Typography>No tutee yet.</Typography>
-                      )}
+                        )) : (
+                          <Typography>No tutee yet.</Typography>
+                        )}
+                      </Box>
                     </Box>
-                  </Box>
-                ))}
-            </>
-          )}
+                  ))}
+              </>
+            )}
         </Box>
       </Box>
     </Box>

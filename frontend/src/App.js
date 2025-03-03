@@ -9,6 +9,7 @@ import LoginForm from "./components/loginForm/login-form.js";
 import StaffHome from "./components/home/staff-home.js";
 import AllocatePage from "./components/allocateProcess/allocate-page.js";
 import AllocateForm from "./components/allocateProcess/allocate-form.js";
+import AllocateReallocate from "./components/allocateProcess/allocate-reallocate.js";
 import StudentDashboard from "./components/dashboard/student-dashboard.js";
 import BlogPage from "./components/blog/blog-page.js";
 import MessagePage from "./components/messageProcess/messagePage.js";
@@ -30,6 +31,7 @@ const App = () => {
 
           <Route path="/allocate" element={<AllocatePage />} />
           <Route path="/addAllocation" element={<AllocateForm />} />
+          <Route path="/allocateReallocate/:id" element={<AllocateReallocate />} />
           <Route path="/studentDashboard/:id" element={<StudentDashboard />} />
           <Route path="/staff-dashboard" element={<StaffDashboard />} />
 
