@@ -318,13 +318,17 @@ export default function AllocatePage() {
                           backgroundColor: "#fff",
                           boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                           fontSize: isSmallestScreens && "16px",
-                        }}>Reallocate</Button>
+                        }}
+                        onClick={() => navigate(`/allocateReallocate/${allocation.tutor._id}`)}
+                      >Reallocate</Button>
                     ) : (
                       <Button variant="outlined" sx={{
                         backgroundColor: "#fff",
                         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                         fontSize: isSmallestScreens && "16px",
-                      }}>Allocate</Button>
+                      }}
+                        onClick={() => navigate(`/allocateReallocate/${allocation.tutor._id}`)}
+                      >Allocate</Button>
                     )}
                   </Box>
                 </Box>
@@ -337,7 +341,7 @@ export default function AllocatePage() {
               <Button variant={assigned ? "contained" : "outlined"} sx={{ fontSize: isSmallestScreens ? "12px" : "16px" }} onClick={() => { setAssigned(true); setNotAssigned(false); }}>Assigned</Button>
               <Button variant={notAssigned ? "contained" : "outlined"} sx={{ fontSize: isSmallestScreens ? "12px" : "16px" }} onClick={() => { setAssigned(false); setNotAssigned(true); }}>Not Assigned</Button>
             </Box>
-            {allocatedTutorStudents && (
+            {allocatedTutorStudents ? (
               <Box
                 display="flex" flexDirection="column"
                 gap="10px"
@@ -346,87 +350,73 @@ export default function AllocatePage() {
                 {assigned ? (
                   <>
                     {allocatedTutorStudents.filter(assigned => (
-                      assigned.allocations.length))?.map((allocation, index) =>
-                        <Box key={index} display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          padding={isNonMobileScreens ? "12px 30px" : isSmallestScreens ? "5px 7px" : "10px 15px"}
-                          backgroundColor="#d9d9d9"
-                          borderRadius="3px"
-                        >
-                          <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
-                            justifyContent="space-between" alignContent="center" flex="2">
-                            <Typography fontSize={isSmallestScreens && "16px"}>{allocation.tutor.name}</Typography>
-                            {allocation.allocations.length ? (
+                      assigned.allocations.length)).length > 0 ? allocatedTutorStudents.filter(assigned => (
+                        assigned.allocations.length))?.map((allocation, index) =>
+                          <Box key={index} display="flex"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            padding={isNonMobileScreens ? "12px 30px" : isSmallestScreens ? "5px 7px" : "10px 15px"}
+                            backgroundColor="#d9d9d9"
+                            borderRadius="3px"
+                          >
+                            <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
+                              justifyContent="space-between" alignContent="center" flex="2">
+                              <Typography fontSize={isSmallestScreens && "16px"}>{allocation.tutor.name}</Typography>
+
                               <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} display="flex" alignItems="center" gap="4px">
                                 <CircleIcon sx={{ display: isSmallestScreens && "none", color: "#009900", width: "18px", height: "18px" }} />
                                 {allocation.allocations.length} students assigned
                               </Typography>
-                            ) : (
-                              <Typography variant={isSmallestScreens ? "caption" : "subtitle2"}>Not assigned</Typography>
-                            )}
-                          </Box>
-                          <Box flex="1" display="flex" justifyContent="end">
-                            {allocation.allocations.length ? (
+
+                            </Box>
+                            <Box flex="1" display="flex" justifyContent="end">
+
                               <Button variant="outlined"
                                 sx={{
                                   backgroundColor: "#fff",
                                   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                                   fontSize: isSmallestScreens && "16px",
-                                }}>Reallocate</Button>
-                            ) : (
-                              <Button variant="outlined" sx={{
-                                backgroundColor: "#fff",
-                                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                                fontSize: isSmallestScreens && "16px",
-                              }}>Allocate</Button>
-                            )}
+                                }}
+                                onClick={() => navigate(`/allocateReallocate/${allocation.tutor._id}`)}
+                              >Reallocate</Button>
+
+                            </Box>
                           </Box>
-                        </Box>
-                      )}
+                        ) : (<Typography>No assigned tutor.</Typography>)}
                   </>
                 ) : notAssigned ? (
                   <>
                     {allocatedTutorStudents.filter(assigned => (
-                      assigned.allocations.length < 1))?.map((allocation, index) =>
-                        <Box key={index} display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          padding={isNonMobileScreens ? "12px 30px" : isSmallestScreens ? "5px 7px" : "10px 15px"}
-                          backgroundColor="#d9d9d9"
-                          borderRadius="3px"
-                          gap="10px"
-                        >
-                          <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
-                            justifyContent="space-between" alignContent="center" flex="2">
-                            <Typography fontSize={isSmallestScreens && "16px"}>{allocation.tutor.name}</Typography>
-                            {allocation.allocations.length ? (
-                              <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} display="flex" alignItems="center" gap="4px">
-                                <CircleIcon sx={{ display: isSmallestScreens && "none", color: "#009900", width: "18px", height: "18px" }} />
-                                {allocation.allocations.length} students assigned
-                              </Typography>
-                            ) : (
+                      assigned.allocations.length < 1)).length > 0 ? allocatedTutorStudents.filter(assigned => (
+                        assigned.allocations.length < 1))?.map((allocation, index) =>
+                          <Box key={index} display="flex"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            padding={isNonMobileScreens ? "12px 30px" : isSmallestScreens ? "5px 7px" : "10px 15px"}
+                            backgroundColor="#d9d9d9"
+                            borderRadius="3px"
+                            gap="10px"
+                          >
+                            <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
+                              justifyContent="space-between" alignContent="center" flex="2">
+                              <Typography fontSize={isSmallestScreens && "16px"}>{allocation.tutor.name}</Typography>
+
                               <Typography variant={isSmallestScreens ? "caption" : "subtitle2"}>Not assigned</Typography>
-                            )}
-                          </Box>
-                          <Box flex="1" display="flex" justifyContent="end">
-                            {allocation.allocations.length ? (
-                              <Button variant="outlined"
-                                sx={{
-                                  backgroundColor: "#fff",
-                                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                                  fontSize: isSmallestScreens && "16px",
-                                }}>Reallocate</Button>
-                            ) : (
+
+                            </Box>
+                            <Box flex="1" display="flex" justifyContent="end">
+
                               <Button variant="outlined" sx={{
                                 backgroundColor: "#fff",
                                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                                 fontSize: isSmallestScreens && "16px",
-                              }}>Allocate</Button>
-                            )}
+                              }}
+                                onClick={() => navigate(`/allocateReallocate/${allocation.tutor._id}`)}
+                              >Allocate</Button>
+
+                            </Box>
                           </Box>
-                        </Box>
-                      )}
+                        ) : (<Typography>No not assigned tutor.</Typography>)}
                   </>
                 ) : (
                   <>
@@ -457,13 +447,17 @@ export default function AllocatePage() {
                                 backgroundColor: "#fff",
                                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                                 fontSize: isSmallestScreens && "16px",
-                              }}>Reallocate</Button>
+                              }}
+                              onClick={() => navigate(`/allocateReallocate/${allocation.tutor._id}`)}
+                            >Reallocate</Button>
                           ) : (
                             <Button variant="outlined" sx={{
                               backgroundColor: "#fff",
                               boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                               fontSize: isSmallestScreens && "16px",
-                            }}>Allocate</Button>
+                            }}
+                              onClick={() => navigate(`/allocateReallocate/${allocation.tutor._id}`)}
+                            >Allocate</Button>
                           )}
                         </Box>
                       </Box>
@@ -471,7 +465,7 @@ export default function AllocatePage() {
                   </>
                 )}
               </Box>
-            )}
+            ) : (<Typography>No tutor/student allocation.</Typography>)}
           </>
         )}
       </Box>
