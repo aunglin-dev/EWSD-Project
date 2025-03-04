@@ -4,6 +4,7 @@ import Staff from "../Model/Staff.js";
 import Tutor from "../Model/Tutor.js";
 import { ErrorHandler } from "../Utils/error.js";
 import Jwt from "jsonwebtoken";
+import Allocation from "../Model/Allocation.js";
 
 //Registeration
 export const signup = async (req, res, next) => {
@@ -42,6 +43,15 @@ export const signin = async (req, res, next) => {
     if (!(user && passwordCorrect))
       return next(ErrorHandler(400, "Invalid Username or Password"));
 
+    let allocations = null;
+    if(role == "student"){
+      allocations = await Allocation.find({student : user._id});
+    }
+
+    if(role == "tutor"){
+      allocations = await Allocation.find({tutor : user._id});
+    }
+
     //Create a token
     const Usertoken = { name: user.name, id: user._id };
 
@@ -55,7 +65,7 @@ export const signin = async (req, res, next) => {
         httpOnly: true,
       })
       .status(200)
-      .json(other);
+      .json({...other, allocations});
   } catch (err) {
     next(err);
   }
@@ -90,9 +100,17 @@ export const getMe = async (req, res) => {
     if (!userObj) {
       return res.status(404).json({ message: "User Not Found!" });
     }
+    let allocations = null;
+    if(role == "Student"){
+      allocations = await Allocation.find({student : userObj._id});
+    }
+
+    if(role == "Tutor"){
+      allocations = await Allocation.find({tutor : userObj._id});
+    }
 
     // Return user info along with role
-    return res.json({success : true, message: `${userObj.name} fetched!` ,data: { ...userObj.toObject(), role } });
+    return res.json({success : true, message: `${userObj.name} fetched!` ,data: { ...userObj.toObject(), role, allocations } });
 
   } catch (e) {
     return res.status(400).json({ error: e.message });
