@@ -2,7 +2,7 @@ import jsonwebtoken from "jsonwebtoken";
 import dotenv from "dotenv";
 
 export default function authMiddleware(req, res, next) {
-    const token = req.header("x-auth-token");
+    const token = req.cookies.access_token;
     if (!token) {
         return res.status(401).json({ message: "Unauthorized!" });
     }

@@ -60,3 +60,41 @@ export const signin = async (req, res, next) => {
     next(err);
   }
 };
+
+export const getMe = async (req, res) => {
+  try {
+    const id = req.user.id; // Get the authenticated user's ID from the middleware
+    let userObj = null;
+    let role = null;
+
+    // Check which model the user belongs to
+    const studentObj = await Student.findById(id).select('-password');
+    if (studentObj) {
+      userObj = studentObj;
+      role = "Student";
+    }
+
+    const staffObj = await Staff.findById(id).select('-password');
+    if (staffObj) {
+      userObj = staffObj;
+      role = "Staff";
+    }
+
+    const tutorObj = await Tutor.findById(id).select('-password');
+    if (tutorObj) {
+      userObj = tutorObj;
+      role = "Tutor";
+    }
+
+    // If user is not found
+    if (!userObj) {
+      return res.status(404).json({ message: "User Not Found!" });
+    }
+
+    // Return user info along with role
+    return res.json({success : true, message: `${userObj.name} fetched!` ,data: { ...userObj.toObject(), role } });
+
+  } catch (e) {
+    return res.status(400).json({ error: e.message });
+  }
+};

@@ -8,6 +8,7 @@ import Navbar from "./components/navigation/sampleNavbar.js";
 import LoginForm from "./components/loginForm/login-form.js";
 import AllocatePage from "./components/allocateProcess/allocate-page.js";
 import AllocateForm from "./components/allocateProcess/allocate-form.js";
+import AllocateReallocate from "./components/allocateProcess/allocate-reallocate.js";
 import StudentDashboard from "./components/dashboard/student-dashboard.js";
 import MessagePage from "./components/messageProcess/messagePage.js";
 import MeetingPage from "./components/meetingProcess/meeting.js";
@@ -29,6 +30,7 @@ const App = () => (
       <Route path="/addAllocation" element={<AllocateForm />} />
       <Route path="/tutors" element={<TutorList />} />
       <Route path="/students" element={<StudentList />} />
+      <Route path="/allocateReallocate/:id" element={<AllocateReallocate />} />
 
       {/* Student */}
       <Route path="/student-dashboard/:id" element={<StudentDashboard />} />
@@ -36,6 +38,11 @@ const App = () => (
       <Route path="/student/meeting" element={<MeetingPage />} />
       <Route path="/student/document" element={<DocumentPage />} />
       {/* <Route path="/document/:id" element={<DocumentDetail />} /> */}
+      {/* <Route path="/allocate" element={<AllocatePage />} />
+          <Route path="/addAllocation" element={<AllocateForm />} /> */}
+
+      {/* <Route path="/studentDashboard/:id" element={<StudentDashboard />} />
+          <Route path="/staff-dashboard" element={<StaffDashboard />} /> */}
 
       {/* Tutor */}
       {/* <Route path="/tutor" element={<TutorHome />} /> */}
