@@ -22,6 +22,7 @@ import {
   loginFailure,
 } from "../../Storage/authSlice";
 import axios from "axios";
+import FormErrorMessage from "../error/formErrorMessage";
 
 export default function LoginForm() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -198,7 +199,7 @@ export default function LoginForm() {
           variant="contained"
           color="primary"
           fullWidth
-          sx={{ py: 1.5, fontWeight: "bold" }}
+          sx={{ py: 1.5, fontWeight: "bold", mt: 4 }}
         >
           Login
         </Button>
