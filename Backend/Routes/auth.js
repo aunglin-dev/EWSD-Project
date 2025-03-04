@@ -7,6 +7,6 @@ const Router = express.Router();
 //Student Login
 Router.post("/signin", signin);
 
-Router.post("/me", authMiddleware, getMe);
+Router.get("/me", authMiddleware, getMe);
 
 export default Router;
