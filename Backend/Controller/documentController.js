@@ -11,8 +11,8 @@ export const uploadDocument = async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ error: "No file uploaded" });
         }
-
-        const { role, allocationId, docType, description } = req.body;
+        const docType = req.file.mimetype;
+        const { role, allocationId, description } = req.body;
 
         // Generate file URL
         const url = `${SERVER_URL}/uploads/${req.file.filename}`;
@@ -119,7 +119,7 @@ export const getAllDocumentsByRole = async (req, res) => {
 export const updateDocument = async (req, res) => {
     try {
         const { id } = req.params;
-        const { role, allocationId, docType, description } = req.body;
+        const { role, allocationId, description } = req.body;
 
         const document = await Document.findById(id).populate("comments");
         if (!document) {
@@ -139,8 +139,8 @@ export const updateDocument = async (req, res) => {
 
 
         // Capitalize first letter of role
-        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
-
+        const formattedRole = role?.charAt(0).toUpperCase() + role?.slice(1);
+        const docType = req?.file?.mimetype || document.docType
 
         document.role = formattedRole || document.role;
         document.allocationId = allocationId || document.allocationId;

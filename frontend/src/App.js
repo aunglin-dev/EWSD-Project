@@ -1,6 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/navigation/sampleNavbar.js";
+import { useMemo } from "react";
+import { createTheme } from "@mui/material/styles";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { themeSettings } from "./theme";
+import Navbar from "./components/navigation/navbar.js";
 import LoginForm from "./components/loginForm/login-form.js";
 import AllocatePage from "./components/allocateProcess/allocate-page.js";
 import AllocateForm from "./components/allocateProcess/allocate-form.js";

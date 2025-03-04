@@ -1,5 +1,4 @@
 import multer from "multer";
-import path from "path";
 import fs from "fs";
 
 // Ensure the "uploads" directory exists
@@ -25,16 +24,19 @@ const fileFilter = (req, file, cb) => {
     const allowedTypes = [
         "application/pdf", "image/jpeg", "image/png", "text/plain",
         "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/zip", "application/x-rar-compressed", "application/x-zip-compressed"
     ];
 
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error("Invalid file type. Only PDF, Word, JPG, PNG, and TXT are allowed."));
+        cb(new Error("Invalid file type. Only PDF, Word, JPG, PNG, ZIP, RAR and TXT are allowed."));
     }
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter,
+    limits : {fileSize : 5* 1024 * 1024}
+ });
 
 export default upload;

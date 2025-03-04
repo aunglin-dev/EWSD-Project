@@ -1,5 +1,5 @@
 import express from "express";
-import { uploadDocument, getAllDocuments, getDocumentById, getAllDocumentsByRole, deleteDocument, getDocumentsByAllocationIdAndRole, getDocumentsByAllocationId } from "../Controller/documentController.js";
+import { uploadDocument, getAllDocuments, getDocumentById, getAllDocumentsByRole, deleteDocument, getDocumentsByAllocationIdAndRole, getDocumentsByAllocationId, updateDocument } from "../Controller/documentController.js";
 import upload from "../Service/multerConfig.js";
 
 export const documentRouter = express.Router();
@@ -13,7 +13,7 @@ documentRouter.get("/allocation/:role/:allocationId", getDocumentsByAllocationId
 
 documentRouter.post("/", upload.single("file"), uploadDocument); // Create a document
 
-documentRouter.put("/:id", upload.single("file"), uploadDocument); // Update a document
+documentRouter.put("/:id", upload.single("file"), updateDocument); // Update a document
 
 documentRouter.delete("/:id", deleteDocument); // Delete a document
 
