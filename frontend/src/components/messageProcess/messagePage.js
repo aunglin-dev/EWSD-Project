@@ -50,7 +50,7 @@ export default function MessagePage() {
 
   return (
     <>
-    <h1>Chat</h1>
+      <h1>Chat</h1>
       <div>
         {messages.map((message) => (
           <div key={message._id}>
@@ -58,11 +58,11 @@ export default function MessagePage() {
           </div>
         ))}
       </div>
-      <Box sx={{display: 'flex'}}>
-      <TextField value={newMessage} type='text' onChange={(e) => setNewMessage(e.target.value)} id="messageInput" label="Enter Message" variant="outlined" />
-      <Button variant='contained' onClick={handleSend}>Send</Button>
+      <Box sx={{ display: 'flex' }}>
+        <TextField value={newMessage} type='text' onChange={(e) => setNewMessage(e.target.value)} id="messageInput" label="Enter Message" variant="outlined" />
+        <Button variant='contained' onClick={handleSend}>Send</Button>
       </Box>
-      
+
 
     </>
   );

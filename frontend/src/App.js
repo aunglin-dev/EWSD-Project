@@ -13,8 +13,9 @@ import AllocateReallocate from "./components/allocateProcess/allocate-reallocate
 import StudentDashboard from "./components/dashboard/student-dashboard.js";
 import BlogPage from "./components/blog/blog-page.js";
 import MessagePage from "./components/messageProcess/messagePage.js";
-import MeetingPage from "./components/meetingProcess/meeting.js";
-import StaffDashboard from "./components/dashboard/staffDashboard.js";
+import MeetingTutor from "./components/meetingProcess/meeting-tutor.js";
+import MeetingStudent from "./components/meetingProcess/meeting-student.js";
+// import StaffDashboard from "./components/dashboard/staffDashboard.js";
 
 const App = () => {
   const theme = useMemo(() => createTheme(themeSettings));
@@ -33,21 +34,21 @@ const App = () => {
           <Route path="/addAllocation" element={<AllocateForm />} />
           <Route path="/allocateReallocate/:id" element={<AllocateReallocate />} />
           <Route path="/studentDashboard/:id" element={<StudentDashboard />} />
-          <Route path="/staff-dashboard" element={<StaffDashboard />} />
+          {/* <Route path="/staff-dashboard" element={<StaffDashboard />} /> */}
 
           {/* Student */}
           {/* <Route path="/student" element={<StudentHome />} /> */}
           <Route path="/blogs" element={<BlogPage />} />
           {/* <Route path="/blog/:id" element={<BlogPost />} /> */}
           <Route path="/student/message" element={<MessagePage />} />
-          <Route path="/meeting" element={<MeetingPage />} />
+          <Route path="/student/meeting" element={<MeetingStudent />} />
           {/* <Route path="/documents" element={<Documents />} /> */}
           {/* <Route path="/document/:id" element={<DocumentDetail />} /> */}
 
           {/* Tutor */}
           {/* <Route path="/tutor" element={<TutorHome />} /> */}
           <Route path="/tutor/message" element={<MessagePage />} />
-          <Route path="/tutor/meeting" element={<MeetingPage />} />
+          <Route path="/tutor/meeting" element={<MeetingTutor />} />
         </Routes>
       </ThemeProvider>
     </Router>

@@ -117,21 +117,21 @@ export default function Navbar() {
               >
                 Blog
               </Button>
-            </Link>
-            <Link to={"/meeting"} style={{ textDecoration: "none", width: "92px" }}>
+            </Link>*/}
+            <Link to={"/student/meeting"} style={{ textDecoration: "none", width: "92px" }}>
               <Button
                 onClick={() => handleNavClick("meeting")}
                 sx={{
                   color: "#fff",
-                  fontWeight: path === "/meeting" ? "600" : "400",
+                  fontWeight: path === "/student/meeting" ? "600" : "400",
                   textDecoration:
-                    path === "/meeting" ? "underline" : "none",
+                    path === "/student/meeting" ? "underline" : "none",
                   "&:hover": { fontWeight: "600" },
                 }}
               >
                 Meeting
               </Button>
-            </Link> */}
+            </Link>
 
             <IconButton
               onClick={() => logOut()}
@@ -226,6 +226,20 @@ export default function Navbar() {
                   }}
                 >
                   Allocation
+                </Button>
+              </Link>
+              <Link to={"/student/meeting"} style={{ textDecoration: "none", width: "92px" }}>
+                <Button
+                  onClick={() => handleNavClick("meeting")}
+                  sx={{
+                    color: "#fff",
+                    fontWeight: path === "/student/meeting" ? "600" : "400",
+                    textDecoration:
+                      path === "/student/meeting" ? "underline" : "none",
+                    "&:hover": { fontWeight: "600" },
+                  }}
+                >
+                  Meeting
                 </Button>
               </Link>
               {/* <Link to={"/staff-dashboard"} style={{ textDecoration: "none"}}>
