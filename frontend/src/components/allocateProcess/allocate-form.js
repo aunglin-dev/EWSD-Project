@@ -26,7 +26,8 @@ export default function AllocateForm() {
   const [successMsg, setSuccessMsg] = useState("");
 
   //Get Data From Local Storage React
-  const { currentStaff } = useSelector((state) => state.staff);
+  // const { currentStaff } = useSelector((state) => state.staff);
+  const { currentUser } = useSelector((state) => state.auth);
 
   useEffect(() => {
     console.log("useEffect triggered");
@@ -76,7 +77,7 @@ export default function AllocateForm() {
     const allocationData = {
       tutor: data.tutor ? data.tutor._id : null,
       student: data.students ? data.students.map((student) => student._id) : [],
-      createdStaffId: currentStaff?._id,
+      createdStaffId: currentUser?._id,
       schedule: ["Friday"], //constant data for now
       status: "Pending", // constant data for now
       note: "This is allocation success ", // constant data for now

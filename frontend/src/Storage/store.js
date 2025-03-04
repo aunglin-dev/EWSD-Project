@@ -9,17 +9,18 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import StaffReducer from "./StaffSlice";
+import authReducer from "./authSlice";
 import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
+  whitelist: ["auth"],
 };
 
 const rootReducer = combineReducers({
-  staff: StaffReducer,
+  auth: authReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

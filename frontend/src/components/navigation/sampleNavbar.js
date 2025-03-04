@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Typography,
   Button,
@@ -6,20 +6,17 @@ import {
   MenuItem,
   IconButton,
   Box,
+  Link as MuiLink,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
-import { NavLinks } from "../../constants/static_data";
-import { current } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import { Stafflogout } from "../../Storage/StaffSlice";
+import { logout } from "../../Storage/authSlice";
 
 export default function Navbar() {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [activeLink, setActiveLink] = useState("");
-  const { currentStaff } = useSelector((state) => state.staff);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const { currentUser } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
   const handleMenuOpen = (event) => {
@@ -30,13 +27,9 @@ export default function Navbar() {
     setAnchorEl(null);
   };
 
-  const handleNavClick = (link) => {
-    setActiveLink(link);
-  };
-
   const logOut = () => {
     handleMenuClose();
-    dispatch(Stafflogout());
+    dispatch(logout());
     navigate("/");
   };
 
@@ -55,96 +48,79 @@ export default function Navbar() {
     >
       <Typography variant="h6">E-Tutoring Platform</Typography>
 
-      {currentStaff && (
-        <>
-          <div style={{ display: "flex", gap: "15px" }}>
-            <Link to={"/StaffHome"} style={{ textDecoration: "none" }}>
-              <Button
-                onClick={() => handleNavClick("home")}
-                sx={{
-                  color: activeLink === "home" ? "yellow" : "white",
-                  textDecoration: activeLink === "home" ? "underline" : "none",
-                  "&:hover": { fontWeight: "bold" },
-                }}
-              >
-                Home
-              </Button>
-            </Link>
-            <Link to={"/allocate"} style={{ textDecoration: "none" }}>
-              <Button
-                onClick={() => handleNavClick("allocate")}
-                sx={{
-                  color: activeLink === "allocate" ? "yellow" : "white",
-                  textDecoration:
-                    activeLink === "allocate" ? "underline" : "none",
-                  "&:hover": { fontWeight: "bold" },
-                }}
-              >
-                Allocate
-              </Button>
-            </Link>
-            <Link to={"/blogs"} style={{ textDecoration: "none" }}>
-              <Button
-                onClick={() => handleNavClick("blog")}
-                sx={{
-                  color: activeLink === "blog" ? "yellow" : "white",
-                  textDecoration: activeLink === "blog" ? "underline" : "none",
-                  "&:hover": { fontWeight: "bold" },
-                }}
-              >
-                Blog
-              </Button>
-            </Link>
-            <Link to={"/meeting"} style={{ textDecoration: "none" }}>
-              <Button
-                onClick={() => handleNavClick("meeting")}
-                sx={{
-                  color: activeLink === "meeting" ? "yellow" : "white",
-                  textDecoration:
-                    activeLink === "meeting" ? "underline" : "none",
-                  "&:hover": { fontWeight: "bold" },
-                }}
-              >
-                Meeting
-              </Button>
-            </Link>
-          </div>
+      {currentUser && (
+        <Box sx={{ display: "flex", gap: "15px" }}>
+          {currentUser.role === "staff" && (
+            <>
+              <Link to="/staff-dashboard" style={{ textDecoration: "none" }}>
+                <Button>Dashboard</Button>
+              </Link>
+              <Link to="/allocate" style={{ textDecoration: "none" }}>
+                <Button>Allocate</Button>
+              </Link>
+              <Link to="/tutors" style={{ textDecoration: "none" }}>
+                <Button>Tutor List</Button>
+              </Link>
+              <Link to="/students" style={{ textDecoration: "none" }}>
+                <Button>Student List</Button>
+              </Link>
+            </>
+          )}
 
-          <Box
-            sx={{ position: "relative", display: "flex", alignItems: "center" }}
-          >
-            {/* <Button
-          onClick={() => navigate("/")}
-          sx={{
-            padding: "7px 16px",
-            border: "1px solid white",
-            borderRadius: "17px",
-            backgroundColor: "white",
-            color: "black",
-            "&:hover": { backgroundColor: "#ddd" },
-          }}
-        >
-          Login
-        </Button> */}
+          {currentUser.role === "Student" && (
+            <>
+              <Link
+                to={`/student-dashboard/${currentUser?._id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Button>Dashboard</Button>
+              </Link>
+              <Link to="/student/message" style={{ textDecoration: "none" }}>
+                <Button>Message</Button>
+              </Link>
+              <Link to="/student/document" style={{ textDecoration: "none" }}>
+                <Button>Document</Button>
+              </Link>
+              <Link to="/student/meeting" style={{ textDecoration: "none" }}>
+                <Button>Meeting</Button>
+              </Link>
+            </>
+          )}
 
-            <IconButton onClick={handleMenuOpen} color="inherit" sx={{ ml: 1 }}>
-              <AccountCircleIcon sx={{ color: "white" }} />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              sx={{ mt: 1 }}
-            >
-              <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-              <MenuItem onClick={() => navigate("/staff-dashboard")}>
-                Dashboard
-              </MenuItem>
-              <MenuItem onClick={() => logOut()}>Logout</MenuItem>
-            </Menu>
-          </Box>
-        </>
+          {currentUser.role === "Tutor" && (
+            <>
+              <Link to={"/tutor-dashboard"} style={{ textDecoration: "none" }}>
+                <Button>Dashboard</Button>
+              </Link>
+              <Link to="/tutor/message" style={{ textDecoration: "none" }}>
+                <Button>Message</Button>
+              </Link>
+              <Link to="/tutor/document" style={{ textDecoration: "none" }}>
+                <Button>Document</Button>
+              </Link>
+              <Link to="/tutor/meeting" style={{ textDecoration: "none" }}>
+                <Button>Meeting</Button>
+              </Link>
+            </>
+          )}
+        </Box>
       )}
+
+      <Box sx={{ position: "relative", display: "flex", alignItems: "center" }}>
+        <IconButton onClick={handleMenuOpen} color="inherit" sx={{ ml: 1 }}>
+          <AccountCircleIcon sx={{ color: "white" }} />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          sx={{ mt: 1 }}
+        >
+          {/* <MenuItem onClick={handleMenuClose}>Profile</MenuItem> */}
+          {/* <MenuItem onClick={() => navigate("/dashboard")}>Dashboard</MenuItem> */}
+          <MenuItem onClick={logOut}>Logout</MenuItem>
+        </Menu>
+      </Box>
     </div>
   );
 }
