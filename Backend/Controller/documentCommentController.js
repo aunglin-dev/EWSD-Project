@@ -8,6 +8,10 @@ export const addComment = async (req, res) => {
 
         // Capitalize first letter of role
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+        
+        if(formattedRole === 'Student'){
+          return res.status(400).json({success : false, message : "Students cannot comment on documents."})
+        }
 
         const newComment = new DocumentComment({ documentId, role: formattedRole, comment });
         await newComment.save();
