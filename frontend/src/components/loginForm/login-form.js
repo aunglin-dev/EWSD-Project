@@ -9,20 +9,20 @@ import {
   MenuItem,
   FormControl,
   FormLabel,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import FormErrorMessage from "../error/formErrorMessage";
 import { useDispatch } from "react-redux";
 import {
   loginStart,
-  loginFailure,
   loginSuccess,
-} from "../../Storage/StaffSlice";
+  loginFailure,
+} from "../../Storage/authSlice";
 import axios from "axios";
+import FormErrorMessage from "../error/formErrorMessage";
 
 export default function LoginForm() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -32,38 +32,39 @@ export default function LoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
-  //Call react-redux Dispatch
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     dispatch(loginStart());
     try {
-      console.log("loggin data=>", data.email);
-      console.log("loggin data=>", data);
-
-      //Call Backend API
       const res = await axios.post("http://localhost:8000/api/auth/signin", {
         email: data.email,
         password: data.password,
         role: data.role,
       });
 
-      if (res.status == 200) {
-        // window.alert("Welcome From E-Tutoring System ");
-        dispatch(loginSuccess(res.data));
-        navigate("/StaffHome");
-        console.log(res.data);
+      if (res.status === 200) {
+        const user = res.data;
+        const { role } = user;
+        window.alert("Welcome to the E-Tutoring System!");
+
+        console.log("user data=>", user);
+        dispatch(loginSuccess(user));
+
+        if (role === "staff") {
+          navigate("/StaffHome");
+        } else if (role === "Student") {
+          navigate(`/student-dashboard/${user._id}`);
+        } else if (role === "Tutor") {
+          navigate("/TutorHome");
+        }
       }
     } catch (err) {
-      data.role === "staff" ?
-        window.alert("Staff's email or password is wrong.") :
-        data.role === "student" ?
-          window.alert("Student's email or password is wrong.") :
-          window.alert("Tutor's email or password is wrong.");
-      dispatch(loginFailure);
+      console.error("Login error=>", err.response?.data || err.message);
+      dispatch(
+        loginFailure(err.response?.data?.message || "Invalid credentials")
+      );
     }
   };
 
@@ -83,15 +84,13 @@ export default function LoginForm() {
         style={{
           backgroundColor: "white",
           padding: "30px",
-          marginTop: "50px",
           borderRadius: "8px",
           boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
           width: "100%",
           maxWidth: "400px",
         }}
       >
-        <Typography variant={isNonMobileScreens ? "h2" : "h3"}
-        >
+        <Typography variant={isNonMobileScreens ? "h4" : "h4"}>
           E-Tutoring Platform
         </Typography>
         <Typography variant="subtitle1" marginBottom="20px" gutterBottom>
@@ -99,7 +98,11 @@ export default function LoginForm() {
         </Typography>
 
         <FormControl fullWidth>
-          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>Role</FormLabel>
+          <FormLabel
+            sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}
+          >
+            Role
+          </FormLabel>
           <Select
             {...register("role", { required: "Role is required" })}
             defaultValue="student"
@@ -107,15 +110,40 @@ export default function LoginForm() {
             fullWidth
             sx={{ fontSize: "16px", fontWeight: "400" }}
           >
-            <MenuItem sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }} value="staff">Staff</MenuItem>
-            <MenuItem sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }} value="student">Student</MenuItem>
-            <MenuItem sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }} value="tutor">Tutor</MenuItem>
+            <MenuItem
+              sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }}
+              value="staff"
+            >
+              Staff
+            </MenuItem>
+            <MenuItem
+              sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }}
+              value="student"
+            >
+              Student
+            </MenuItem>
+            <MenuItem
+              sx={{ fontSize: "16px", fontWeight: "400", color: "#000" }}
+              value="tutor"
+            >
+              Tutor
+            </MenuItem>
           </Select>
+          {errors.role && (
+            <Typography variant="caption" color="error">
+              {errors.role.message}
+            </Typography>
+          )}
           {/* <FormErrorMessage error={errors.role?.message || "Invalid role"} /> */}
         </FormControl>
 
         <FormControl fullWidth sx={{ mt: 2 }}>
-          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }} color="black">Email</FormLabel>
+          <FormLabel
+            sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}
+            color="black"
+          >
+            Email
+          </FormLabel>
           <OutlinedInput
             // type="email"
             size="small"
@@ -128,14 +156,18 @@ export default function LoginForm() {
                 value: /^[a-zA-Z0-9_.±]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/,
                 message: "Invalid Email Format",
               },
-              required: "* Email is required"
+              required: "* Email is required",
             })}
           />
           <FormErrorMessage error={errors.email?.message || ""} />
         </FormControl>
 
         <FormControl fullWidth sx={{ mt: 2 }}>
-          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>Password</FormLabel>
+          <FormLabel
+            sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}
+          >
+            Password
+          </FormLabel>
           <OutlinedInput
             type={showPassword ? "text" : "password"}
             size="small"
@@ -147,7 +179,7 @@ export default function LoginForm() {
                 value: /.{8,}/,
                 message: "Password must be more than 8 characters.",
               },
-              required: "* Password is required"
+              required: "* Password is required",
             })}
             endAdornment={
               <InputAdornment position="end">
@@ -160,20 +192,14 @@ export default function LoginForm() {
               </InputAdornment>
             }
           />
-          <FormErrorMessage
-            error={errors.password?.message || ""}
-          />
+          <FormErrorMessage error={errors.password?.message || ""} />
         </FormControl>
-
         <Button
           type="submit"
           variant="contained"
           color="primary"
           fullWidth
-          sx={{
-            mt: 4,
-            // py: 1.5,
-          }}
+          sx={{ py: 1.5, fontWeight: "bold", mt: 4 }}
         >
           Login
         </Button>

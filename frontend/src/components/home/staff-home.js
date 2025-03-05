@@ -15,7 +15,8 @@ import { useSelector } from "react-redux";
 export default function StaffHome() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [selectedStudents, setSelectedStudents] = useState([]);
-  const { currentStaff } = useSelector((state) => state.staff);
+  // const { currentStaff } = useSelector((state) => state.staff);
+  const { currentUser } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   const handleStudentChange = (event, newValue) => {
@@ -31,7 +32,7 @@ export default function StaffHome() {
         variant={isNonMobileScreens ? "h4" : "h6"}
         sx={{ marginBottom: "30px" }}
       >
-        Welcome, {currentStaff?.name}
+        Welcome, {currentUser?.name}
       </Typography>
 
       <Box>
