@@ -2,12 +2,12 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-
 import { useSelector } from "react-redux";
 
 export default function LoginUserSide() {
   const { currentUser } = useSelector((state) => state.auth);
-  console.log("current user left side =>", currentUser);
+
+  //console.log("current user left side =>", currentUser);
   return (
     <div>
       <Box
@@ -20,7 +20,7 @@ export default function LoginUserSide() {
           <Box>
             <Typography variant="h6">{currentUser?.name}</Typography>
             <Typography variant="body2" color="textSecondary">
-              {currentUser?.role === "student" ? "Student" : "Tutor"}
+              {currentUser?.role}
             </Typography>
           </Box>
         </Box>

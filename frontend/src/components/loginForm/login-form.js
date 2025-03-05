@@ -90,7 +90,7 @@ export default function LoginForm() {
           maxWidth: "400px",
         }}
       >
-        <Typography variant={isNonMobileScreens ? "h2" : "h3"}>
+        <Typography variant={isNonMobileScreens ? "h4" : "h4"}>
           E-Tutoring Platform
         </Typography>
         <Typography variant="subtitle1" marginBottom="20px" gutterBottom>

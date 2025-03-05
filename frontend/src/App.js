@@ -16,6 +16,7 @@ import StaffDashboard from "./components/dashboard/staffDashboard.js";
 import TutorList from "./components/userList/tutorsList.js";
 import StudentList from "./components/userList/studentsList.js";
 import DocumentPage from "./components/documentProcess/documentPage.js";
+import TutorDocumentPage from "./components/documentProcess/tutor-documentPage.js";
 import TutorDashboard from "./components/dashboard/tutorDasboard.js";
 
 const App = () => (
@@ -49,7 +50,7 @@ const App = () => (
       <Route path="/tutor-dashboard" element={<TutorDashboard />} />
       <Route path="/tutor/message" element={<MessagePage />} />
       <Route path="/tutor/meeting" element={<MeetingPage />} />
-      <Route path="/tutor/document" element={<DocumentPage />} />
+      <Route path="/tutor/document" element={<TutorDocumentPage />} />
     </Routes>
   </Router>
 );

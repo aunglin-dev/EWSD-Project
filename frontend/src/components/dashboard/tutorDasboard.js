@@ -7,13 +7,17 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Typography,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 
 export default function TutorDashboard({ data }) {
+  const { currentUser } = useSelector((state) => state.auth);
   return (
     <div>
-      <h1>tutor dashboard</h1>
-      <TableContainer
+      <Typography variant="h5">Hello {currentUser?.name}</Typography>
+      <h1>{currentUser?.role} dashboard</h1>
+      {/* <TableContainer
         component={Paper}
         sx={{ marginTop: 3, border: "1px solid #ccc" }}
       >
@@ -59,7 +63,7 @@ export default function TutorDashboard({ data }) {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
     </div>
   );
 }

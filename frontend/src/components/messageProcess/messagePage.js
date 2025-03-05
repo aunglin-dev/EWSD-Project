@@ -1,20 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import io from "socket.io-client";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography, Paper } from "@mui/material";
 import LoginUserSide from "./login-user-side";
 import OtherMessageParty from "./otherMessageParty";
 import AttachmentIcon from "@mui/icons-material/Attachment";
+import { useSelector } from "react-redux";
 
 const socket = io("http://localhost:8000");
 
 export default function MessagePage() {
+  const { currentUser } = useSelector((state) => state.auth);
+  //console.log("current user allocation id =>", currentUser?.allocations[0].id);
+  //console.log("current user roel=>", currentUser?.role);
+  const hasAllocations =
+    currentUser?.allocations && currentUser.allocations.length > 0;
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [allocationId, setAllocationId] = useState("67c3592ed5f5651e2799502e");
-  const [role, setRole] = useState("Student");
+  const [allocationId, setAllocationId] = useState(
+    hasAllocations ? currentUser.allocations[0].id : null
+  );
+  const [role, setRole] = useState(currentUser?.role);
+  const chatBoxRef = useRef(null);
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
+    if (!hasAllocations) {
+      console.log("User has no allocations.");
+      return;
+    }
     axios
       .get(`http://localhost:8000/api/messages/${allocationId}`)
       .then((response) => {
@@ -29,14 +43,24 @@ export default function MessagePage() {
     socket.on("receiveMessage", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
+    socket.on("typing", ({ role }) => {
+      setIsTyping(true);
+    });
+
+    socket.on("stopTyping", ({ role }) => {
+      setIsTyping(false);
+    });
 
     return () => {
       socket.off("receiveMessage");
+      socket.off("typing");
+      socket.off("stopTyping");
       socket.emit("leaveRoom", allocationId);
     };
-  }, [allocationId]);
+  }, [allocationId, hasAllocations]);
 
   const handleSend = () => {
+    console.log("msg sent ");
     if (newMessage.trim() === "") return;
     axios
       .post("http://localhost:8000/api/messages", {
@@ -59,18 +83,70 @@ export default function MessagePage() {
     // setNewMessage('');
   };
 
+  // messages to scrooll bottom
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleInputChange = (e) => {
+    setNewMessage(e.target.value);
+    socket.emit("typing", { allocationId, role });
+  };
+
+  const handleInputBlur = () => {
+    socket.emit("stopTyping", { allocationId, role });
+  };
+
+  if (!hasAllocations) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
+        <Paper
+          elevation={3}
+          sx={{ p: 4, maxWidth: "500px", textAlign: "center" }}
+        >
+          <Typography variant="h5" gutterBottom>
+            No Allocations Found
+          </Typography>
+          <Typography severity="warning" sx={{ mb: 2 }}>
+            You have not been allocated with anyone yet.
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            Please contact your administrator to get assigned to a tutor or
+            student.
+          </Typography>
+        </Paper>
+      </Box>
+    );
+  }
+
   return (
-    <div style={{}}>
-      <Typography variant="h4" gutterBottom>
-        Chat
+    <Box style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        textAlign={"center"}
+        sx={{ padding: "10px", borderBottom: "1px solid #ccc" }}
+      >
+        Message Room
       </Typography>
       <Box sx={{ display: "flex", height: "100vh" }}>
         <LoginUserSide />
         {/* middle part start */}
         <Box
+          ref={chatBoxRef}
           sx={{
             flexGrow: 1,
-            height: "500px",
             overflowY: "auto",
             padding: "10px",
             borderRight: "1px solid #ccc",
@@ -81,53 +157,81 @@ export default function MessagePage() {
               key={message._id}
               sx={{
                 display: "flex",
-                flexDirection: message.role === role ? "row-reverse" : "row",
+                flexDirection: message.role === role ? "row" : "row-reverse",
                 marginBottom: "10px",
               }}
             >
-              {/* timeStapm */}
-              <Typography
-                variant="caption"
-                sx={{
-                  alignSelf: "flex-start",
-                  color: "#888",
-                  marginBottom: "5px",
-                }}
-              >
-                {new Date(message.timestamp).toLocaleTimeString()}
-              </Typography>
-
-              {/* msg bubble */}
               <Box
                 sx={{
-                  backgroundColor:
-                    message.role === role ? "#DCF8C6" : "#ECECEC",
-                  padding: "10px",
-                  borderRadius: "10px",
-                  maxWidth: "70%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: message.role === role ? "flex-start" : "flex-end",
                 }}
               >
-                <Typography>{message.text}</Typography>
-                {message.file && (
+                {/* time Stapm */}
+                <Typography
+                  variant="caption"
+                  sx={{
+                    alignSelf: "flex-start",
+                    color: "#888",
+                    marginBottom: "5px",
+                  }}
+                >
+                  {/* {new Date(message.timestamp).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })} */}
+                  {new Date(message.updatedDate).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Typography>
+
+                {/* msg bubble */}
+                <Box
+                  sx={{
+                    backgroundColor:
+                      message.role === role ? "#DCF8C6" : "#ECECEC",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    maxWidth: "70%",
+                  }}
+                >
+                  <Typography>{message.text}</Typography>
+                  {/* {message.file && (
                   <Box sx={{ marginTop: "5px" }}>
                     <AttachmentIcon
                       sx={{ fontSize: "16px", marginRight: "5px" }}
                     />
                     <Typography variant="body2">{message.file.name}</Typography>
                   </Box>
-                )}
-              </Box>
+                )} */}
+                </Box>
 
-              {/* cmt btn */}
-              <Button
+                {/* cmt btn */}
+                {/* <Button
                 variant="text"
                 size="small"
-                sx={{ alignSelf: "flex-end", marginLeft: "10px" }}
+                sx={{
+                  alignSelf: "flex-end",
+                  marginLeft: "10px",
+                  textTransform: "none",
+                }}
               >
-                Comment
-              </Button>
+                Reply
+              </Button> */}
+              </Box>
             </Box>
           ))}
+          {isTyping && (
+            <Typography
+              variant="caption"
+              color="textSecondary"
+              sx={{ textAlign: "center", marginTop: "10px" }}
+            >
+              Typing...
+            </Typography>
+          )}
         </Box>
         {/* middle part end  */}
 
@@ -135,24 +239,34 @@ export default function MessagePage() {
       </Box>
 
       {/* input field and send button */}
-      <Box sx={{ display: "flex" }}>
+      <Box
+        sx={{
+          display: "flex",
+          padding: "10px",
+          borderTop: "1px solid #ccc",
+          backgroundColor: "#fff",
+          position: "sticky",
+          bottom: 0,
+        }}
+      >
         <TextField
           value={newMessage}
-          type="text"
-          onChange={(e) => setNewMessage(e.target.value)}
+          onChange={handleInputChange}
+          onBlur={handleInputBlur}
           id="messageInput"
           label="Enter Message"
           variant="outlined"
           fullWidth
+          sx={{ marginRight: "10px" }}
         />
         <Button
           variant="contained"
           onClick={handleSend}
-          sx={{ marginLeft: "10px" }}
+          sx={{ whiteSpace: "nowrap" }}
         >
           Send
         </Button>
       </Box>
-    </div>
+    </Box>
   );
 }

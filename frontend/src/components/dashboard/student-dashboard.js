@@ -11,7 +11,7 @@ export default function StudentDashboard() {
   const { id } = useParams();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const { currentUser } = useSelector((state) => state.auth);
-  console.log("current user data=>", currentUser);
+  //console.log("current user data=>", currentUser);
   return (
     <div>
       <Typography variant="h4">{currentUser?.name}</Typography>
