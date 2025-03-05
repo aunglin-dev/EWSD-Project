@@ -8,9 +8,9 @@ import {
   Box,
   useMediaQuery,
 } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
-import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { NavLinks } from "../../constants/static_data";
@@ -66,7 +66,9 @@ export default function Navbar() {
       <Typography
         variant={isNonMobileScreens ? "h3" : "h4"}
         py={isNonMobileScreens ? "" : "12px"}
-        onClick={() => { currentStaff ? navigate("/StaffHome") : navigate("/") }}
+        onClick={() => {
+          currentStaff ? navigate("/StaffHome") : navigate("/");
+        }}
         sx={{ cursor: "pointer" }}
       >
         E-Tutoring Platform
@@ -74,7 +76,14 @@ export default function Navbar() {
 
       {currentStaff &&
         (isNonMobileScreens ? (
-          <div style={{ display: "flex", gap: "15px", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "15px",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Link to={"/StaffHome"} style={{ textDecoration: "none" }}>
               <Button
                 onClick={() => handleNavClick("home")}
@@ -88,15 +97,17 @@ export default function Navbar() {
                 Dashboard
               </Button>
             </Link>
-            <Link to={"/allocate"} style={{ textDecoration: "none", width: "126px" }}>
+            <Link
+              to={"/allocate"}
+              style={{ textDecoration: "none", width: "126px" }}
+            >
               <Button
                 onClick={() => handleNavClick("allocate")}
                 sx={{
                   width: "100%",
                   color: "#fff",
                   fontWeight: path === "/allocate" ? "600" : "400",
-                  textDecoration:
-                    path === "/allocate" ? "underline" : "none",
+                  textDecoration: path === "/allocate" ? "underline" : "none",
                   "&:hover": { fontWeight: "600" },
                 }}
               >
@@ -133,9 +144,7 @@ export default function Navbar() {
               </Button>
             </Link>
 
-            <IconButton
-              onClick={() => logOut()}
-            >
+            <IconButton onClick={() => logOut()}>
               <LogoutIcon sx={{ color: "#fff" }} />
             </IconButton>
 
@@ -167,82 +176,79 @@ export default function Navbar() {
           >
             <MenuIcon sx={{ color: "#fff" }} />
           </IconButton>
-        )
-        )}
+        ))}
 
-      {
-        !isNonMobileScreens && isMobileMenuToggled && (
-          <Box
-            position="fixed"
-            right="0"
-            bottom="0"
-            height="100%"
-            zIndex="999"
-            maxWidth="500px"
-            minWidth="300px"
-            backgroundColor="primary.main"
+      {!isNonMobileScreens && isMobileMenuToggled && (
+        <Box
+          position="fixed"
+          right="0"
+          bottom="0"
+          height="100%"
+          zIndex="999"
+          maxWidth="500px"
+          minWidth="300px"
+          backgroundColor="primary.main"
+        >
+          {/* CLOSE ICON */}
+          <Box display="flex" justifyContent="flex-end" p="1rem">
+            <IconButton
+              onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
+            >
+              <CloseIcon sx={{ color: "#fff" }} />
+            </IconButton>
+          </Box>
+
+          {/* MENU ITEMS */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            {/* CLOSE ICON */}
-            <Box display="flex" justifyContent="flex-end" p="1rem">
-              <IconButton
-                onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
+            <Link
+              to={"/StaffHome"}
+              style={{ textDecoration: "none", width: "100%" }}
+            >
+              <Button
+                onClick={() => {
+                  setIsMobileMenuToggled(!isMobileMenuToggled);
+                  handleNavClick("home");
+                }}
+                sx={{
+                  width: "100%",
+                  color: "#fff",
+                  fontWeight: path === "/StaffHome" ? "600" : "400",
+                  textDecoration: path === "/StaffHome" ? "underline" : "none",
+                  "&:hover": { fontWeight: "600" },
+                }}
               >
-                <CloseIcon sx={{ color: "#fff" }} />
-              </IconButton>
-            </Box>
-
-            {/* MENU ITEMS */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "15px", justifyContent: "space-between", alignItems: "center" }}>
-              <Link to={"/StaffHome"} style={{ textDecoration: "none", width: "100%" }}>
-                <Button
-                  onClick={() => {
-                    setIsMobileMenuToggled(!isMobileMenuToggled);
-                    handleNavClick("home")
-                  }}
-                  sx={{
-                    width: "100%",
-                    color: "#fff",
-                    fontWeight: path === "/StaffHome" ? "600" : "400",
-                    textDecoration: path === "/StaffHome" ? "underline" : "none",
-                    "&:hover": { fontWeight: "600" },
-                  }}
-                >
-                  Dashboard
-                </Button>
-              </Link>
-              <Link to={"/allocate"} style={{ textDecoration: "none", width: "100%" }}>
-                <Button
-                  onClick={() => {
-                    setIsMobileMenuToggled(!isMobileMenuToggled);
-                    handleNavClick("allocate")
-                  }}
-                  sx={{
-                    width: "100%",
-                    color: "#fff",
-                    fontWeight: path === "/allocate" ? "600" : "400",
-                    textDecoration:
-                      path === "/allocate" ? "underline" : "none",
-                    "&:hover": { fontWeight: "600" },
-                  }}
-                >
-                  Allocation
-                </Button>
-              </Link>
-              <Link to={"/student/meeting"} style={{ textDecoration: "none", width: "92px" }}>
-                <Button
-                  onClick={() => handleNavClick("meeting")}
-                  sx={{
-                    color: "#fff",
-                    fontWeight: path === "/student/meeting" ? "600" : "400",
-                    textDecoration:
-                      path === "/student/meeting" ? "underline" : "none",
-                    "&:hover": { fontWeight: "600" },
-                  }}
-                >
-                  Meeting
-                </Button>
-              </Link>
-              {/* <Link to={"/staff-dashboard"} style={{ textDecoration: "none"}}>
+                Dashboard
+              </Button>
+            </Link>
+            <Link
+              to={"/allocate"}
+              style={{ textDecoration: "none", width: "100%" }}
+            >
+              <Button
+                onClick={() => {
+                  setIsMobileMenuToggled(!isMobileMenuToggled);
+                  handleNavClick("allocate");
+                }}
+                sx={{
+                  width: "100%",
+                  color: "#fff",
+                  fontWeight: path === "/allocate" ? "600" : "400",
+                  textDecoration: path === "/allocate" ? "underline" : "none",
+                  "&:hover": { fontWeight: "600" },
+                }}
+              >
+                Allocation
+              </Button>
+            </Link>
+            {/* <Link to={"/staff-dashboard"} style={{ textDecoration: "none"}}>
                 <Button
                   onClick={() => {
                     setIsMobileMenuToggled(!isMobileMenuToggled);
@@ -259,25 +265,23 @@ export default function Navbar() {
                   Dashboard
                 </Button>
               </Link> */}
-              <Button
-                onClick={() => {
-                  setIsMobileMenuToggled(!isMobileMenuToggled);
-                  logOut()
-                }}
-                sx={{
-                  width: "100%",
-                  color: "#fff",
-                  fontWeight: "400",
-                  "&:hover": { fontWeight: "600" },
-                }}
-              >
-                Logout
-              </Button>
-            </div>
-
-          </Box >
-        )
-      }
+            <Button
+              onClick={() => {
+                setIsMobileMenuToggled(!isMobileMenuToggled);
+                logOut();
+              }}
+              sx={{
+                width: "100%",
+                color: "#fff",
+                fontWeight: "400",
+                "&:hover": { fontWeight: "600" },
+              }}
+            >
+              Logout
+            </Button>
+          </div>
+        </Box>
+      )}
     </Box>
   );
 }

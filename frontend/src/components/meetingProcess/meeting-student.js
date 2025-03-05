@@ -226,8 +226,9 @@ export default function MeetingStudent() {
                         display="grid"
                         gridTemplateColumns={isSmallestScreens ? "none" : "repeat(auto-fill, 380px)"}
                         gridAutoFlow="dense"
-                        justifyContent={isNonMobileScreens ? "start" : "center"}
-                        gap="15px"
+                        justifyContent="center"
+                        columnGap="15px"
+                        rowGap="30px"
                         mt="30px"
                     >
                         <ScheduledCard
@@ -257,8 +258,9 @@ export default function MeetingStudent() {
                         display="grid"
                         gridTemplateColumns={isSmallestScreens ? "none" : "repeat(auto-fill, 380px)"}
                         gridAutoFlow="dense"
-                        justifyContent={isNonMobileScreens ? "start" : "center"}
-                        gap="15px"
+                        justifyContent="center"
+                        columnGap="15px"
+                        rowGap="30px"
                         mt="30px"
                     >
                         <RequestedCard
@@ -285,8 +287,9 @@ export default function MeetingStudent() {
                         display="grid"
                         gridTemplateColumns={isSmallestScreens ? "none" : "repeat(auto-fill, 380px)"}
                         gridAutoFlow="dense"
-                        justifyContent={isNonMobileScreens ? "start" : "center"}
-                        gap="15px"
+                        justifyContent="center"
+                        columnGap="15px"
+                        rowGap="30px"
                         mt="30px"
                     >
                         <CompletedCard

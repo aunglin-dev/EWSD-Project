@@ -68,7 +68,7 @@ const CompletedCard = ({
                             </Box>
                             <Box>
                                 <Typography variant={isSmallestScreens ? "h6" : "subtitle2"} fontWeight="600">Meeting Link</Typography>
-                                <Link to={meetingLink} style={{ display: "block", color: "inherit", fontSize: "14px" }}> Click to open link</Link>
+                                <Link to={meetingLink} style={{ display: "block", color: "inherit", fontSize: "14px" }}>Click to open link</Link>
                             </Box>
                         </Box>
                     )}

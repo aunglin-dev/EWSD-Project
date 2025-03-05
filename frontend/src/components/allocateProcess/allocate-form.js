@@ -7,9 +7,9 @@ import {
   Box,
   Typography,
   useMediaQuery,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
-import CircleIcon from '@mui/icons-material/Circle';
+import CircleIcon from "@mui/icons-material/Circle";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import Axios from "axios";
 import { useSelector } from "react-redux";
@@ -30,7 +30,7 @@ export default function AllocateForm() {
   const [success, setSuccess] = useState(false);
 
   //Get Data From Local Storage React
-  const { currentStaff } = useSelector((state) => state.staff);
+  const { currentUser } = useSelector((state) => state.auth);
 
   useEffect(() => {
     console.log("useEffect triggered");
@@ -51,9 +51,11 @@ export default function AllocateForm() {
           "http://localhost:8000/api/allocations"
         );
 
-        const allocations = tutorResponse.data.map(tutor => {
-          const allocations = allocationsResponse.data?.filter(allocation => allocation.tutor._id === tutor._id && allocation);
-          return { "tutor": tutor, "allocations": allocations }
+        const allocations = tutorResponse.data.map((tutor) => {
+          const allocations = allocationsResponse.data?.filter(
+            (allocation) => allocation.tutor._id === tutor._id && allocation
+          );
+          return { tutor: tutor, allocations: allocations };
         });
         setAllocatedTutorStudents(allocations);
         // console.log("fetched Tutors:", tutorResponse.data);
@@ -89,7 +91,7 @@ export default function AllocateForm() {
     const allocationData = {
       tutor: data.tutor ? data.tutor._id : null,
       student: data.students ? data.students.map((student) => student._id) : [],
-      createdStaffId: currentStaff?._id,
+      createdStaffId: currentUser?._id,
       schedule: ["Friday"], //constant data for now
       status: "Pending", // constant data for now
       note: "This is allocation success ", // constant data for now
@@ -114,7 +116,6 @@ export default function AllocateForm() {
         //error message from API
         setErrorMessage(result.error);
       }
-
     } catch (error) {
       console.error("Error allocating students:", error);
     } finally {
@@ -147,7 +148,6 @@ export default function AllocateForm() {
 
         console.log(`Allocation ${allocationId} deleted successfully`);
       } catch (err) {
-
         alert("Failed to delete allocation. Please try again.");
       } finally {
         setLoading(false);
@@ -183,19 +183,31 @@ export default function AllocateForm() {
           </span>
         )}
       </Box>
-      <Box mt="40px" display="flex" flexDirection="column" justifyContent="start" gap="30px">
+      <Box
+        mt="40px"
+        display="flex"
+        flexDirection="column"
+        justifyContent="start"
+        gap="30px"
+      >
         <Box>
-          <Typography variant={isNonMobileScreens ? "h2" : "h3"}>Tutor/Student Allocation</Typography>
-          <Typography variant="subtitle1">Allocate the student to each tutor</Typography>
+          <Typography variant={isNonMobileScreens ? "h2" : "h3"}>
+            Tutor/Student Allocation
+          </Typography>
+          <Typography variant="subtitle1">
+            Allocate the student to each tutor
+          </Typography>
         </Box>
 
-        <form onSubmit={handleSubmit(onSubmit)}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "20px"
-          }}>
-          <Box >
+            gap: "20px",
+          }}
+        >
+          <Box>
             <Autocomplete
               id="tutor"
               options={tutors || []}
@@ -203,26 +215,33 @@ export default function AllocateForm() {
               value={selectedTutor}
               onChange={handleTutorChange}
               renderInput={(params) => (
-                <TextField {...params}
+                <TextField
+                  {...params}
                   label="Select Tutor"
                   variant="outlined"
                   sx={{
                     ".MuiInputLabel-root": {
-                      fontSize: "16px"
+                      fontSize: "16px",
                     },
                     ".MuiOutlinedInput-root": {
                       input: {
                         fontSize: "16px",
-                        fontWeight: "400"
-                      }
-                    }
+                        fontWeight: "400",
+                      },
+                    },
                   }}
                 />
               )}
             />
           </Box>
 
-          <Box display="flex" flexDirection={!isNonMobileScreens && "column"} justifyContent={isNonMobileScreens ? "space-between" : "start"} alignItems={isNonMobileScreens && "center"} gap="20px">
+          <Box
+            display="flex"
+            flexDirection={!isNonMobileScreens && "column"}
+            justifyContent={isNonMobileScreens ? "space-between" : "start"}
+            alignItems={isNonMobileScreens && "center"}
+            gap="20px"
+          >
             <Box flex="1">
               <Autocomplete
                 multiple
@@ -232,9 +251,18 @@ export default function AllocateForm() {
                 value={selectedStudents}
                 onChange={handleStudentChange}
                 renderOption={(props, option) => {
-                  const isAllocated = AlreadyAllocatedStudents.includes(option._id);
+                  const isAllocated = AlreadyAllocatedStudents.includes(
+                    option._id
+                  );
                   return (
-                    <li {...props} style={{ fontSize: "16px", fontWeight: "400", color: isAllocated ? "red" : "black" }}>
+                    <li
+                      {...props}
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: "400",
+                        color: isAllocated ? "red" : "black",
+                      }}
+                    >
                       {option.name}
                     </li>
                   );
@@ -254,7 +282,7 @@ export default function AllocateForm() {
                           backgroundColor: "#e0e0e0",
                           color: isAllocated ? "red" : "black",
                           fontSize: "16px",
-                          fontWeight: "400"
+                          fontWeight: "400",
                         }}
                       >
                         {student.name}
@@ -291,14 +319,14 @@ export default function AllocateForm() {
                         backgroundColor: "lightgray",
                       },
                       ".MuiInputLabel-root": {
-                        fontSize: "16px"
+                        fontSize: "16px",
                       },
                       ".MuiOutlinedInput-root": {
                         input: {
                           fontSize: "16px",
-                          fontWeight: "400"
-                        }
-                      }
+                          fontWeight: "400",
+                        },
+                      },
                     }}
                   />
                 )}
@@ -324,57 +352,95 @@ export default function AllocateForm() {
         </form>
 
         <Box>
-          {loading ?
+          {loading ? (
             <CircularProgress />
-            :
+          ) : (
             selectedTutor && (
               <>
-                {allocatedTutorStudents?.filter((selected) => (
-                  selected.tutor._id === selectedTutor._id)).map((allocation, index) => (
-                    <Box key={index} >
-                      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="30px" width="100%">
-                        <Typography variant="h5" fontWeight="600">Tutees</Typography>
-                        <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} display="flex" alignItems="center" gap="4px">
-                          <CircleIcon sx={{ color: "#009900", width: "18px", height: "18px" }} />
+                {allocatedTutorStudents
+                  ?.filter(
+                    (selected) => selected.tutor._id === selectedTutor._id
+                  )
+                  .map((allocation, index) => (
+                    <Box key={index}>
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        marginBottom="30px"
+                        width="100%"
+                      >
+                        <Typography variant="h5" fontWeight="600">
+                          Tutees
+                        </Typography>
+                        <Typography
+                          variant={isSmallestScreens ? "caption" : "subtitle2"}
+                          display="flex"
+                          alignItems="center"
+                          gap="4px"
+                        >
+                          <CircleIcon
+                            sx={{
+                              color: "#009900",
+                              width: "18px",
+                              height: "18px",
+                            }}
+                          />
                           {allocation.allocations.length} students assigned
                         </Typography>
                       </Box>
                       <Box display="flex" flexDirection="column" gap="30px">
-                        {allocation.allocations.length ? allocation.allocations.map(allocated => (
-                          <Box key={index} display="flex"
-                            justifyContent="space-between"
-                            alignItems="end"
-                            gap="10px"
-                          >
-                            <Box flex="2" overflow="hidden">
-                              <Typography fontWeight="500">{allocated.student.name}</Typography>
-                              <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} display="flex" alignItems="center" gap="4px">
-                                {allocated.student.email}
-                              </Typography>
+                        {allocation.allocations.length ? (
+                          allocation.allocations.map((allocated) => (
+                            <Box
+                              key={index}
+                              display="flex"
+                              justifyContent="space-between"
+                              alignItems="end"
+                              gap="10px"
+                            >
+                              <Box flex="2" overflow="hidden">
+                                <Typography fontWeight="500">
+                                  {allocated.student.name}
+                                </Typography>
+                                <Typography
+                                  variant={
+                                    isSmallestScreens ? "caption" : "subtitle2"
+                                  }
+                                  display="flex"
+                                  alignItems="center"
+                                  gap="4px"
+                                >
+                                  {allocated.student.email}
+                                </Typography>
+                              </Box>
+                              <Box flex="1" display="flex" justifyContent="end">
+                                <Button
+                                  variant="outlined"
+                                  sx={{
+                                    backgroundColor: "#fff",
+                                    boxShadow:
+                                      "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                                    fontSize: isSmallestScreens && "16px",
+                                  }}
+                                  onClick={() =>
+                                    handleRemoveAllocation(allocated._id)
+                                  }
+                                >
+                                  Remove
+                                </Button>
+                              </Box>
                             </Box>
-                            <Box flex="1" display="flex" justifyContent="end">
-                              <Button variant="outlined"
-                                sx={{
-                                  backgroundColor: "#fff",
-                                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                                  fontSize: isSmallestScreens && "16px",
-                                }}
-                                onClick={() =>
-                                  handleRemoveAllocation(
-                                    allocated._id
-                                  )
-                                }
-                              >Remove</Button>
-                            </Box>
-                          </Box>
-                        )) : (
+                          ))
+                        ) : (
                           <Typography>No tutee yet.</Typography>
                         )}
                       </Box>
                     </Box>
                   ))}
               </>
-            )}
+            )
+          )}
         </Box>
       </Box>
     </Box>
