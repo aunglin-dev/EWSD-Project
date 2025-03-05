@@ -9,7 +9,7 @@ const CompletedCard = ({
     location,
     meetingLink,
     remark,
-    done
+    met
 }) => {
     const isSmallestScreens = useMediaQuery("(max-width: 425px)");
 
@@ -81,10 +81,10 @@ const CompletedCard = ({
             <Box
                 padding={isSmallestScreens ? "10px" : "5px 22px 18px"}
                 display="flex"
-                justifyContent={!done ? "space-between" : "end"}
+                justifyContent={!met ? "space-between" : "end"}
                 alignItems="center"
             >
-                <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} fontWeight="600" color="#E10022">{!done && "Missed Session"}</Typography>
+                <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} fontWeight="600" color="#E10022">{!met && "Missed Session"}</Typography>
                 <Button
                     variant="outlined"
                     sx={{

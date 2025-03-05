@@ -115,9 +115,9 @@ export default function LoginForm() {
         </FormControl>
 
         <FormControl fullWidth sx={{ mt: 2 }}>
-          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }} color="black">Email</FormLabel>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>Email</FormLabel>
           <OutlinedInput
-            // type="email"
+            type="text"
             size="small"
             placeholder="abc@yahoo.com"
             autoComplete="off"
