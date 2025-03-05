@@ -8,13 +8,19 @@ import {
   TableRow,
   Paper,
   Typography,
+  Box,
+  useMediaQuery
 } from "@mui/material";
 import { useSelector } from "react-redux";
 
 export default function TutorDashboard({ data }) {
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const { currentUser } = useSelector((state) => state.auth);
   return (
-    <div>
+    <Box
+      paddingY="100px"
+      paddingX={isNonMobileScreens ? "20px" : "10px"}
+    >
       <Typography variant="h5">Hello {currentUser?.name}</Typography>
       <h1>{currentUser?.role} dashboard</h1>
       {/* <TableContainer
@@ -64,6 +70,6 @@ export default function TutorDashboard({ data }) {
           </TableBody>
         </Table>
       </TableContainer> */}
-    </div>
+    </Box>
   );
 }

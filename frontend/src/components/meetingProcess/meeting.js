@@ -7,10 +7,12 @@ import {
   Tab,
   Button,
   Divider,
+  useMediaQuery
 } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 
 export default function MeetingPage() {
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [activeTab, setActiveTab] = useState(0);
 
   const meetings = [
@@ -78,7 +80,10 @@ export default function MeetingPage() {
   );
 
   return (
-    <Box sx={{ padding: "20px" }}>
+    <Box
+      paddingY="100px"
+      paddingX={isNonMobileScreens ? "20px" : "10px"}
+    >
       <Typography variant="h4" gutterBottom>
         Meetings
       </Typography>

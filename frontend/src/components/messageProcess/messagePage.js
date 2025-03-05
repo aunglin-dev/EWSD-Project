@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import io from "socket.io-client";
-import { Box, Button, TextField, Typography, Paper } from "@mui/material";
+import { Box, Button, TextField, Typography, Paper, useMediaQuery } from "@mui/material";
 import LoginUserSide from "./login-user-side";
 import OtherMessageParty from "./otherMessageParty";
 import AttachmentIcon from "@mui/icons-material/Attachment";
@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 const socket = io("http://localhost:8000");
 
 export default function MessagePage() {
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const { currentUser } = useSelector((state) => state.auth);
   //console.log("current user allocation id =>", currentUser?.allocations[0].id);
   //console.log("current user roel=>", currentUser?.role);
@@ -131,7 +132,10 @@ export default function MessagePage() {
   }
 
   return (
-    <Box style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <Box
+      paddingTop="80px"
+      paddingX={isNonMobileScreens ? "20px" : "10px"}
+      style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <Typography
         variant="h4"
         gutterBottom

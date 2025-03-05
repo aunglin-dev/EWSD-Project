@@ -13,9 +13,12 @@ export default function StudentDashboard() {
   const { currentUser } = useSelector((state) => state.auth);
   //console.log("current user data=>", currentUser);
   return (
-    <div>
+    <Box
+      paddingY="100px"
+      paddingX={isNonMobileScreens ? "20px" : "10px"}
+    >
       <Typography variant="h4">{currentUser?.name}</Typography>
       <h3>{currentUser?.role} Dashboard</h3>
-    </div>
+    </Box>
   );
 }

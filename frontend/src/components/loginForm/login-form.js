@@ -47,20 +47,21 @@ export default function LoginForm() {
       if (res.status === 200) {
         const user = res.data;
         const { role } = user;
-        window.alert("Welcome to the E-Tutoring System!");
+        // window.alert("Welcome to the E-Tutoring System!");
 
         console.log("user data=>", user);
         dispatch(loginSuccess(user));
 
         if (role === "staff") {
-          navigate("/StaffHome");
+          navigate("/staff-dashboard");
         } else if (role === "Student") {
           navigate(`/student-dashboard/${user._id}`);
         } else if (role === "Tutor") {
-          navigate("/TutorHome");
+          navigate("/tutor-dashboard");
         }
       }
     } catch (err) {
+      window.alert(err.response?.data.message);
       console.error("Login error=>", err.response?.data || err.message);
       dispatch(
         loginFailure(err.response?.data?.message || "Invalid credentials")
@@ -138,14 +139,9 @@ export default function LoginForm() {
         </FormControl>
 
         <FormControl fullWidth sx={{ mt: 2 }}>
-          <FormLabel
-            sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}
-            color="black"
-          >
-            Email
-          </FormLabel>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>Email</FormLabel>
           <OutlinedInput
-            // type="email"
+            type="text"
             size="small"
             placeholder="abc@yahoo.com"
             autoComplete="off"

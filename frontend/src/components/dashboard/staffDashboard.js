@@ -8,11 +8,14 @@ import {
   TableRow,
   Paper,
   Button,
+  Box,
+  useMediaQuery
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Axios from "axios";
 
 export default function StaffDashboard() {
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +59,10 @@ export default function StaffDashboard() {
   }
 
   return (
-    <div>
+    <Box
+      paddingY="100px"
+      paddingX={isNonMobileScreens ? "20px" : "10px"}
+    >
       <h1>Staff ddashboard</h1>
       <TableContainer
         component={Paper}
@@ -120,6 +126,6 @@ export default function StaffDashboard() {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </Box>
   );
 }

@@ -164,51 +164,18 @@ export default function AllocateReallocate() {
 
   return (
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
-      <Box
-        display="flex"
-        flexDirection={isSmallestScreens && "column"}
-        justifyContent="start"
-        alignItems={isSmallestScreens ? "start" : "center"}
-        gap="10px"
-      >
+      <Box display="flex" flexDirection={isSmallestScreens && "column"} justifyContent="start" alignItems={isSmallestScreens ? "start" : "center"} gap="10px">
         <Button
           href="/allocate"
           type="button"
           variant="text"
-          sx={{
-            padding: 0,
-            fontSize: "16px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "5px",
-          }}
+          sx={{ padding: 0, fontSize: "16px" }}
+          startIcon={<KeyboardBackspaceIcon sx={{ width: "18px", height: "18px" }} />}
         >
-          {/* <span
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "7px 13px",
-            borderRadius: "18px",
-            backgroundColor: "#1270b8",
-            gap: 3,
-            color: "white",
-          }}
-        > */}
-          <KeyboardBackspaceIcon sx={{ width: "18px", height: "18px" }} /> Back
-          {/* </span> */}
+          Back
         </Button>
         {successMsg && (
-          <span
-            style={{
-              fontSize: "14px",
-              fontWeight: "500",
-              marginLeft: isSmallestScreens ? "0px" : "30px",
-              padding: "5px 25px",
-              borderRadius: "20px",
-              backgroundColor: "rgba(0, 200, 0, 0.4)",
-            }}
-          >
+          <span style={{ fontSize: "14px", fontWeight: "500", marginLeft: isSmallestScreens ? "0px" : "30px", padding: "5px 25px", borderRadius: "20px", backgroundColor: "#00c80040", }}>
             {successMsg}
           </span>
         )}
@@ -431,13 +398,14 @@ export default function AllocateReallocate() {
                           </Box>
                         </Box>
                       )
-                    )}
-                </Box>
-              </Box>
-            </Box>
+                    )
+                  }
+                </Box >
+              </Box >
+            </Box >
           )
         )}
-      </Box>
-    </Box>
+      </Box >
+    </Box >
   );
 }

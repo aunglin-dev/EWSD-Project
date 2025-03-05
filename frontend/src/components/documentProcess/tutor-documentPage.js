@@ -8,6 +8,7 @@ import {
   ListItemText,
   Button,
   IconButton,
+  useMediaQuery
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -16,6 +17,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 export default function DocumentPage() {
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const { currentUser } = useSelector((state) => state.auth);
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -44,8 +46,8 @@ export default function DocumentPage() {
               const lastSubmissionDate =
                 documentsResponse.data.length > 0
                   ? new Date(
-                      documentsResponse.data[0].createdAt
-                    ).toLocaleDateString()
+                    documentsResponse.data[0].createdAt
+                  ).toLocaleDateString()
                   : "No submissions yet";
 
               return {
@@ -183,7 +185,10 @@ export default function DocumentPage() {
   );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", padding: "20px" }}>
+    <Box
+      paddingY="100px"
+      paddingX={isNonMobileScreens ? "20px" : "10px"}
+      sx={{ display: "flex", flexDirection: "column" }}>
       {selectedStudent ? renderDocumentList() : renderStudentList()}
     </Box>
   );

@@ -10,6 +10,7 @@ import {
   ListItemText,
   IconButton,
   TextField,
+  useMediaQuery
 } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -17,6 +18,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 export default function DocumentPage() {
+  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const { currentUser } = useSelector((state) => state.auth);
   const role = currentUser?.role;
   const allocationId = currentUser?.allocations[0]?.id;
@@ -114,7 +116,10 @@ export default function DocumentPage() {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", padding: "20px" }}>
+    <Box
+      paddingY="100px"
+      paddingX={isNonMobileScreens ? "20px" : "10px"}
+      sx={{ display: "flex", flexDirection: "column" }}>
       <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
         <Typography variant="h5" gutterBottom>
           Proposal Submission
