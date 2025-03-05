@@ -256,45 +256,45 @@ export default function Navbar() {
               <>
                 <Link to="/staff-dashboard" style={{ textDecoration: "none", width: "100%" }}>
                   <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
                     sx={{
                       width: "100%",
                       color: "#fff",
                       fontWeight: path === "/staff-dashboard" ? "600" : "400",
                       textDecoration: path === "/staff-dashboard" ? "underline" : "none",
-                      "&:hover": { fontWeight: "600" },
                     }}
                   >Dashboard</Button>
                 </Link>
                 <Link to="/allocate" style={{ textDecoration: "none", width: "100%" }}>
                   <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
                     sx={{
                       width: "100%",
                       color: "#fff",
                       fontWeight: path === "/allocate" ? "600" : "400",
                       textDecoration: path === "/allocate" ? "underline" : "none",
-                      "&:hover": { fontWeight: "600" },
                     }}
                   >Allocate</Button>
                 </Link>
                 <Link to="/tutors" style={{ textDecoration: "none", width: "100%" }}>
                   <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
                     sx={{
                       width: "100%",
                       color: "#fff",
                       fontWeight: path === "/tutors" ? "600" : "400",
                       textDecoration: path === "/tutors" ? "underline" : "none",
-                      "&:hover": { fontWeight: "600" },
                     }}
                   >Tutor List</Button>
                 </Link>
                 <Link to="/students" style={{ textDecoration: "none", width: "100%" }}>
                   <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
                     sx={{
                       width: "100%",
                       color: "#fff",
                       fontWeight: path === "/students" ? "600" : "400",
                       textDecoration: path === "/students" ? "underline" : "none",
-                      "&:hover": { fontWeight: "600" },
                     }}
                   >Student List</Button>
                 </Link>
@@ -305,45 +305,45 @@ export default function Navbar() {
               <>
                 <Link to={`/student-dashboard/${currentUser?._id}`} style={{ textDecoration: "none", width: "100%" }}>
                   <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
                     sx={{
                       width: "100%",
                       color: "#fff",
                       fontWeight: path === `/student-dashboard/${currentUser?._id}` ? "600" : "400",
                       textDecoration: path === `/student-dashboard/${currentUser?._id}` ? "underline" : "none",
-                      "&:hover": { fontWeight: "600" },
                     }}
                   >Dashboard</Button>
                 </Link>
                 <Link to="/student/message" style={{ textDecoration: "none", width: "100%" }}>
                   <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
                     sx={{
                       width: "100%",
                       color: "#fff",
                       fontWeight: path === "/student/message" ? "600" : "400",
                       textDecoration: path === "/student/message" ? "underline" : "none",
-                      "&:hover": { fontWeight: "600" },
                     }}
                   >Message</Button>
                 </Link>
                 <Link to="/student/document" style={{ textDecoration: "none", width: "100%" }}>
                   <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
                     sx={{
                       width: "100%",
                       color: "#fff",
                       fontWeight: path === "/student/document" ? "600" : "400",
                       textDecoration: path === "/student/document" ? "underline" : "none",
-                      "&:hover": { fontWeight: "600" },
                     }}
                   >Document</Button>
                 </Link>
                 <Link to="/student/meeting" style={{ textDecoration: "none", width: "100%" }}>
                   <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
                     sx={{
                       width: "100%",
                       color: "#fff",
                       fontWeight: path === "/student/meeting" ? "600" : "400",
                       textDecoration: path === "/student/meeting" ? "underline" : "none",
-                      "&:hover": { fontWeight: "600" },
                     }}
                   >Meeting</Button>
                 </Link>
@@ -353,20 +353,55 @@ export default function Navbar() {
             {currentUser.role === "Tutor" && (
               <>
                 <Link to={"/tutor-dashboard"} style={{ textDecoration: "none", width: "100%" }}>
-                  <Button>Dashboard</Button>
+                  <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
+                    sx={{
+                      width: "100%",
+                      color: "#fff",
+                      fontWeight: path === "/tutor-dashboard" ? "600" : "400",
+                      textDecoration: path === "/tutor-dashboard" ? "underline" : "none",
+                    }}
+                  >Dashboard</Button>
                 </Link>
                 <Link to="/tutor/message" style={{ textDecoration: "none", width: "100%" }}>
-                  <Button>Message</Button>
+                  <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
+                    sx={{
+                      width: "100%",
+                      color: "#fff",
+                      fontWeight: path === "/tutor/message" ? "600" : "400",
+                      textDecoration: path === "/tutor/message" ? "underline" : "none",
+                    }}
+                  >Message</Button>
                 </Link>
                 <Link to="/tutor/document" style={{ textDecoration: "none", width: "100%" }}>
-                  <Button>Document</Button>
+                  <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
+                    sx={{
+                      width: "100%",
+                      color: "#fff",
+                      fontWeight: path === "/tutor/document" ? "600" : "400",
+                      textDecoration: path === "/tutor/document" ? "underline" : "none",
+                    }}
+                  >Document</Button>
                 </Link>
                 <Link to="/tutor/meeting" style={{ textDecoration: "none", width: "100%" }}>
-                  <Button>Meeting</Button>
+                  <Button
+                    onClick={() => setIsMobileMenuToggled(!isMobileMenuToggled)}
+                    sx={{
+                      width: "100%",
+                      color: "#fff",
+                      fontWeight: path === "/tutor/meeting" ? "600" : "400",
+                      textDecoration: path === "/tutor/meeting" ? "underline" : "none",
+                    }}
+                  >Meeting</Button>
                 </Link>
               </>
             )}
-            <IconButton onClick={logOut}>
+            <IconButton onClick={() => {
+              setIsMobileMenuToggled(!isMobileMenuToggled);
+              logOut();
+            }}>
               <LogoutIcon sx={{ color: "#fff" }} />
             </IconButton>
           </Box>

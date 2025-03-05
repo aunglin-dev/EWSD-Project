@@ -47,7 +47,7 @@ export default function LoginForm() {
       if (res.status === 200) {
         const user = res.data;
         const { role } = user;
-        // window.alert("Welcome to the E-Tutoring System!");
+        window.alert("Welcome to the E-Tutoring System!");
 
         console.log("user data=>", user);
         dispatch(loginSuccess(user));
