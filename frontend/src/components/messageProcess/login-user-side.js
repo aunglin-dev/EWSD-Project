@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 
 export default function LoginUserSide() {
   const { currentUser } = useSelector((state) => state.auth);
+  console.log("current user left side =>", currentUser);
   return (
     <div>
       <Box
