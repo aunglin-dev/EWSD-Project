@@ -13,12 +13,12 @@ import StudentDashboard from "./components/dashboard/student-dashboard.js";
 import MessagePage from "./components/messageProcess/messagePage.js";
 import MeetingStudent from "./components/meetingProcess/meeting-student.js";
 import MeetingPage from "./components/meetingProcess/meeting.js";
-import StaffDashboard from "./components/dashboard/staffDashboard.js";
+import StaffDashboard from "./components/dashboard/staff-dashboard.js";
 import TutorList from "./components/userList/tutorsList.js";
 import StudentList from "./components/userList/studentsList.js";
 import DocumentPage from "./components/documentProcess/documentPage.js";
 import TutorDocumentPage from "./components/documentProcess/tutor-documentPage.js";
-import TutorDashboard from "./components/dashboard/tutorDasboard.js";
+import TutorDashboard from "./components/dashboard/tutor-dasboard.js";
 
 const App = () => {
   const theme = useMemo(() => createTheme(themeSettings));
@@ -26,6 +26,7 @@ const App = () => {
   return (
     <Router>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Navbar />
         <Routes>
           <Route path="/" element={<LoginForm />} />
@@ -34,9 +35,9 @@ const App = () => {
           <Route path="/staff-dashboard" element={<StaffDashboard />} />
           <Route path="/allocate" element={<AllocatePage />} />
           <Route path="/addAllocation" element={<AllocateForm />} />
+          <Route path="/allocateReallocate/:id" element={<AllocateReallocate />} />
           <Route path="/tutors" element={<TutorList />} />
           <Route path="/students" element={<StudentList />} />
-          <Route path="/allocateReallocate/:id" element={<AllocateReallocate />} />
 
           {/* Student */}
           <Route path="/student-dashboard/:id" element={<StudentDashboard />} />
@@ -44,14 +45,8 @@ const App = () => {
           <Route path="/student/meeting" element={<MeetingStudent />} />
           <Route path="/student/document" element={<DocumentPage />} />
           {/* <Route path="/document/:id" element={<DocumentDetail />} /> */}
-          {/* <Route path="/allocate" element={<AllocatePage />} />
-          <Route path="/addAllocation" element={<AllocateForm />} /> */}
-
-          {/* <Route path="/studentDashboard/:id" element={<StudentDashboard />} />
-          <Route path="/staff-dashboard" element={<StaffDashboard />} /> */}
 
           {/* Tutor */}
-          {/* <Route path="/tutor" element={<TutorHome />} /> */}
           <Route path="/tutor-dashboard" element={<TutorDashboard />} />
           <Route path="/tutor/message" element={<MessagePage />} />
           <Route path="/tutor/meeting" element={<MeetingPage />} />

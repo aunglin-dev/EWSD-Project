@@ -13,8 +13,10 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function StaffDashboard() {
+  const navigate = useNavigate();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -95,7 +97,9 @@ export default function StaffDashboard() {
                 <TableCell sx={{ borderLeft: "1px solid #d1cbcb" }}>
                   {allocation.tutor.name}
                 </TableCell>
-                <TableCell sx={{ border: "1px solid #d1cbcb" }}>
+                <TableCell
+                  onClick={() => navigate(`/student-dashboard/${allocation.student._id}`)}
+                  sx={{ border: "1px solid #d1cbcb", cursor: "pointer" }}>
                   {allocation.student.name}
                 </TableCell>
                 <TableCell sx={{ border: "1px solid #d1cbcb" }}>

@@ -9,12 +9,9 @@ import {
   useMediaQuery,
   CircularProgress,
 } from "@mui/material";
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import CircleIcon from '@mui/icons-material/Circle';
-import Card from "../home/card";
 import { useSelector } from "react-redux";
 
 export default function AllocatePage() {

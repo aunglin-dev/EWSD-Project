@@ -47,7 +47,7 @@ export default function LoginForm() {
       if (res.status === 200) {
         const user = res.data;
         const { role } = user;
-        window.alert("Welcome to the E-Tutoring System!");
+        // window.alert("Welcome to the E-Tutoring System!");
 
         console.log("user data=>", user);
         dispatch(loginSuccess(user));
@@ -72,10 +72,11 @@ export default function LoginForm() {
   return (
     <div
       style={{
+        paddingTop: "80px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
+        height: "calc(100vh - 80px)",
         backgroundColor: "#f5f5f5",
       }}
     >
