@@ -10,12 +10,13 @@ import {
   ListItemText,
   IconButton,
   TextField,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import DownloadIcon from "@mui/icons-material/Download";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 
 export default function DocumentPage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -26,6 +27,8 @@ export default function DocumentPage() {
   const [file, setFile] = useState(null);
   const [description, setDescription] = useState("");
   const [submissions, setSubmissions] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchSubmissions = async () => {
@@ -56,6 +59,26 @@ export default function DocumentPage() {
 
     fetchSubmissions();
   }, [allocationId]);
+
+  const fetchComments = async (documentId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/documentcomments/document/${documentId}`
+      );
+
+      console.log("fetched comments=>", response.data);
+      const formattedComments = response.data.map((commentObj) => ({
+        ...commentObj,
+        formattedDate: dayjs(commentObj.createdAt).format(
+          "DD-MM-YYYY, hh:mm A"
+        ),
+      }));
+      setComments(formattedComments);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      setComments([]);
+    }
+  };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -119,7 +142,8 @@ export default function DocumentPage() {
     <Box
       paddingY="100px"
       paddingX={isNonMobileScreens ? "20px" : "10px"}
-      sx={{ display: "flex", flexDirection: "column" }}>
+      sx={{ display: "flex", flexDirection: "column" }}
+    >
       <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
         <Typography variant="h5" gutterBottom>
           Proposal Submission
@@ -185,10 +209,19 @@ export default function DocumentPage() {
                 <ListItem
                   key={submission.id}
                   divider
+                  button
+                  onClick={() => {
+                    setSelectedDocument(submission);
+                    fetchComments(submission.id);
+                  }}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    bgcolor:
+                      selectedDocument?.id === submission.id
+                        ? "#f2f2f2"
+                        : "inherit",
                   }}
                 >
                   <ListItemText
@@ -198,7 +231,10 @@ export default function DocumentPage() {
                   <IconButton
                     edge="end"
                     aria-label="download"
-                    onClick={() => handleDownload(submission.url)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownload(submission.url);
+                    }}
                     sx={{ marginLeft: "auto" }}
                   >
                     <DownloadIcon />
@@ -214,7 +250,53 @@ export default function DocumentPage() {
         </Paper>
 
         {/* right side  */}
-        <Box sx={{ flexGrow: 1 }}>right side</Box>
+        <Box sx={{ flexGrow: 1 }}>
+          {selectedDocument ? (
+            <Paper elevation={3} sx={{ p: 4 }}>
+              <Typography variant="h5" gutterBottom>
+                Comments for "{selectedDocument.fileName}"
+              </Typography>
+
+              {/* show comments */}
+              {comments.length > 0 ? (
+                <Box sx={{ ml: 2 }}>
+                  {comments.map((cmt, index) => (
+                    <Typography
+                      key={index}
+                      variant="caption"
+                      color="textSecondary"
+                      sx={{ display: "block", marginBottom: "10px" }}
+                    >
+                      Comment
+                      <span
+                        style={{
+                          backgroundColor: "#f2dbb1",
+                          borderRadius: "14px",
+                          padding: "3px 5px",
+                          fontSize: "10px",
+                        }}
+                      >
+                        {cmt.formattedDate}
+                      </span>{" "}
+                      ={" "}
+                      <span style={{ fontWeight: "bold", fontSize: "15px" }}>
+                        {cmt.comment}
+                      </span>
+                    </Typography>
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body1" color="textSecondary">
+                  This document has no comments yet.
+                </Typography>
+              )}
+            </Paper>
+          ) : (
+            <Typography variant="body1" color="textSecondary">
+              Select a document to view its comments.
+            </Typography>
+          )}
+        </Box>
       </Box>
     </Box>
   );

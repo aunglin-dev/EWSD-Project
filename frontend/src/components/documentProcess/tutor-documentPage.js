@@ -8,13 +8,15 @@ import {
   ListItemText,
   Button,
   IconButton,
-  useMediaQuery
+  useMediaQuery,
+  TextField,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CommentIcon from "@mui/icons-material/Comment";
 import DownloadIcon from "@mui/icons-material/Download";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 
 export default function DocumentPage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -22,6 +24,8 @@ export default function DocumentPage() {
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [documents, setDocuments] = useState([]);
+  const [commentInput, setCommentInput] = useState("");
+  const [selectedDocumentId, setSelectedDocumentId] = useState(null);
 
   //fetch allocations, student names, documents
   useEffect(() => {
@@ -46,8 +50,8 @@ export default function DocumentPage() {
               const lastSubmissionDate =
                 documentsResponse.data.length > 0
                   ? new Date(
-                    documentsResponse.data[0].createdAt
-                  ).toLocaleDateString()
+                      documentsResponse.data[0].createdAt
+                    ).toLocaleDateString()
                   : "No submissions yet";
 
               return {
@@ -112,6 +116,35 @@ export default function DocumentPage() {
     link.click();
   };
 
+  const handleAddComment = async () => {
+    if (!commentInput.trim()) {
+      alert("Please enter a comment before submitting.");
+      return;
+    }
+
+    try {
+      console.log("current user role =>", currentUser?.role);
+      console.log("doc id =>", selectedDocumentId);
+      console.log("comment input=>", commentInput);
+      const response = await axios.post(
+        "http://localhost:8000/api/documentcomments",
+        {
+          role: currentUser?.role,
+          documentId: selectedDocumentId,
+          comment: commentInput,
+        }
+      );
+
+      setCommentInput("");
+      setSelectedDocumentId(null);
+      fetchDocuments(selectedStudent.allocationId);
+      alert("comment added successfully!");
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      alert(`Error: ${error.response?.data?.message || "Please try again."}`);
+    }
+  };
+
   const renderStudentList = () => (
     <Paper elevation={3} sx={{ p: 4 }}>
       <Typography variant="h5" gutterBottom>
@@ -155,24 +188,72 @@ export default function DocumentPage() {
         </Typography>
         <List>
           {documents.length > 0 ? (
-            documents.map((doc) => (
-              <ListItem key={doc.id} divider>
-                <ListItemText
-                  primary={doc.fileName}
-                  secondary={`Submitted on ${doc.submissionDate}`}
-                />
-                <IconButton
-                  edge="end"
-                  aria-label="download"
-                  onClick={() => handleDownload(doc.url)}
-                  sx={{ marginRight: "10px" }}
-                >
-                  <DownloadIcon />
-                </IconButton>
-                <IconButton edge="end" aria-label="comment">
-                  <CommentIcon />
-                </IconButton>
-              </ListItem>
+            documents.map((doc, index) => (
+              <div
+                key={doc.id}
+                style={{ borderBottom: "1px solid #1399c2", margin: 1 }}
+              >
+                <ListItem divider>
+                  <ListItemText
+                    primary={doc.fileName}
+                    secondary={`Submitted on ${doc.submissionDate}`}
+                  />
+                  <IconButton
+                    edge="end"
+                    aria-label="download"
+                    onClick={() => handleDownload(doc.url)}
+                    sx={{ marginRight: "10px" }}
+                  >
+                    <DownloadIcon />
+                  </IconButton>
+                  <IconButton
+                    edge="end"
+                    aria-label="comment"
+                    onClick={() => setSelectedDocumentId(doc.id)}
+                  >
+                    <CommentIcon />
+                  </IconButton>
+                </ListItem>
+                {/* show document comment */}
+                {doc.comments.length > 0 && (
+                  <Box sx={{ ml: 2 }}>
+                    {doc.comments.map((cmt, index) => {
+                      const formattedDate = dayjs(cmt.createdAt).format(
+                        "DD-MM-YYYY, hh:mm A"
+                      );
+
+                      return (
+                        <div>
+                          <Typography
+                            key={index}
+                            variant="caption"
+                            color="textSecondary"
+                          >
+                            Comment
+                            <span
+                              style={{
+                                backgroundColor: "#f2dbb1",
+                                borderRadius: "14px",
+                                padding: "3px 5px",
+                                fontSize: "10px",
+                              }}
+                            >
+                              {formattedDate}
+                            </span>{" "}
+                            ={" "}
+                            <span
+                              style={{ fontWeight: "bold", fontSize: "15px" }}
+                            >
+                              {cmt.comment}
+                            </span>
+                          </Typography>
+                          <br />
+                        </div>
+                      );
+                    })}
+                  </Box>
+                )}
+              </div>
             ))
           ) : (
             <Typography variant="body1" color="textSecondary">
@@ -181,6 +262,42 @@ export default function DocumentPage() {
           )}
         </List>
       </Paper>
+
+      {/* show comment of selected document */}
+      {selectedDocumentId && (
+        <Paper elevation={3} sx={{ p: 4, mt: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Add Comment
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={3}
+            value={commentInput}
+            onChange={(e) => setCommentInput(e.target.value)}
+            placeholder="Enter your comment here..."
+            sx={{ mb: 2 }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddComment}
+            sx={{ mr: 2 }}
+          >
+            Submit Comment
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => {
+              setSelectedDocumentId(null);
+              setCommentInput("");
+            }}
+          >
+            Cancel
+          </Button>
+        </Paper>
+      )}
     </Box>
   );
 
@@ -188,7 +305,8 @@ export default function DocumentPage() {
     <Box
       paddingY="100px"
       paddingX={isNonMobileScreens ? "20px" : "10px"}
-      sx={{ display: "flex", flexDirection: "column" }}>
+      sx={{ display: "flex", flexDirection: "column" }}
+    >
       {selectedStudent ? renderDocumentList() : renderStudentList()}
     </Box>
   );
