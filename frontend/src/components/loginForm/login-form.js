@@ -76,7 +76,7 @@ export default function LoginForm() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "calc(100vh - 80px)",
+        height: "100vh",
         backgroundColor: "#f5f5f5",
       }}
     >
