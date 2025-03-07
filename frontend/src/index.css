@@ -10,7 +10,7 @@ body {
 
 ::-webkit-scrollbar {
     width: 5px;
-    height: 5px;
+    height: 3px;
 }
 
 ::-webkit-scrollbar-track {
