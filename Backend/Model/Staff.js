@@ -1,10 +1,17 @@
 import mongoose from "mongoose";
+import roleTypes from "./roleType.js";
 
 const staffSchema = new mongoose.Schema(
     {
+        username: {
+            type: String,
+            required: true,
+            unique: true,
+        },
         name: {
             type: String,
             required: true,
+            unique: false,
         },
         email: {
             type: String,
@@ -14,31 +21,15 @@ const staffSchema = new mongoose.Schema(
         password: {
             type: String,
             required: true,
+            unique: false,
         },
         role: {
             type: String,
-            enum: ["admin", "staff", "coordinator"],
-            required: true,
-        },
-        phNo: {
-            type: String,
-            required: true,
-        },
-        NRC: {
-            type: String,
-            required: true,
-        },
-        address: {
-            type: String,
-            required: true,
-        },
-        img: {
-            type: String, // Store image URL or base64 string
-        },
-        DateOfBirth: {
-            type: Date,
-            required: true,
-        },
+            enum: roleTypes,
+            default: "Staff",
+            required: false,
+        }
+      
     },
     { timestamps: true }
 );

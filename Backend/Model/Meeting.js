@@ -1,50 +1,58 @@
 ﻿import mongoose from 'mongoose';
 import { emailTransporter, emailAddress } from "../Service/emailService.js";
-import { meetingNotificationEmail, meetingNotificationEmailForTutor  } from "../Service/emailTemplates.js";
+import { meetingNotificationEmail, meetingNotificationEmailForTutor } from "../Service/emailTemplates.js";
+import roleTypes from "./roleType.js";
+import meetingTypes from "./meetingType.js";
+
+const meetingSchema = new mongoose.Schema({
+    role: {
+        type: String,
+        enum: roleTypes,
+        required: true
+    },
+    allocationId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Allocation",
+        required: true,
+    },
+    dateTime: {
+        type: Date,
+        required: true
+    },
+    type: {
+        type: String,
+        enum: meetingTypes,
+        required: true
+    },
+    note: {
+        type: String,
+        default: ""
+    },
+    meetingLink: { // For online meetings
+        type: String,
+        default: "", // Empty string for in-person meetings
+    },
+    meetingLocation: { // For in-person meetings
+        type: String,
+        default: "", // Empty string for online meetings
+    },
+    meetingPlatform: { // For online meetings
+        type: String,
+        default: '', // Empty string for in-person meetings
+    }
+}, {
+    timestamps: true,
+});
 
 
-const MeetingSchema = new mongoose.Schema({
-    tutor: { type: mongoose.Schema.Types.ObjectId, ref: 'Tutor', required: true },
-    student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
-    date: { type: Date, required: true },
-    time: { type: String, required: true },  // Example: "14:00"
-    location: { type: String }, // Optional for real meetings
-    meetingType: { type: String, enum: ['real', 'virtual'], required: true },
-    virtualLink: { type: String } // Optional for virtual meetings
-}, { timestamps: true });
-
-
-
-
-
-MeetingSchema.pre("save", async function (next) {
+meetingSchema.pre("save", async function (next) {
     try {
     
-        const tutor = await mongoose.model("Tutor").findById(this.tutor);
-        const student = await mongoose.model("Student").findById(this.student);
-
-        if (!tutor || !student) {
-            return next(new Error("Tutor or Student not found"));
-        }
-
-
-        // Check if the student is allocated to the tutor via the Allocation model
-        const allocation = await mongoose.model("Allocation").findOne({
-            tutor: this.tutor,
-            student: this.student,
-        });
-
-        if (!allocation) {
-            return next(new Error("Student is not allocated to this tutor"));
-        }
-
-
         // Check for duplicate meeting (same date, time, student, tutor)
         const existingMeeting = await mongoose.model("Meeting").findOne({
-            tutor: this.tutor,
-            student: this.student,
-            date: this.date,
-            time: this.time,
+            dateTime: this.dateTime,
+            allocationId: this.allocationId,
+            type: this.type,
         });
 
         if (existingMeeting) {
@@ -60,86 +68,72 @@ MeetingSchema.pre("save", async function (next) {
 
 
 // 🔹 Post-Save Hook: Send Email When Meeting is Created
-MeetingSchema.post("save", async function (doc) {
+meetingSchema.post("save", async function (doc) {
     try {
-        const tutor = await mongoose.model("Tutor").findById(doc.tutor);
-        const student = await mongoose.model("Student").findById(doc.student);
+        // Fetch allocation using allocationId
+        const allocation = await mongoose.model("Allocation").findById(doc.allocationId)
+            .populate("tutor") 
+            .populate("student"); 
 
-        if (!tutor) {
-            console.log("Cannot find tutor!");
-            return
-        };
+        if (!allocation) {
+            console.error("Allocation not found for meeting:", doc.allocationId);
+            return;
+        }
 
-        if (!student) {
-            console.log("Cannot find student!");
-            return
-        };
-    
+        const { tutor, student } = allocation; // Extract tutor and student
 
+        if (!tutor || !student) {
+            console.error("Tutor or student not found in allocation:", doc.allocationId);
+            return;
+        }
+
+        // Generate email content
         const { subjectStudent, messageStudent } = meetingNotificationEmail("created", tutor, student, doc);
+        const { subjectTutor, messageTutor } = meetingNotificationEmailForTutor("created", tutor, student, doc);
 
+        // Send email to student
         await emailTransporter.sendMail({
             from: emailAddress,
             to: student.email,
-            subjectStudent,
+            subject: subjectStudent,
             html: messageStudent
         });
 
-
-        const { subjectTutor, messageTutor } = meetingNotificationEmailForTutor("created", tutor, student, doc);
-
+        // Send email to tutor
         await emailTransporter.sendMail({
             from: emailAddress,
             to: tutor.email,
-            subjectTutor,
+            subject: subjectTutor,
             html: messageTutor
         });
 
-        console.log("Meeting creation email sent.");
+        console.log("Meeting creation emails sent successfully.");
     } catch (error) {
         console.error("Error sending meeting creation email:", error);
     }
 });
 
-
-MeetingSchema.pre("findOneAndUpdate", async function (next) {
+meetingSchema.pre("findOneAndUpdate", async function (next) {
     try {
         const update = this.getUpdate();
-        const meetingId = this.getQuery()._id;  // Get the meeting ID being updated
-        const tutorId = update.tutor;  // Tutor ID being updated
-        const studentId = update.student;  // Student ID being updated
-        const newDate = update.date;  // New meeting date
-        const newTime = update.time;  // New meeting time
+        const allocationId = update.allocationId;  // Allocation ID being updated
+        const dateTime = update.dateTime; // New meeting date
+        const type = update.type; // New Meeting Type
 
-        if (!tutorId || !studentId) {
-            return next(new Error("Tutor and student IDs must be provided for update"));
-        }
-
-        // Check if the student is assigned to the tutor in the allocation
-        const allocationExists = await mongoose.model("Allocation").findOne({
-            tutor: tutorId,
-            student: studentId,
-        });
-
-        if (!allocationExists) {
-            return next(new Error("This student is not allocated to this tutor. Update aborted."));
-        }
-
-        console.log("✅ Allocation exists. Proceeding with meeting update.");
-
+        // Get the current document's ID
+        const meetingId = this.getQuery()._id;
 
         // Check for duplicate meeting (same date, time, student, tutor)
         const existingMeeting = await mongoose.model("Meeting").findOne({
-            tutor: tutorId,
-            student: studentId,
-            date: newDate,
-            time: newTime
+            allocationId: allocationId,
+            dateTime: dateTime,
+            type: type,
+            _id: { $ne: meetingId },  // Exclude the current meeting
         });
 
         if (existingMeeting) {
-            return next(new Error("A meeting with the same date, time, student, and tutor already exists."));
+            return next(new Error("A meeting with the same date, time, type, student, and tutor already exists."));
         }
-
 
 
         next();  // Proceed with the update if the allocation exists
@@ -153,77 +147,99 @@ MeetingSchema.pre("findOneAndUpdate", async function (next) {
 
 
 // 🔹 Post-Update Hook: Send Email When Meeting is Updated
-MeetingSchema.post("findOneAndUpdate", async function (doc) {
+meetingSchema.post("findOneAndUpdate", async function (doc) {
     try {
         if (!doc) return;
 
-        const tutor = await mongoose.model("Tutor").findById(doc.tutor);
-        const student = await mongoose.model("Student").findById(doc.student);
+        // Fetch allocation using allocationId
+        const allocation = await mongoose.model("Allocation").findById(doc.allocationId)
+            .populate("tutor") 
+            .populate("student"); 
 
-        if (!tutor || !student) return;
+        if (!allocation) {
+            console.error("Allocation not found for meeting:", doc.allocationId);
+            return;
+        }
 
+        const { tutor, student } = allocation; // Extract tutor and student
 
+        if (!tutor || !student) {
+            console.error("Tutor or student not found in allocation:", doc.allocationId);
+            return;
+        }
+
+        // Generate email content
         const { subjectStudent, messageStudent } = meetingNotificationEmail("updated", tutor, student, doc);
+        const { subjectTutor, messageTutor } = meetingNotificationEmailForTutor("updated", tutor, student, doc);
 
+        // Send email to student
         await emailTransporter.sendMail({
             from: emailAddress,
             to: student.email,
-            subjectStudent,
+            subject: subjectStudent,
             html: messageStudent
         });
 
-
-        const { subjectTutor, messageTutor } = meetingNotificationEmailForTutor("updated", tutor, student, doc);
-
+        // Send email to tutor
         await emailTransporter.sendMail({
             from: emailAddress,
             to: tutor.email,
-            subjectTutor,
+            subject: subjectTutor,
             html: messageTutor
         });
 
-
-        console.log("Meeting update email sent.");
+        console.log("Meeting update emails sent successfully.");
     } catch (error) {
         console.error("Error sending meeting update email:", error);
     }
 });
 
-// 🔹 Pre-Delete Hook: Send Email When Meeting is Deleted
-MeetingSchema.pre("findOneAndDelete", async function (next) {
+// Pre-Delete Hook: Send Email When Meeting is Deleted
+meetingSchema.pre("findOneAndDelete", async function (next) {
     try {
-
         const meetingId = this.getQuery()._id; // Get the Meeting ID being deleted
         const meeting = await mongoose.model("Meeting").findById(meetingId);
 
         if (!meeting) return next();
 
-        const tutor = await mongoose.model("Tutor").findById(meeting.tutor);
-        const student = await mongoose.model("Student").findById(meeting.student);
+        // Fetch allocation using allocationId
+        const allocation = await mongoose.model("Allocation").findById(meeting.allocationId)
+            .populate("tutor") 
+            .populate("student"); 
 
-        if (!tutor || !student) return next();
+        if (!allocation) {
+            console.error("Allocation not found for meeting:", meeting.allocationId);
+            return next();
+        }
 
+        const { tutor, student } = allocation; // Extract tutor and student
+
+        if (!tutor || !student) {
+            console.error("Tutor or student not found in allocation:", meeting.allocationId);
+            return next();
+        }
+
+        // Generate email content
         const { subjectStudent, messageStudent } = meetingNotificationEmail("deleted", tutor, student, meeting);
+        const { subjectTutor, messageTutor } = meetingNotificationEmailForTutor("deleted", tutor, student, meeting);
 
+        // Send email to student
         await emailTransporter.sendMail({
             from: emailAddress,
             to: student.email,
-            subjectStudent,
+            subject: subjectStudent,
             html: messageStudent
         });
 
-
-        const { subjectTutor, messageTutor } = meetingNotificationEmailForTutor("deleted", tutor, student, meeting);
-
+        // Send email to tutor
         await emailTransporter.sendMail({
             from: emailAddress,
             to: tutor.email,
-            subjectTutor,
+            subject: subjectTutor,
             html: messageTutor
         });
 
-
-        console.log("Meeting cancellation email sent.");
+        console.log("Meeting cancellation emails sent successfully.");
         next();
     } catch (error) {
         console.error("Error sending meeting cancellation email:", error);
@@ -232,5 +248,5 @@ MeetingSchema.pre("findOneAndDelete", async function (next) {
 });
 
 
-const Meeting = mongoose.model('Meeting', MeetingSchema);
+const Meeting = mongoose.model('Meeting', meetingSchema);
 export default Meeting;

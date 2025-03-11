@@ -18,11 +18,14 @@ staffRouter.use("/allocations", allocationRouter);
 
 
 //Staff Router
-staffRouter.post("/", createStaff);
-staffRouter.get("/", getAllStaff);
-staffRouter.get("/:id", getStaffById);
-staffRouter.put("/:id", updateStaff);
-staffRouter.delete("/:id", deleteStaff);
+staffRouter.get("/", getAllStaff); // Get all staff
+staffRouter.get("/:id", getStaffById); // Get a staff by ID
+
+staffRouter.post("/", createStaff); // Create a staff
+
+staffRouter.put("/:id", updateStaff); // Update a staff
+
+staffRouter.delete("/:id", deleteStaff); // Delete a staff
 
 
 export default staffRouter;

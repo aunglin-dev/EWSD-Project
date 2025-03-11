@@ -133,3 +133,5 @@ dist
 *.jfm
 
 .vs/
+
+package-lock.json
