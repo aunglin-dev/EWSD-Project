@@ -19,17 +19,16 @@ import Axios from "axios";
 import { useSelector } from "react-redux";
 
 export default function AllocatePage() {
-  const navigate = useNavigate();
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const isSmallestScreens = useMediaQuery("(max-width: 425px)");
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [students, setStudents] = useState([]);
   const [allocations, setAllocations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   const handleChange = (event, newValue) => {
     setSelectedStudent(newValue);
+    console.log("selected student", newValue);
   };
 
   useEffect(() => {
@@ -46,6 +45,8 @@ export default function AllocatePage() {
         console.log(allocationResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -110,62 +111,121 @@ export default function AllocatePage() {
           </form>
         </Box>
 
-        <TableContainer sx={{ mt: "50px", bgcolor: "#fff" }}>
-          <Table sx={{ minWidth: 650, border: "2px solid #0A1F44" }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "180px" }}>
-                  Student Name
-                </TableCell>
-                <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", }}>
-                  Email
-                </TableCell>
-                <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "180px" }}>
-                  Personal Tutor
-                </TableCell>
-                <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "180px" }}>
-                  Total Meetings
-                </TableCell>
-                <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "160px" }}>
-                  Last Active
-                </TableCell>
-                <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "200px" }}>
-                  Action
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {students.map((student) => (
-                <TableRow key={student._id} sx={{ borderBottom: "2px solid #0A1F44" }}>
-                  <TableCell >
-                    {student.name}
-                  </TableCell>
-                  <TableCell>
-                    {student.email}
-                  </TableCell>
-                  <TableCell >
-                    {allocations.filter(allocation => allocation.student._id === student._id).length > 0 ?
-                      allocations.filter(allocation => allocation.student._id === student._id)[0].tutor.name
-                      : "No tutor allocated."}
-                  </TableCell>
-                  <TableCell>
-                    {allocations.filter(allocation => allocation.student._id === student._id).length > 0 ?
-                      allocations.filter(allocation => allocation.student._id === student._id)[0].meetings.length
-                      : "0"}
-                  </TableCell>
-                  <TableCell>
-                    {/* this is last active */}
-                  </TableCell>
-                  <TableCell>
-                    <Button href={`/student-dashboard/${student._id}`} variant="text" sx={{ textDecoration: "underline" }}>
-                      View Dashboard
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {
+          loading ?
+            <CircularProgress />
+            : selectedStudent ?
+              <TableContainer sx={{ mt: "50px", bgcolor: "#fff" }}>
+                <Table sx={{ minWidth: 650, border: "2px solid #0A1F44" }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "180px" }}>
+                        Student Name
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", }}>
+                        Email
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "180px" }}>
+                        Personal Tutor
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "180px" }}>
+                        Total Meetings
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "160px" }}>
+                        Last Active
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "200px" }}>
+                        Action
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow sx={{ borderBottom: "2px solid #0A1F44" }}>
+                      <TableCell >
+                        {selectedStudent.name}
+                      </TableCell>
+                      <TableCell>
+                        {selectedStudent.email}
+                      </TableCell>
+                      <TableCell >
+                        {allocations.filter(allocation => allocation.student._id === selectedStudent._id).length > 0 ?
+                          allocations.filter(allocation => allocation.student._id === selectedStudent._id)[0].tutor.name
+                          : "No tutor allocated."}
+                      </TableCell>
+                      <TableCell>
+                        {allocations.filter(allocation => allocation.student._id === selectedStudent._id).length > 0 ?
+                          allocations.filter(allocation => allocation.student._id === selectedStudent._id)[0].meetings.length
+                          : "0"}
+                      </TableCell>
+                      <TableCell>
+                        {/* this is last active */}
+                      </TableCell>
+                      <TableCell>
+                        <Button href={`/student-dashboard/${selectedStudent._id}`} variant="text" sx={{ textDecoration: "underline" }}>
+                          View Dashboard
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              : <TableContainer sx={{ mt: "50px", bgcolor: "#fff" }}>
+                <Table sx={{ minWidth: 650, border: "2px solid #0A1F44" }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "180px" }}>
+                        Student Name
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", }}>
+                        Email
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "180px" }}>
+                        Personal Tutor
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "180px" }}>
+                        Total Meetings
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "160px" }}>
+                        Last Active
+                      </TableCell>
+                      <TableCell sx={{ fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", bgcolor: "primary.main", color: "#fff", minWidth: "200px" }}>
+                        Action
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {students.map((student) => (
+                      <TableRow key={student._id} sx={{ borderBottom: "2px solid #0A1F44" }}>
+                        <TableCell >
+                          {student.name}
+                        </TableCell>
+                        <TableCell>
+                          {student.email}
+                        </TableCell>
+                        <TableCell >
+                          {allocations.filter(allocation => allocation.student._id === student._id).length > 0 ?
+                            allocations.filter(allocation => allocation.student._id === student._id)[0].tutor.name
+                            : "No tutor allocated."}
+                        </TableCell>
+                        <TableCell>
+                          {allocations.filter(allocation => allocation.student._id === student._id).length > 0 ?
+                            allocations.filter(allocation => allocation.student._id === student._id)[0].meetings.length
+                            : "0"}
+                        </TableCell>
+                        <TableCell>
+                          {/* this is last active */}
+                        </TableCell>
+                        <TableCell>
+                          <Button href={`/student-dashboard/${student._id}`} variant="text" sx={{ textDecoration: "underline" }}>
+                            View Dashboard
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+        }
       </Box>
     </Box >
   );
