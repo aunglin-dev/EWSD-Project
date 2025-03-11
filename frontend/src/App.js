@@ -47,7 +47,7 @@ const App = () => {
           {/* <Route path="/document/:id" element={<DocumentDetail />} /> */}
 
           {/* Tutor */}
-          <Route path="/tutor-dashboard" element={<TutorDashboard />} />
+          <Route path="/tutor-dashboard/:id" element={<TutorDashboard />} />
           <Route path="/tutor/message" element={<MessagePage />} />
           <Route path="/tutor/meeting" element={<MeetingPage />} />
           <Route path="/tutor/document" element={<TutorDocumentPage />} />

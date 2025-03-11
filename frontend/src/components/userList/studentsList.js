@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Autocomplete,
   Box,
@@ -28,7 +27,6 @@ export default function AllocatePage() {
 
   const handleChange = (event, newValue) => {
     setSelectedStudent(newValue);
-    console.log("selected student", newValue);
   };
 
   useEffect(() => {
@@ -42,7 +40,6 @@ export default function AllocatePage() {
         );
         setAllocations(allocationResponse.data);
         setStudents(studentsResponse.data);
-        console.log(allocationResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
