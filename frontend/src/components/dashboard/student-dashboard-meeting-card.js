@@ -3,7 +3,7 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { Link } from "react-router-dom";
 
-const DashboardMeetingCard = ({ title, type, tutorName, datetime, platform, meetingLink, location }) => {
+const StudentDashboardMeetingCard = ({ title, type, tutorName, datetime, platform, meetingLink, location }) => {
     const isSmallestScreens = useMediaQuery("(max-width: 426px)");
     return (
         <Box
@@ -64,4 +64,4 @@ const DashboardMeetingCard = ({ title, type, tutorName, datetime, platform, meet
         </Box>
     )
 }
-export default DashboardMeetingCard
+export default StudentDashboardMeetingCard
