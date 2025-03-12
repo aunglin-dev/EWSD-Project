@@ -17,7 +17,7 @@ const StudentDashboardMeetingCard = ({ title, type, tutorName, datetime, platfor
             justifyContent="space-between"
         >
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                <Box display="flex" justifyContent="start" alignItems="center" gap="2px">
+                <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
                     <PushPinIcon sx={{ width: isSmallestScreens ? "14px" : "24px", height: isSmallestScreens ? "14px" : "24px" }} />
                     <Typography variant={isSmallestScreens ? "h6" : "h4"}>Upcoming Tutoring Meeting</Typography>
                 </Box>

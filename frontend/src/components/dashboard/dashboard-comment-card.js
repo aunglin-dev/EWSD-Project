@@ -13,8 +13,8 @@ const DashboardCommentCard = ({ title, createdDateTime, description, commentCoun
             </Box>
             <Typography variant="subtitle2" fontWeight="400">{description}</Typography>
             <Box display="flex" justifyContent="space-between" alignItems="end" borderTop="1px solid #93909080" paddingTop="10px">
-                <Typography fontSize={isSmallestScreens ? "13px" : "15px"} fontWeight="600" flex="1">Posted By {ownerName}</Typography>
-                <Button variant="text" sx={{ fontSize: isSmallestScreens ? "13px" : "15px", "&:hover": { bgcolor: "inherit" }, fontWeight: "600", padding: "0" }} endIcon={<ArrowCircleRightIcon />}>View Details</Button>
+                <Typography fontSize={isSmallestScreens ? "13px" : "15px"} fontWeight="600" flex="1" lineHeight={isSmallestScreens && "22.75px"}>Posted By {ownerName}</Typography>
+                <Button variant="text" sx={{ fontSize: isSmallestScreens ? "13px" : "15px", "&:hover": { bgcolor: "inherit" }, fontWeight: "600", padding: "0", }} endIcon={<ArrowCircleRightIcon />}>View Details</Button>
             </Box>
         </Box>
 

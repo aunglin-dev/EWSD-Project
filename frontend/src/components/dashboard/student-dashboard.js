@@ -11,7 +11,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   useMediaQuery,
   IconButton,
   CircularProgress
@@ -100,7 +99,7 @@ export default function StudentDashboard() {
           <CircularProgress />
           : (
             <>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box display="flex" flexDirection={isSmallestScreens && "column"} justifyContent="space-between" alignItems={isSmallestScreens ? "start" : "center"} gap="18px">
                 <Box>
                   <Typography variant={isNonMobileScreens ? "h2" : "h3"}>{student?.name}'s Dashboard</Typography>
                   {currentUser?.role !== "Student" ?
