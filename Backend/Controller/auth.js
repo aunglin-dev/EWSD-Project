@@ -5,6 +5,7 @@ import Tutor from "../Model/Tutor.js";
 import { ErrorHandler } from "../Utils/error.js";
 import Jwt from "jsonwebtoken";
 import Allocation from "../Model/Allocation.js";
+import { logLogin } from "./userActivityController.js";
 
 //Registeration
 export const signup = async (req, res, next) => {
@@ -60,6 +61,11 @@ export const signin = async (req, res, next) => {
     //Retrive data except password
     const { password, ...other } = user._doc;
 
+    const address = req.ip || req.headers['x-forwarded-for'];
+    user.lastLoginDate = new Date();
+    console.log(user);
+    await user.save()
+    await logLogin(user._id, address);
     res
       .cookie("access_token", token, {
         httpOnly: true,

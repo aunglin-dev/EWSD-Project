@@ -3,11 +3,6 @@ import roleTypes from "./roleType.js";
 
 const studentSchema = new mongoose.Schema(
     {
-    username: {
-       type: String,
-       required: true,
-       unique: true,
-    },
     name: {
       type: String,
       required: true,
@@ -32,7 +27,8 @@ const studentSchema = new mongoose.Schema(
     lastInteractionDate: {
         type: Date,
         default: Date.now,
-    }
+    },
+    lastLoginDate: { type: Date, default: null } 
   },
   { timestamps: true }
 );

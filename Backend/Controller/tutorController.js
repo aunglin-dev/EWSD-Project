@@ -1,4 +1,5 @@
 import Tutor from '../Model/Tutor.js';
+import UserActivity from '../Model/UserActivity.js';
 
 
 // Create a new tutor
@@ -50,6 +51,7 @@ export const deleteTutor = async (req, res) => {
     try {
         const tutor = await Tutor.findByIdAndDelete(req.params.id);
         if (!tutor) return res.status(404).json({ message: 'Tutor not found' });
+        await UserActivity.deleteMany({userId : req.params.id});
         res.status(200).json({ message: 'Tutor deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -27,6 +27,7 @@ import documentRouter from "./Routes/documentRoute.js";
 import documentCommentRouter from "./Routes/documentCommentRoute.js";
 import blogRouter from "./Routes/blogRoute.js";
 import blogCommentRouter from "./Routes/blogCommentRoute.js";
+import activityRouter from "./Routes/activityRoute.js";
 
 dotenv.config();
 
@@ -81,6 +82,7 @@ app.use("/api/documents", documentRouter);
 app.use("/api/documentcomments", documentCommentRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/blogcomments", blogCommentRouter);
+app.use("/api/activities", activityRouter )
 
 
 app.use((err, req, res, next) => {
@@ -126,12 +128,12 @@ const startWorker = () => {
 };
 
 
-try {
-    startWorker();
-} catch (err) {
-    console.error('Error starting worker:', err);
-    worker = null;
-}
+// try {
+//     startWorker();
+// } catch (err) {
+//     console.error('Error starting worker:', err);
+//     worker = null;
+// }
 
 
 //Manually Trigger Email Sending Functionality To Student & Tutor Whose Interaction is More Than 28 day old
