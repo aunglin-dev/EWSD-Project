@@ -3,7 +3,7 @@ import Meeting from "../Model/Meeting.js";
 //  Create a new meeting
 export const createMeeting = async (req, res) => {
     try {
-        const { role, allocationId, dateTime, type, note, meetingLink, meetingLocation, meetingPlatform } = req.body;
+        const { role, allocationId, dateTime, type, title, remark, meetingLink, meetingLocation, meetingPlatform, status } = req.body;
 
         // Capitalize first letter of role
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
@@ -13,10 +13,12 @@ export const createMeeting = async (req, res) => {
             allocationId,
             dateTime,
             type,
-            note,
+            title,
+            remark,
             meetingLink,
             meetingLocation,
-            meetingPlatform
+            meetingPlatform,
+            status,
         });
 
         await newMeeting.save();
