@@ -230,65 +230,6 @@ export default function AllocatePage() {
           <CircularProgress />
           :
           selectedTutor ? (
-            // <Box>
-            //   {loading && <CircularProgress />}
-            //   {allocatedTutess.length < 1 ? (
-            //     <h3 style={{ width: "100%" }}>
-            //       No allocated students for this tutor {selectedTutor?.name}
-            //     </h3>
-            //   ) : (
-            //     <Typography
-            //       variant="h6"
-            //       textTransform="uppercase"
-            //       fontWeight="bold"
-            //       marginBottom="20px"
-            //     >
-            //       Tutees
-            //     </Typography>
-            //   )}
-            //   <Box
-            //     display="grid"
-            //     gridTemplateColumns="repeat(auto-fit, 10rem)"
-            //     gridAutoFlow="dense"
-            //     gap="30px"
-            //     justifyContent="start"
-            //     alignItems="start"
-            //   >
-            //     {/* {allocatedTutess.length < 1 && (
-            //       <h3 style={{width:'100%'}}>
-            //         No allocated students for this tutor {selectedTutor?.name}
-            //       </h3>
-            //     )} */}
-            //     {allocatedTutess?.allocation?.students.map((studentData) => (
-            //       <Box position="relative">
-            //         <Card
-            //           sx={{ position: "relative" }}
-            //           title={studentData?.student?.name}
-            //           subtitle={studentData?.student?.email}
-            //           //addition={student.email}
-            //           imgSrc={studentData?.student?.img}
-            //           tutorName={selectedTutor?.name}
-            //         />
-            //         <RemoveCircleIcon
-            //           onClick={() =>
-            //             handleRemoveAllocation(
-            //               studentData?.student?.allocation_id
-            //             )
-            //           }
-            //           sx={{
-            //             position: "absolute",
-            //             cursor: "pointer",
-            //             right: "-10px",
-            //             top: "-10px",
-            //             width: "30px",
-            //             height: "30px",
-            //             color: "red",
-            //           }}
-            //         />
-            //       </Box>
-            //     ))}
-            //   </Box>
-            // </Box>
             <>
               {allocatedTutorStudents?.filter((selected) => (
                 selected.tutor._id === selectedTutor._id)).map((allocation, index) => (

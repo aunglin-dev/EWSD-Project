@@ -57,7 +57,7 @@ export default function LoginForm() {
         } else if (role === "Student") {
           navigate(`/student-dashboard/${user._id}`);
         } else if (role === "Tutor") {
-          navigate("/tutor-dashboard");
+          navigate(`/tutor-dashboard/${user._id}`);
         }
       }
     } catch (err) {
