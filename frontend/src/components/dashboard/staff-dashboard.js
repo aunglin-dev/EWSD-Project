@@ -139,7 +139,7 @@ export default function StaffDashboard() {
               </Box>
               <Typography variant={isSmallestScreens ? "h5" : "h4"} color="primary.main">{tutors.length} Tutors</Typography>
               <Box display="flex" justifyContent="end">
-                <IconButton>
+                <IconButton href="/tutors">
                   <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
                 </IconButton>
               </Box>
@@ -160,7 +160,7 @@ export default function StaffDashboard() {
               </Box>
               <Typography variant={isSmallestScreens ? "h5" : "h4"} color="primary.main">{students.length} Students</Typography>
               <Box display="flex" justifyContent="end">
-                <IconButton>
+                <IconButton href="/students">
                   <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
                 </IconButton>
               </Box>
@@ -178,7 +178,7 @@ export default function StaffDashboard() {
               </Box>
               <Typography mt="20px" variant={isSmallestScreens ? "caption" : "subtitle2"} fontWeight="400">Need student allocations</Typography>
               <Box display="flex" justifyContent="end">
-                <IconButton>
+                <IconButton href="/allocate">
                   <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
                 </IconButton>
               </Box>
@@ -196,7 +196,7 @@ export default function StaffDashboard() {
               </Box>
               <Typography mt="20px" variant={isSmallestScreens ? "caption" : "subtitle2"} fontWeight="400">Need tutor allocations</Typography>
               <Box display="flex" justifyContent="end">
-                <IconButton>
+                <IconButton href="/allocate">
                   <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
                 </IconButton>
               </Box>
