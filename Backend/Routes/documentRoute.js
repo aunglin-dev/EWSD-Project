@@ -1,10 +1,11 @@
 import express from "express";
-import { uploadDocument, getAllDocuments, getDocumentById, getAllDocumentsByRole, deleteDocument, getDocumentsByAllocationIdAndRole, getDocumentsByAllocationId, updateDocument } from "../Controller/documentController.js";
+import { uploadDocument, getAllDocuments, getDocumentById, getAllDocumentsByRole, deleteDocument, getDocumentsByAllocationIdAndRole, getDocumentsByAllocationId, updateDocument, getLatestDocument } from "../Controller/documentController.js";
 import upload from "../Service/multerConfig.js";
 
 export const documentRouter = express.Router();
 
 documentRouter.get("/", getAllDocuments); // Get all documents
+documentRouter.get("/recent", getLatestDocument); // Get all documents
 documentRouter.get("/:id", getDocumentById); // Get a document by ID
 documentRouter.get("/role/:role", getAllDocumentsByRole); // Get a document by ID
 documentRouter.get("/allocation/:allocationId", getDocumentsByAllocationId); // Get documents by allocationId

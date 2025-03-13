@@ -63,12 +63,15 @@ export const signin = async (req, res, next) => {
 
     const address = req.ip || req.headers['x-forwarded-for'];
     user.lastLoginDate = new Date();
-    console.log(user);
+    const userModal = role.charAt(0).toUpperCase() + role.slice(1);
     await user.save()
-    await logLogin(user._id, address);
+    await logLogin(user._id, userModal, address, role);
     res
       .cookie("access_token", token, {
         httpOnly: true,
+        domain : "localhost",
+        sameSite : "lax",
+        secure : false
       })
       .status(200)
       .json({...other, allocations});

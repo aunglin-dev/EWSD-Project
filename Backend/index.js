@@ -28,6 +28,9 @@ import documentCommentRouter from "./Routes/documentCommentRoute.js";
 import blogRouter from "./Routes/blogRoute.js";
 import blogCommentRouter from "./Routes/blogCommentRoute.js";
 import activityRouter from "./Routes/activityRoute.js";
+import activityLogger from "./Middleware/activityLogger.js";
+import authMiddleware from "./Middleware/auth.js";
+import dashboardRoute from "./Routes/dashboardRoute.js";
 
 dotenv.config();
 
@@ -41,7 +44,7 @@ const server = http.createServer(app);
 // Set up socket.io server
 const io = new Server(server,{
     cors: {
-        origin: "*",
+        origin: "*"
     },
 });
 app.set("io", io);
@@ -67,8 +70,12 @@ seeder();
 //Middleware
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:3000", 
+    credentials: true,
+  }));
 app.use("/uploads", express.static("uploads")); // Serve uploaded files as static assets
+app.use(activityLogger);
 
 //Routers
 app.use("/api/staff", staffRouter);
@@ -83,6 +90,7 @@ app.use("/api/documentcomments", documentCommentRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/blogcomments", blogCommentRouter);
 app.use("/api/activities", activityRouter )
+app.use("api/dashboard", dashboardRoute)
 
 
 app.use((err, req, res, next) => {

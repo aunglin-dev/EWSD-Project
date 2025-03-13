@@ -1,7 +1,16 @@
 import mongoose from "mongoose";
 
 const userActivitySchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        required: true, 
+        refPath: 'userModel' // Dynamic reference based on 'userModel'
+    },
+    userModel: { 
+        type: String, 
+        required: true, 
+        enum: ['Student', 'Tutor', 'Staff'] // Allowed models
+    },
     activityType: { type: String, required: true },
     pageViewed: { type: String },
     browserInfo: { type: String },

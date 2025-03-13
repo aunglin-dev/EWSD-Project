@@ -114,6 +114,19 @@ export const getAllDocumentsByRole = async (req, res) => {
     }
 };
 
+// get latest documents
+export const getLatestDocument = async (req, res) => {
+    try {
+        const document = await Document.find().sort({createdAt : -1}).limit(10)
+        if (!document) {
+            return res.status(404).json({ error: "Document not found" });
+        }
+        res.json(document);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 // Update a document
 export const updateDocument = async (req, res) => {
