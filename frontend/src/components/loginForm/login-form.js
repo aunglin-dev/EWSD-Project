@@ -21,8 +21,8 @@ import {
   loginSuccess,
   loginFailure,
 } from "../../Storage/authSlice";
-import axios from "axios";
 import FormErrorMessage from "../error/formErrorMessage";
+import axiosInstance from "../../services/AxiosInstance";
 
 export default function LoginForm() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -38,7 +38,7 @@ export default function LoginForm() {
   const onSubmit = async (data) => {
     dispatch(loginStart());
     try {
-      const res = await axios.post("http://localhost:8000/api/auth/signin", {
+      const res = await axiosInstance.post("http://localhost:8000/api/auth/signin", {
         email: data.email,
         password: data.password,
         role: data.role,

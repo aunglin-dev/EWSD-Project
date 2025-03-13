@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import io from "socket.io-client";
 import { Box, Button, TextField, Typography, Paper, useMediaQuery } from "@mui/material";
 import LoginUserSide from "./login-user-side";
 import OtherMessageParty from "./otherMessageParty";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../services/AxiosInstance";
 
 const socket = io("http://localhost:8000");
 
@@ -30,7 +30,7 @@ export default function MessagePage() {
       console.log("User has no allocations.");
       return;
     }
-    axios
+    axiosInstance
       .get(`http://localhost:8000/api/messages/${allocationId}`)
       .then((response) => {
         setMessages(response.data);
@@ -63,7 +63,7 @@ export default function MessagePage() {
   const handleSend = () => {
     console.log("msg sent ");
     if (newMessage.trim() === "") return;
-    axios
+    axiosInstance
       .post("http://localhost:8000/api/messages", {
         allocationId,
         role,

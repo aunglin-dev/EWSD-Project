@@ -1,6 +1,5 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
-import Axios from "axios";
 import {
   Box,
   Typography,
@@ -25,6 +24,7 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { useSelector } from "react-redux";
 import StudentDashboardMeetingCard from "./student-dashboard-meeting-card";
 import DashboardCommentCard from "./dashboard-comment-card";
+import axiosInstance from "../../services/AxiosInstance";
 
 export default function StudentDashboard() {
   const { id } = useParams();
@@ -46,11 +46,11 @@ export default function StudentDashboard() {
     if (id) {
       const fetchData = async () => {
         try {
-          const studentResponse = await Axios.get(
+          const studentResponse = await axiosInstance.get(
             `http://localhost:8000/api/students/${id}`
           );
 
-          const allocationsResponse = await Axios.get(
+          const allocationsResponse = await axiosInstance.get(
             "http://localhost:8000/api/allocations"
           );
 
@@ -62,7 +62,7 @@ export default function StudentDashboard() {
           };
           setStudent(student);
 
-          const meetingsResponse = await Axios.get(
+          const meetingsResponse = await axiosInstance.get(
             `http://localhost:8000/api/meetings/allocation/${student.allocations[0]._id}`
           );
 

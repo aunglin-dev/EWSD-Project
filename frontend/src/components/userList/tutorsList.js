@@ -14,8 +14,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import Axios from "axios";
 import { useSelector } from "react-redux";
+import axiosInstance from "../../services/AxiosInstance";
 
 export default function AllocatePage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -32,10 +32,10 @@ export default function AllocatePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const allocationResponse = await Axios.get(
+        const allocationResponse = await axiosInstance.get(
           "http://localhost:8000/api/allocations"
         );
-        const tutorsResponse = await Axios.get(
+        const tutorsResponse = await axiosInstance.get(
           "http://localhost:8000/api/tutors"
         );
         setAllocations(allocationResponse.data);

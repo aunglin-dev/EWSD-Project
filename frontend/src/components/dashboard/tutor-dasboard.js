@@ -1,6 +1,5 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
-import Axios from "axios";
 import {
   Box,
   Typography,
@@ -30,6 +29,7 @@ import VerifiedIcon from '@mui/icons-material/Verified'; import { PieChart } fro
 import { useSelector } from "react-redux";
 import DashboardCommentCard from "./dashboard-comment-card";
 import TutorDashboardMeetingCard from "./tutor-dashboard-meeting-card";
+import axiosInstance from "../../services/AxiosInstance";
 
 export default function TutorDashboard() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1070px)");
@@ -48,11 +48,11 @@ export default function TutorDashboard() {
     if (id) {
       const fetchData = async () => {
         try {
-          const tutorResponse = await Axios.get(
+          const tutorResponse = await axiosInstance.get(
             `http://localhost:8000/api/tutors/${id}`
           );
 
-          const allocationsResponse = await Axios.get(
+          const allocationsResponse = await axiosInstance.get(
             "http://localhost:8000/api/allocations"
           );
 

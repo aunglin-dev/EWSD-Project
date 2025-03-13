@@ -11,9 +11,9 @@ import {
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import Axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
+import axiosInstance from "../../services/AxiosInstance";
 
 export default function AllocateReallocate() {
   const { id } = useParams();
@@ -38,19 +38,19 @@ export default function AllocateReallocate() {
     console.log("useEffect triggered");
     const fetchData = async () => {
       try {
-        const tutorResponse = await Axios.get(
+        const tutorResponse = await axiosInstance.get(
           `http://localhost:8000/api/tutors/${id}`
         );
         setTutor(tutorResponse.data);
         console.log("end fetch tutor");
-        const studentResponse = await Axios.get(
+        const studentResponse = await axiosInstance.get(
           "http://localhost:8000/api/students"
         );
 
         setValue("tutor", tutorResponse.data);
         setStudents(studentResponse.data);
 
-        const allocationsResponse = await Axios.get(
+        const allocationsResponse = await axiosInstance.get(
           "http://localhost:8000/api/allocations"
         );
 
