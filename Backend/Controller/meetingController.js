@@ -115,6 +115,46 @@ export const getMeetingsByAllocationId = async (req, res) => {
     }
 };
 
+export const getMostUsedPlatform = async (req, res) => {
+    try {
+        const mostUsedPlatform = await Meeting.aggregate([
+          // Group by 'pageViewed' and count the occurrences
+          {
+            $group: {
+              _id: "$meetingPlatform", // Group by the pageViewed field
+              count: { $sum: 1 }  // Count the number of occurrences
+            }
+          },
+          // Sort by count in descending order
+          {
+            $sort: { count: -1 }
+          },
+          // Limit to the top 10 results
+          {
+            $limit: 10
+          },
+          // Optionally, project the fields for a cleaner output
+          {
+            $project: {
+              _id: 0,            // Exclude the default _id field
+              platform: "$_id",      // Rename _id to 'page'
+              count: 1            // Include the count field
+            }
+          }
+        ]);
+    
+        // Check if there are any results
+        if (!mostUsedPlatform.length) {
+          return res.status(404).json({ message: 'No platform found' });
+        }
+    
+        // Return the top 10 most viewed pages
+        res.status(200).json(mostUsedPlatform);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+};
+
 //  Update a meeting by ID
 export const updateMeeting = async (req, res) => {
     try {

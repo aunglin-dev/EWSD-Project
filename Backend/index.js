@@ -90,7 +90,7 @@ app.use("/api/documentcomments", documentCommentRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/blogcomments", blogCommentRouter);
 app.use("/api/activities", activityRouter )
-app.use("api/dashboard", dashboardRoute)
+app.use("/api/dashboard", dashboardRoute)
 
 
 app.use((err, req, res, next) => {

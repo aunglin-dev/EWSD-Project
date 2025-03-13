@@ -55,7 +55,7 @@ const meetingSchema = new mongoose.Schema(
     status: {
       type: Number,
       required: true,
-      enum: [0, 1, 2, 3], // Only 0-3 is allowed!
+      enum: [0, 1, 2, 3, 4], // Only 0-3 is allowed!
       default: 0,
     },
   },
