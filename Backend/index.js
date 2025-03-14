@@ -63,7 +63,7 @@ mongoose
 
 
 // Seed Database
-// seeder();
+seeder();
 
 
 
@@ -136,12 +136,12 @@ const startWorker = () => {
 };
 
 
-// try {
-//     startWorker();
-// } catch (err) {
-//     console.error('Error starting worker:', err);
-//     worker = null;
-// }
+try {
+    startWorker();
+} catch (err) {
+    console.error('Error starting worker:', err);
+    worker = null;
+}
 
 
 //Manually Trigger Email Sending Functionality To Student & Tutor Whose Interaction is More Than 28 day old
