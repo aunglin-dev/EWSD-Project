@@ -1,5 +1,5 @@
 import express from "express";
-import { assignedStudentByTutorId, assignedStudentByTutorIdCount, confirmedMeetingTdy, meetingCompletedThisMonth, pendingMeetingCount, pendingMeetings, requestedMeetingCountOfStudent, requestedMeetingsOfStudent, totalStudent, totalTutor, unallocatedStudents, unallocatedTutorCount, unallocatedTutors, upcommingMeetingCount, upcommingMeetingCountOfStudent, upcommingMeetings, upcommingMeetingsOfStudent } from "../Controller/dashboardController.js";
+import { assignedStudentByTutorId, assignedStudentByTutorIdCount, confirmedMeetingTdy, meetingCompletedThisMonth, pendingMeetingCount, pendingMeetings, recentCommentByStudent, recentCommentByTutor, recentDocumentByStudent, recentDocumentByTutor, requestedMeetingCountOfStudent, requestedMeetingsOfStudent, totalStudent, totalTutor, unallocatedStudents, unallocatedTutorCount, unallocatedTutors, upcommingMeetingCount, upcommingMeetingCountOfStudent, upcommingMeetings, upcommingMeetingsOfStudent } from "../Controller/dashboardController.js";
 const dashboardRoute = express.Router();
 
 //Staff Routes
@@ -19,12 +19,17 @@ dashboardRoute.get('/tutor/:tutorId/requestedMeetings', pendingMeetings)
 dashboardRoute.get('/tutor/:tutorId/requestedMeetingCount', pendingMeetingCount)
 dashboardRoute.get('/tutor/:tutorId/completedMeetingsThisMonth', meetingCompletedThisMonth)
 dashboardRoute.get('/tutor/:tutorId/confirmedMeetingsToday', confirmedMeetingTdy)
+dashboardRoute.get('/tutor/:tutorId/recentDocument', recentDocumentByTutor)
+dashboardRoute.get('/tutor/:tutorId/recentComment', recentCommentByTutor)
 
 //Students
 dashboardRoute.get('/student/:studentId/upcommingMeetings', upcommingMeetingsOfStudent)
 dashboardRoute.get('/student/:studentId/upcommingMeetingCount', upcommingMeetingCountOfStudent)
 dashboardRoute.get('/student/:studentId/requestedMeetings', requestedMeetingsOfStudent)
 dashboardRoute.get('/student/:studentId/requestedMeetingCount', requestedMeetingCountOfStudent)
+dashboardRoute.get('/student/:studentId/recentDocument', recentDocumentByStudent)
+dashboardRoute.get('/student/:studentId/recentDocument', recentCommentByStudent)
+
 
 
 

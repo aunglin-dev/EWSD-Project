@@ -1,4 +1,5 @@
 import Allocation from "../Model/Allocation.js";
+import Document from "../Model/Document.js";
 import Meeting from "../Model/Meeting.js";
 import Student from "../Model/Student.js";
 import Tutor from "../Model/Tutor.js";
@@ -290,6 +291,68 @@ export const confirmedMeetingTdy = async (req, res) => {
   }
 };
 
+export const recentDocumentByTutor = async (req, res) => {
+    try {
+      const id = req.params.tutorId;
+      const tutorAllocations = await Allocation.find({ tutor: id }).exec();
+      if (!tutorAllocations) {
+        return res
+          .status(404)
+          .json({ message: "No allocation found for this tutor" });
+      }
+      const documents = await Promise.all(
+        tutorAllocations.map(async (allocation) => {
+          const meeting = await Document.find({
+            allocationId: allocation._id,
+            role: "Tutor",
+          }).limit(5).exec();
+          return meeting;
+        })
+      );
+  
+      res.status(200).json(documents.flat());
+    } catch (err) {
+      res.status(500).json(err.message);
+    }
+  };
+
+  export const recentCommentByTutor = async (req, res) => {
+    try {
+      const id = req.params.tutorId;
+      const tutorAllocations = await Allocation.find({ tutor: id }).exec();
+      if (!tutorAllocations) {
+        return res
+          .status(404)
+          .json({ message: "No allocation found for this tutor" });
+      }
+      const documents = await Promise.all(
+        tutorAllocations.map(async (allocation) => {
+          const meeting = await Comment.find({
+            allocationId: allocation._id,
+            role: "Tutor",
+          }).limit(2).exec();
+          return meeting;
+        })
+      );
+  
+      res.status(200).json(documents.flat());
+    } catch (err) {
+      res.status(500).json(err.message);
+    }
+  };
+
+  export const getLatestDocument = async (req, res) => {
+    try {
+        const document = await Document.find().sort({createdAt : -1}).limit(10)
+        if (!document) {
+            return res.status(404).json({ error: "Document not found" });
+        }
+        res.json(document);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 
 //Student
@@ -301,7 +364,7 @@ export const upcommingMeetingsOfStudent = async (req, res) => {
       if (!studentAllocation) {
         return res
           .status(404)
-          .json({ message: "No allocation found for this tutor" });
+          .json({ message: "No allocation found for this student" });
       }
       const currentDate = new Date(); // Current date and time
       const meetings = await Meeting.find({
@@ -323,7 +386,7 @@ export const upcommingMeetingsOfStudent = async (req, res) => {
       if (!studentAllocation) {
         return res
           .status(404)
-          .json({ message: "No allocation found for this tutor" });
+          .json({ message: "No allocation found for this student" });
       }
       const currentDate = new Date(); // Current date and time
       const meetings = await Meeting.find({
@@ -367,7 +430,7 @@ export const upcommingMeetingsOfStudent = async (req, res) => {
       if (!studentAllocation) {
         return res
           .status(404)
-          .json({ message: "No allocation found for this tutor" });
+          .json({ message: "No allocation found for this student" });
       }
       const currentDate = new Date(); // Current date and time
       const meetings = await Meeting.find({
@@ -377,6 +440,46 @@ export const upcommingMeetingsOfStudent = async (req, res) => {
       });
   
       res.status(200).json(meetings.flat().length);
+    } catch (err) {
+      res.status(500).json(err.message);
+    }
+  };
+
+  export const recentDocumentByStudent = async (req, res) => {
+    try {
+      const id = req.params.studentId;
+      const studentAllocation = await Allocation.findOne({ student: id }).exec();
+      if (!studentAllocation) {
+        return res
+          .status(404)
+          .json({ message: "No allocation found for this student" });
+      }
+      const meetings = await Document.find({
+        allocationId: studentAllocation._id,
+        role : 'Student'
+      }).limit(5);
+  
+      res.status(200).json(meetings.flat());
+    } catch (err) {
+      res.status(500).json(err.message);
+    }
+  };
+
+  export const recentCommentByStudent = async (req, res) => {
+    try {
+      const id = req.params.studentId;
+      const studentAllocation = await Allocation.findOne({ student: id }).exec();
+      if (!studentAllocation) {
+        return res
+          .status(404)
+          .json({ message: "No allocation found for this student" });
+      }
+      const meetings = await Comment.find({
+        allocationId: studentAllocation._id,
+        role : 'Student'
+      }).limit(2);
+  
+      res.status(200).json(meetings.flat());
     } catch (err) {
       res.status(500).json(err.message);
     }
