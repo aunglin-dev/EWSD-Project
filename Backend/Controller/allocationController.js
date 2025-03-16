@@ -146,3 +146,44 @@ export const getAllocationsByTutorId = async (req, res) => {
     }
 };
 
+
+// Get the last five allocations for a specific tutor
+export const getLastFiveAllocationsByTutorId = async (req, res) => {
+    try {
+        const { tutorId } = req.params;
+        const allocations = await Allocation.find({ tutor: tutorId })
+            .sort({ createdAt: -1 }) // Sort by creation date in descending order
+            .limit(5) // Limit to the last 5 allocations
+            .populate("student")
+            .populate("createdStaffId")
+            .populate("tutor")
+            .populate("meetings");
+
+        if (!allocations.length) {
+            return res.status(404).json({ message: "No recent allocations found for this tutor" });
+        }
+
+        const tutorInfo = allocations[0].tutor;
+
+        // Transform allocations into student objects with allocation_id inside student
+        const students = allocations.map((allocation, index) => ({
+            student: {
+                ...allocation.student.toObject(), // Ensure student is a plain object
+                allocation_id: allocation._id, // Add allocation_id inside student object
+            },
+            createdStaffId: allocation.createdStaffId,
+        }));
+        
+        // Send the response with structured data
+        res.status(200).json({
+            allocation: {
+                tutor: tutorInfo,
+                students,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
