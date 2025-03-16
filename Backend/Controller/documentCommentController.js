@@ -1,7 +1,8 @@
 import DocumentComment from "../Model/DocumentComment.js";
 import Allocation from "../Model/Allocation.js";
 import Document from "../Model/Document.js";
-
+import Student from '../Model/Student.js';
+import Tutor from '../Model/Tutor.js';
 
 // Create a new comment
 export const addComment = async (req, res) => {
@@ -202,35 +203,55 @@ export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
         // Capitalize first letter of role
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
 
-        // Validate the role
-        if (formattedRole !== 'Student' && formattedRole !== 'Tutor') {
+        // Validate role
+        if (formattedRole !== "Student" && formattedRole !== "Tutor") {
             return res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
         }
 
-        // Find allocation by studentId or tutorId
-        const allocation = await Allocation.findOne({
-            [formattedRole.toLowerCase()]: id,
-        }).populate("student tutor createdStaffId");
+        // Find all allocations by studentId or tutorId
+        const allocations = await Allocation.find({ [formattedRole.toLowerCase()]: id });
 
-        if (!allocation) {
-            return res.status(404).json({error: "Allocation not found for the given student/tutor ID"});
+        if (!allocations.length) {
+            return res.status(404).json({ error: "No allocations found for the given user ID." });
         }
 
-        // Find the last two comments based on allocationId and role
-        const documents = await Document.find({ allocationId: allocation._id });
+        // Get all allocation IDs
+        const allocationIds = allocations.map(allocation => allocation._id);
+
+        // Find documents related to these allocations
+        const documents = await Document.find({ allocationId: { $in: allocationIds } });
 
         if (!documents.length) {
-            return res.status(404).json({ error: "No document found for the given uploader id & role" });
+            return res.status(404).json({ error: "No documents found for the given user ID & role." });
         }
 
+        // Get all document IDs
         const documentIds = documents.map(doc => doc._id);
-        // Fetch last two comments across all documents
-        const comments = await DocumentComment.find({ documentId: { $in: documentIds }, role: formattedRole })
+
+        // Fetch last two comments where Tutor sees Student comments & vice versa
+        const commenterRole = formattedRole === "Student" ? "Tutor" : "Student";
+        const comments = await DocumentComment.find({ documentId: { $in: documentIds }, role: commenterRole })
             .sort({ createdAt: -1 })
-            .limit(2);
+            .limit(2)
+            .lean();
 
         if (!comments.length) {
-            return res.status(404).json({ error: "No comments found for the given uploader id & role" });
+            return res.status(404).json({ error: "No comments found for the given user ID & role." });
+        }
+        // Attach user details for each comment
+        for (let comment of comments) {
+            // Find document
+            const document = await Document.findById(comment.documentId);
+            if (!document) continue;
+
+            // Find allocation for this document
+            const allocation = await Allocation.findById(document.allocationId);
+            if (!allocation) continue;
+
+            // Find user based on role
+            comment.commentOwner = formattedRole === "Tutor"
+                ? await Student.findById(allocation.student)
+                : await Tutor.findById(allocation.tutor);
         }
         
         res.json(comments);
