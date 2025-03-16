@@ -155,13 +155,13 @@ export const getLastFiveAllocationsByTutorId = async (req, res) => {
             .sort({ createdAt: -1 }) // Sort by creation date in descending order
             .limit(5) // Limit to the last 5 allocations
             .populate("student")
+            .populate("createdStaffId")
             .populate("tutor")
-            .populate("createdStaffId");
+            .populate("meetings");
 
         if (!allocations.length) {
             return res.status(404).json({ message: "No recent allocations found for this tutor" });
         }
-        
         
         // Send the response with structured data
         res.status(200).json(allocations);
