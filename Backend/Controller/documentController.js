@@ -1,4 +1,5 @@
 import Document from "../Model//Document.js";
+import Allocation from "../Model/Allocation.js";
 import fs from "fs";
 import path from "path";
 
@@ -188,5 +189,80 @@ export const deleteDocument = async (req, res) => {
         res.json({ message: "Document deleted successfully" });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+
+// Get last five documents by allocationId and role, including uploader data from Allocation (Student or Tutor)
+export const getLastFiveDocumentsByAllocationIdAndRole = async (req, res) => {
+    try {
+        const { allocationId, role } = req.params;
+
+        // Capitalize the first letter of the role for consistency
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+        // Find documents by allocationId and role
+        const documents = await Document.find({ allocationId, role: formattedRole })
+            .sort({ createdAt: -1 })
+            .limit(5);
+
+        if (!documents.length) {
+            return res.status(404).json({ error: "No documents found for the given allocationId and role" });
+        }
+
+        // Retrieve the allocation data
+        const allocation = await Allocation.findById(allocationId).populate("student tutor createdStaffId")
+        
+
+        // Retrieve uploader data based on allocation's role
+        for (let document of documents) {
+            if (document.role === 'Student') {
+                // Populate student data
+                document.uploader = allocation?.student;
+            } else if (document.role === 'Tutor') {
+                // Populate tutor data
+                document.uploader = allocation?.tutor;
+            }
+        }
+
+        res.json(documents);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
+    try {
+        const {role, id} = req.params; // either studentId or tutorId based on the role
+
+        // Capitalize the first letter of the role for consistency
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+        if (formattedRole !== 'Student' && formattedRole !== 'Tutor') {
+            return res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
+        }
+
+        // Find allocation by studentId or tutorId
+        const allocation = await Allocation.findOne({
+            [formattedRole.toLowerCase()]: id,
+        }).populate("student tutor createdStaffId");
+
+        if (!allocation) {
+            return res.status(404).json({error: "Allocation not found for the given student/tutor ID"});
+        }
+
+        // Find documents related to this allocation
+        const documents = await Document.find({allocationId: allocation._id, role: formattedRole})
+            .sort({createdAt: -1})
+            .limit(5);
+
+        if (!documents.length) {
+            return res.status(404).json({error: "No documents found for the given allocation"});
+        }
+        
+        res.json(documents);
+    } catch (error) {
+        res.status(500).json({error: error.message});
     }
 };

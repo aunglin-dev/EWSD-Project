@@ -1,4 +1,6 @@
 import DocumentComment from "../Model/DocumentComment.js";
+import Allocation from "../Model/Allocation.js";
+import Document from "../Model/Document.js";
 
 
 // Create a new comment
@@ -192,3 +194,47 @@ export const deleteComment = async (req, res) => {
     }
 };
 
+
+export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
+    try {
+        const { id, role } = req.params;
+
+        // Capitalize first letter of role
+        const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+        // Validate the role
+        if (formattedRole !== 'Student' && formattedRole !== 'Tutor') {
+            return res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
+        }
+
+        // Find allocation by studentId or tutorId
+        const allocation = await Allocation.findOne({
+            [formattedRole.toLowerCase()]: id,
+        }).populate("student tutor createdStaffId");
+
+        if (!allocation) {
+            return res.status(404).json({error: "Allocation not found for the given student/tutor ID"});
+        }
+
+        // Find the last two comments based on allocationId and role
+        const documents = await Document.find({ allocationId: allocation._id });
+
+        if (!documents.length) {
+            return res.status(404).json({ error: "No document found for the given uploader id & role" });
+        }
+
+        const documentIds = documents.map(doc => doc._id);
+        // Fetch last two comments across all documents
+        const comments = await DocumentComment.find({ documentId: { $in: documentIds }, role: formattedRole })
+            .sort({ createdAt: -1 })
+            .limit(2);
+
+        if (!comments.length) {
+            return res.status(404).json({ error: "No comments found for the given uploader id & role" });
+        }
+        
+        res.json(comments);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
