@@ -27,11 +27,13 @@ export const signin = async (req, res, next) => {
   try {
     const { email, role } = req.body;
 
+    const formattedRole = role.charAt(0).toUpperCase() + role.slice(1)
+    console.log(formattedRole)
     //Find user from database
     const user =
-      role === "staff"
+      formattedRole === "Staff"
         ? await Staff.findOne({ email })
-        : role === "student"
+        : formattedRole === "Student"
         ? await Student.findOne({ email })
         : await Tutor.findOne({ email });
 
@@ -45,11 +47,11 @@ export const signin = async (req, res, next) => {
       return next(ErrorHandler(400, "Invalid Username or Password"));
 
     let allocations = null;
-    if(role == "student"){
+    if(formattedRole == "Student"){
       allocations = await Allocation.find({student : user._id});
     }
 
-    if(role == "tutor"){
+    if(formattedRole == "Tutor"){
       allocations = await Allocation.find({tutor : user._id});
     }
 
@@ -63,9 +65,9 @@ export const signin = async (req, res, next) => {
 
     const address = req.ip || req.headers['x-forwarded-for'];
     user.lastLoginDate = new Date();
-    const userModal = role.charAt(0).toUpperCase() + role.slice(1);
+    const userModal = formattedRole
     await user.save()
-    await logLogin(user._id, userModal, address, role);
+    await logLogin(user._id, userModal, address, formattedRole);
     res
       .cookie("access_token", token, {
         httpOnly: true,
