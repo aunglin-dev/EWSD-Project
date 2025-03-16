@@ -10,7 +10,8 @@ import {
     deleteComment,
     deleteCommentsByDocumentId,
     deleteCommentsByDocumentIdAndRole,
-    getLatestComment
+    getLatestComment,
+    getLastTwoCommentsByTutorOrStudentId
 } from "../Controller/documentCommentController.js";
 
 export const documentCommentRouter = express.Router();
@@ -21,6 +22,7 @@ documentCommentRouter.get("/:id", getCommentsById); // Get a comment by Comment 
 documentCommentRouter.get("/role/:role", getCommentsByRole); // Get All Document Comments by Role
 documentCommentRouter.get("/document/:documentId", getDocumentCommentsByDocumentId); // Get All Document Comments by Document ID
 documentCommentRouter.get("/document/:role/:documentId", getDocumentCommentsByDocumentIdAndRole); // Get All Document Comments by Document ID and Role
+documentCommentRouter.get('/last2/:role/:id', getLastTwoCommentsByTutorOrStudentId);
 
 documentCommentRouter.post("/", addComment); // Add a comment
 
