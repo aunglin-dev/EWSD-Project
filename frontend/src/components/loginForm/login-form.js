@@ -21,8 +21,8 @@ import {
   loginSuccess,
   loginFailure,
 } from "../../Storage/authSlice";
-import axios from "axios";
 import FormErrorMessage from "../error/formErrorMessage";
+import axios from "axios";
 
 export default function LoginForm() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -42,6 +42,8 @@ export default function LoginForm() {
         email: data.email,
         password: data.password,
         role: data.role,
+      }, {
+        withCredentials : true
       });
 
       if (res.status === 200) {

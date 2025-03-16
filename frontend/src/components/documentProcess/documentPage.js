@@ -14,9 +14,9 @@ import {
 } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import DownloadIcon from "@mui/icons-material/Download";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
+import axiosInstance from "../../services/AxiosInstance";
 
 export default function DocumentPage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -33,7 +33,7 @@ export default function DocumentPage() {
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const response = await axios.get(
+        const response = await axiosInstance.get(
           `http://localhost:8000/api/documents/allocation/${allocationId}`
         );
 
@@ -62,7 +62,7 @@ export default function DocumentPage() {
 
   const fetchComments = async (documentId) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `http://localhost:8000/api/documentcomments/document/${documentId}`
       );
 
@@ -100,7 +100,7 @@ export default function DocumentPage() {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "http://localhost:8000/api/documents",
         formData,
         {

@@ -14,9 +14,9 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CommentIcon from "@mui/icons-material/Comment";
 import DownloadIcon from "@mui/icons-material/Download";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
+import axiosInstance from "../../services/AxiosInstance";
 
 export default function DocumentPage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -40,11 +40,11 @@ export default function DocumentPage() {
         const fetchedStudents = await Promise.all(
           allocations.map(async (allocation) => {
             try {
-              const studentResponse = await axios.get(
+              const studentResponse = await axiosInstance.get(
                 `http://localhost:8000/api/students/${allocation.student}`
               );
               const studentName = studentResponse.data.name;
-              const documentsResponse = await axios.get(
+              const documentsResponse = await axiosInstance.get(
                 `http://localhost:8000/api/documents/allocation/${allocation.id}`
               );
               const lastSubmissionDate =
@@ -84,7 +84,7 @@ export default function DocumentPage() {
 
   const fetchDocuments = async (allocationId) => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `http://localhost:8000/api/documents/allocation/${allocationId}`
       );
 
@@ -126,7 +126,7 @@ export default function DocumentPage() {
       console.log("current user role =>", currentUser?.role);
       console.log("doc id =>", selectedDocumentId);
       console.log("comment input=>", commentInput);
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "http://localhost:8000/api/documentcomments",
         {
           role: currentUser?.role,

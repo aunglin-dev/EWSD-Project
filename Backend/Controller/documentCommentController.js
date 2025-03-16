@@ -103,6 +103,19 @@ export const getDocumentCommentsByDocumentIdAndRole = async (req, res) => {
     }
 };
 
+// get latest comment
+export const getLatestComment = async (req, res) => {
+    try {
+        const comment = await DocumentComment.find().sort({createdAt : -1}).limit(10)
+        if (!comment) {
+            return res.status(404).json({ error: "Comment not found" });
+        }
+        res.json(comment);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 // Update a comment
 export const updateComment = async (req, res) => {

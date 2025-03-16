@@ -146,3 +146,28 @@ export const getAllocationsByTutorId = async (req, res) => {
     }
 };
 
+
+// Get the last five allocations for a specific tutor
+export const getLastFiveAllocationsByTutorId = async (req, res) => {
+    try {
+        const { tutorId } = req.params;
+        const allocations = await Allocation.find({ tutor: tutorId })
+            .sort({ createdAt: -1 }) // Sort by creation date in descending order
+            .limit(5) // Limit to the last 5 allocations
+            .populate("student")
+            .populate("tutor")
+            .populate("createdStaffId");
+
+        if (!allocations.length) {
+            return res.status(404).json({ message: "No recent allocations found for this tutor" });
+        }
+        
+        
+        // Send the response with structured data
+        res.status(200).json(allocations);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+

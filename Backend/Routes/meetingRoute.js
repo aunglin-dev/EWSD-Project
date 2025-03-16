@@ -9,13 +9,15 @@ import {
     updateMeeting,
     deleteMeeting,
     deleteMeetingsByRoleAndAllocationId,
-    deleteMeetingsByAllocationId
+    deleteMeetingsByAllocationId,
+    getMostUsedPlatform
 } from "../Controller/meetingController.js";
 
 export const meetingRouter = express.Router();
 
 
 meetingRouter.get("/", getAllMeetings); // Get all meetings
+meetingRouter.get("/mostUsedPlatform", getMostUsedPlatform); // Get all meetings
 meetingRouter.get("/:id", getMeetingById); // Get a meeting by ID
 meetingRouter.get("/role/:role/", getAllMeetingsByRole); // Get All meetings by Role
 meetingRouter.get("/allocation/:allocationId", getMeetingsByAllocationId); // Get meetings by Allocation ID only

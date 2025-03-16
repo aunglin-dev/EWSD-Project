@@ -34,6 +34,18 @@ export const getAllBlogs = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+// get latest comment
+export const getLatestBlog = async (req, res) => {
+    try {
+        const blog = await Blog.find().sort({createdAt : -1}).limit(10)
+        if (!blog) {
+            return res.status(404).json({ error: "Blog not found" });
+        }
+        res.json(blog);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 // Get all blogs by role 
 export const getBlogsByRole = async (req, res) => {

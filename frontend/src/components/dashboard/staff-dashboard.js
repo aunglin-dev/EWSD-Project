@@ -14,8 +14,8 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import AddIcon from "@mui/icons-material/Add";
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
-import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../services/AxiosInstance";
 
 export default function StaffDashboard() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1156px)");
@@ -30,13 +30,13 @@ export default function StaffDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await Axios.get(
+        const response = await axiosInstance.get(
           "http://localhost:8000/api/allocations"
         );
-        const tutorResponse = await Axios.get(
+        const tutorResponse = await axiosInstance.get(
           "http://localhost:8000/api/tutors"
         );
-        const studentResponse = await Axios.get(
+        const studentResponse = await axiosInstance.get(
           "http://localhost:8000/api/students"
         );
         setData(response.data);
@@ -68,7 +68,7 @@ export default function StaffDashboard() {
 
     if (isConfirmed) {
       try {
-        const response = await Axios.delete(
+        const response = await axiosInstance.delete(
           `http://localhost:8000/api/allocations/${allocationId}`
         );
         if (response.status === 200) {

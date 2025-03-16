@@ -3,11 +3,6 @@ import roleTypes from "./roleType.js";
 
 const staffSchema = new mongoose.Schema(
     {
-        username: {
-            type: String,
-            required: true,
-            unique: true,
-        },
         name: {
             type: String,
             required: true,
@@ -28,7 +23,8 @@ const staffSchema = new mongoose.Schema(
             enum: roleTypes,
             default: "Staff",
             required: false,
-        }
+        },
+        lastLoginDate: { type: Date, default: null } 
       
     },
     { timestamps: true }

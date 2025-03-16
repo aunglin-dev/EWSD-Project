@@ -9,12 +9,14 @@ import {
     updateComment,
     deleteComment,
     deleteCommentsByDocumentId,
-    deleteCommentsByDocumentIdAndRole
+    deleteCommentsByDocumentIdAndRole,
+    getLatestComment
 } from "../Controller/documentCommentController.js";
 
 export const documentCommentRouter = express.Router();
 
 documentCommentRouter.get("/", getAllComments); // Get all comments
+documentCommentRouter.get("/recent", getLatestComment); // Get Recent comments
 documentCommentRouter.get("/:id", getCommentsById); // Get a comment by Comment ID
 documentCommentRouter.get("/role/:role", getCommentsByRole); // Get All Document Comments by Role
 documentCommentRouter.get("/document/:documentId", getDocumentCommentsByDocumentId); // Get All Document Comments by Document ID

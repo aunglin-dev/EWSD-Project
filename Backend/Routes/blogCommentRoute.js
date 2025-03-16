@@ -9,13 +9,15 @@ import {
     updateComment,
     deleteComment,
     deleteCommentsByBlogId,
-    deleteCommentsByBlogIdAndRole
+    deleteCommentsByBlogIdAndRole,
+    getLatestBlogComment
 } from "../Controller/blogCommentController.js";
 
 export const blogCommentRouter = express.Router();
 
 // Define blog comment routes
 blogCommentRouter.get("/", getAllBlogComments); // Get all comments
+blogCommentRouter.get("/recent", getLatestBlogComment); // Get all comments
 blogCommentRouter.get("/:id", getCommentById); // Get a comment by comment ID
 blogCommentRouter.get("/role/:role", getCommentsByRole); // Get all comments by role
 blogCommentRouter.get("/blog/:blogId", getCommentsByBlogId); // Get all comments for a blog post

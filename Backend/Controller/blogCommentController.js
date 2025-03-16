@@ -42,6 +42,19 @@ export const getAllBlogComments = async (req, res) => {
     }
 };
 
+// get latest comment
+export const getLatestBlogComment = async (req, res) => {
+    try {
+        const blogComment = await BlogComment.find().sort({createdAt : -1}).limit(10)
+        if (!blogComment) {
+            return res.status(404).json({ error: "blog Comment not found" });
+        }
+        res.json(blogComment);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // Get all comments for a specific blog post
 export const getCommentsByBlogId = async (req, res) => {
     try {
