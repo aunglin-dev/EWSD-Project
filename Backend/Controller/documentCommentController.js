@@ -253,9 +253,10 @@ export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
                 ? await Student.findById(allocation.student)
                 : await Tutor.findById(allocation.tutor);
         }
-        
+
         res.json(comments);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
