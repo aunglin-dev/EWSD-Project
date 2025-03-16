@@ -57,6 +57,7 @@ export const logLogin = async(id, role, address) => {
         user : id,
         userModel : formattedRole,
         activityType : 'login',
+        pageViewed : 'Login',
         ipAddress: address,
         timestamp: new Date()
     });
