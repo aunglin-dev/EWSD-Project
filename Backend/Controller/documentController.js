@@ -253,16 +253,15 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
 
         const allocationIds = allocations.map(allocation => allocation._id);
         console.log(allocationIds);
-        const uploaderRole = formattedRole === "Student" ? "Tutor" : "Student";
-
+        
         // Find documents related to these allocations
-        const documents = await Document.find({ allocationId: { $in: allocationIds }, role: uploaderRole })
+        const documents = await Document.find({ allocationId: { $in: allocationIds }, role: "Student" })
             .sort({ createdAt: -1 })
             .limit(5)
             .lean();
 
         if (!documents.length) {
-            return res.status(404).json({ error: "No documents found for the given allocations" });
+            res.json([]);
         }
 
         // Attach the correct user details (Student or Tutor) to each document based on its allocation
@@ -272,15 +271,7 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
             // Find the allocation related to the current document
             const allocation = await Allocation.findById(doc.allocationId);
 
-            if (allocation) {
-                if (formattedRole === "Tutor") {
-                    // If the role is Tutor, the owner is the Student in this allocation
-                    ownerDetails = await Student.findById(allocation.student);
-                } else {
-                    // If the role is Student, the owner is the Tutor in this allocation
-                    ownerDetails = await Tutor.findById(allocation.tutor);
-                }
-            }
+            ownerDetails = await Student.findById(allocation.student);
 
             return {
                 ...doc,
