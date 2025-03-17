@@ -2,7 +2,8 @@ import Document from "../Model//Document.js";
 import Allocation from "../Model/Allocation.js";
 import fs from "fs";
 import path from "path";
-
+import Student from '../Model/Student.js';
+import Tutor from '../Model/Tutor.js';
 
 const SERVER_URL = "http://localhost:8000"; 
 
@@ -234,35 +235,52 @@ export const getLastFiveDocumentsByAllocationIdAndRole = async (req, res) => {
 
 export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
     try {
-        const {role, id} = req.params; // either studentId or tutorId based on the role
+        const { role, id } = req.params; // Either studentId or tutorId based on the role
 
         // Capitalize the first letter of the role for consistency
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
 
-        if (formattedRole !== 'Student' && formattedRole !== 'Tutor') {
+        if (formattedRole !== "Student" && formattedRole !== "Tutor") {
             return res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
         }
 
-        // Find allocation by studentId or tutorId
-        const allocation = await Allocation.findOne({
-            [formattedRole.toLowerCase()]: id,
-        }).populate("student tutor createdStaffId");
+        // Find allocations by studentId or tutorId
+        const allocations = await Allocation.find({ [formattedRole.toLowerCase()]: id });
 
-        if (!allocation) {
-            return res.status(404).json({error: "Allocation not found for the given student/tutor ID"});
+        if (!allocations.length) {
+            return res.status(404).json({ error: "No allocations found for the given student/tutor ID" });
         }
 
-        // Find documents related to this allocation
-        const documents = await Document.find({allocationId: allocation._id, role: formattedRole})
-            .sort({createdAt: -1})
-            .limit(5);
+        const allocationIds = allocations.map(allocation => allocation._id);
+        console.log(allocationIds);
+        
+        // Find documents related to these allocations
+        const documents = await Document.find({ allocationId: { $in: allocationIds }, role: "Student" })
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .lean();
 
         if (!documents.length) {
-            return res.status(404).json({error: "No documents found for the given allocation"});
+            res.json([]);
         }
-        
-        res.json(documents);
+
+        // Attach the correct user details (Student or Tutor) to each document based on its allocation
+        const response = await Promise.all(documents.map(async (doc) => {
+            let ownerDetails = null;
+
+            // Find the allocation related to the current document
+            const allocation = await Allocation.findById(doc.allocationId);
+
+            ownerDetails = await Student.findById(allocation.student);
+
+            return {
+                ...doc,
+                documentOwner: ownerDetails,
+            };
+        }));
+
+        res.json(response);
     } catch (error) {
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 };
