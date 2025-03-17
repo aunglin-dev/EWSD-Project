@@ -1,11 +1,23 @@
 import express from "express";
-import { getMe, signin } from "../Controller/auth.js";
+import {
+  forgotPassword,
+  getMe,
+  handleForgotPassword,
+  resetPassword,
+  signin,
+} from "../Controller/auth.js";
 import authMiddleware from "../Middleware/auth.js";
 
 const Router = express.Router();
 
 //Student Login
 Router.post("/signin", signin);
+
+Router.post("/forgotPassword", forgotPassword);
+
+Router.post("/reset-password", resetPassword);
+
+Router.get("/forgotPassword", handleForgotPassword);
 
 Router.get("/me", authMiddleware, getMe);
 
