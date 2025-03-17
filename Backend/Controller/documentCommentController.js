@@ -222,7 +222,7 @@ export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
         const documents = await Document.find({ allocationId: { $in: allocationIds } });
 
         if (!documents.length) {
-            return res.status(404).json({ error: "No documents found for the given user ID & role." });
+            res.json([]);
         }
 
         // Get all document IDs
@@ -236,12 +236,13 @@ export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
             .lean();
 
         if (!comments.length) {
-            return res.status(404).json({ error: "No comments found for the given user ID & role." });
+            res.json([]);
         }
         // Attach user details for each comment
         for (let comment of comments) {
             // Find document
             const document = await Document.findById(comment.documentId);
+            comment.document = document;
             if (!document) continue;
 
             // Find allocation for this document
