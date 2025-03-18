@@ -205,14 +205,14 @@ export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
 
         // Validate role
         if (formattedRole !== "Student" && formattedRole !== "Tutor") {
-             res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
+            return res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
         }
 
         // Find all allocations by studentId or tutorId
         const allocations = await Allocation.find({ [formattedRole.toLowerCase()]: id });
 
         if (!allocations.length) {
-             res.status(404).json({ error: "No allocations found for the given user ID." });
+            return res.status(404).json({ error: "No allocations found for the given user ID." });
         }
 
         // Get all allocation IDs
@@ -222,7 +222,7 @@ export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
         const documents = await Document.find({ allocationId: { $in: allocationIds } });
 
         if (!documents.length) {
-            res.json([]);
+            return res.json([]);
         }
 
         // Get all document IDs
@@ -236,7 +236,7 @@ export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
             .lean();
 
         if (!comments.length) {
-            res.json([]);
+           return res.json([]);
         }
         // Attach user details for each comment
         for (let comment of comments) {
@@ -255,7 +255,7 @@ export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
                 : await Tutor.findById(allocation.tutor);
         }
 
-        res.json(comments);
+        return res.json(comments);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

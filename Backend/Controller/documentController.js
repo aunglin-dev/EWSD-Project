@@ -239,13 +239,16 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
 
         // Capitalize the first letter of the role for consistency
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
-        
 
+        // Validate role
+        if (formattedRole !== "Student" && formattedRole !== "Tutor") {
+            return res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
+        }
         // Find allocations by studentId or tutorId
         const allocations = await Allocation.find({ [formattedRole.toLowerCase()]: id });
 
         if (!allocations.length) {
-             res.status(404).json({ error: "No allocations found for the given student/tutor ID" });
+            return res.status(404).json({ error: "No allocations found for the given student/tutor ID" });
         }
 
         const allocationIds = allocations.map(allocation => allocation._id);
@@ -257,7 +260,7 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
             .lean();
 
         if (!documents.length) {
-            res.json([]);
+            return res.json([]);
         }
 
         // Attach the correct user details (Student or Tutor) to each document based on its allocation
@@ -275,8 +278,8 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
             };
         }));
 
-        res.json(response);
+        return res.json(response);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
