@@ -239,15 +239,12 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
 
         // Capitalize the first letter of the role for consistency
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
-
-        if (formattedRole !== "Student" && formattedRole !== "Tutor") {
-            return res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
-        }
+        
 
         // Find allocations by studentId or tutorId
         const allocations = await Allocation.find({ [formattedRole.toLowerCase()]: id });
 
-        if (!allocations.length) {
+        if (!allocations?.length) {
             return res.status(404).json({ error: "No allocations found for the given student/tutor ID" });
         }
 
