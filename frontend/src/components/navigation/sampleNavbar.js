@@ -73,7 +73,7 @@ export default function Navbar() {
       {currentUser && (
         isNonMobileScreens ? (
           <Box sx={{ display: "flex", gap: "15px" }}>
-            {currentUser.role === "staff" && (
+            {currentUser.role === "Staff" && (
               <>
                 <Link to="/staff-dashboard" style={{ textDecoration: "none", width: "119px" }}>
                   <Button

@@ -33,6 +33,8 @@ export default function StudentDashboard() {
   const { currentUser } = useSelector((state) => state.auth);
   const [student, setStudent] = useState(null);
   const [meeting, setMeeting] = useState(null);
+  const [documents, setDocuments] = useState([]);
+  const [documentComments, setDocumentComments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // console.log("current user data=>", currentUser);
@@ -62,11 +64,11 @@ export default function StudentDashboard() {
           };
           setStudent(student);
 
-          const meetingsResponse = await axiosInstance.get(
-            `http://localhost:8000/api/meetings/allocation/${student.allocations[0]._id}`
-          );
+          // const meetingsResponse = await axiosInstance.get(
+          //   `http://localhost:8000/api/meetings/allocation/${student.allocations[0]._id}`
+          // );
 
-          setMeeting(meetingsResponse.data);
+          // setMeeting(meetingsResponse.data);
 
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -76,6 +78,39 @@ export default function StudentDashboard() {
       };
       fetchData();
     }
+
+    // const fetchDocumentComments = async (role, id) => {
+    //   try {
+    //     const documentCommentResponse = await axiosInstance.get(
+    //       `http://localhost:8000/api/documentcomments/last2/${role}/${id}`
+    //     );
+
+    //     console.log("Document Comments", documentCommentResponse.data);
+    //     setDocumentComments(documentCommentResponse.data);
+
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+    // fetchDocumentComments("student", id ? id : currentUser._id);
+
+    // const fetchDocuments = async (role, id) => {
+    //   try {
+    //     const documentResponse = await axiosInstance.get(
+    //       `http://localhost:8000/api/documents/allocation/${role}/${id}/last-five`
+    //     );
+    //     setDocuments(documentResponse.data);
+
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+    // fetchDocuments("student", id ? id : currentUser._id);
+
   }, []);
 
   return (
@@ -125,6 +160,7 @@ export default function StudentDashboard() {
                   platform="Google Meet"
                   location=""
                   meetingLink=""
+                  role={currentUser?.role}
                 />
 
                 {/* Attendance Card */}
@@ -203,110 +239,54 @@ export default function StudentDashboard() {
                     <DescriptionIcon sx={{ width: isSmallestScreens ? "16px" : "24px", height: isSmallestScreens ? "16px" : "24px" }} />
                     <Typography variant={isSmallestScreens ? "h6" : "h4"}>Recent Shared Document</Typography>
                   </Box>
-                  <TableContainer>
-                    <Table aria-label="simple table">
-                      <TableHead>
-                        <TableRow sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", minWidth: "150px" }}>
-                            Name
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500" }}>
-                            Date
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", minWidth: "150px" }}>
-                            Uploaded By
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500" }}>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow key="1" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            document.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow key="2" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            Lecture Notes.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow key="3" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            document.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow key="4" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            document.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow key="5" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            document.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <Box display="flex" justifyContent="end">
-                    <Button variant="text" sx={{ fontSize: isSmallestScreens ? "14px" : "16px", "&:hover": { bgcolor: "inherit" } }} endIcon={<ArrowCircleRightIcon />}>View all</Button>
-                  </Box>
+                  {documents.length ?
+                    <TableContainer>
+                      <Table aria-label="simple table">
+                        <TableHead>
+                          <TableRow sx={{ borderBottom: "1px solid #93909080" }}>
+                            <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", minWidth: "150px" }}>
+                              Name
+                            </TableCell>
+                            <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500" }}>
+                              Date
+                            </TableCell>
+                            <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", minWidth: "150px" }}>
+                              Uploaded By
+                            </TableCell>
+                            <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500" }}>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {documents.map(document =>
+                            <TableRow key={document._id} sx={{ borderBottom: "1px solid #93909080" }}>
+                              <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
+                                {document.description}
+                              </TableCell>
+                              <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
+                                {new Date(document.createdAt).toLocaleDateString()}
+                              </TableCell>
+                              <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
+                                {document.documentOwner.name}
+                              </TableCell>
+                              <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
+                                <IconButton>
+                                  <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    :
+                    <Typography variant="h5">No uploaded document.</Typography>
+                  }
+                  {currentUser?.role === "Student" &&
+                    <Box display="flex" justifyContent="end">
+                      <Button href="/student/document" variant="text" sx={{ fontSize: isSmallestScreens ? "14px" : "16px", "&:hover": { bgcolor: "inherit" } }} endIcon={<ArrowCircleRightIcon />}>View all</Button>
+                    </Box>
+                  }
                 </Box>
 
                 {/* Comment Card */}

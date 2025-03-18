@@ -3,7 +3,7 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { Link } from "react-router-dom";
 
-const StudentDashboardMeetingCard = ({ title, type, tutorName, datetime, platform, meetingLink, location }) => {
+const StudentDashboardMeetingCard = ({ title, type, tutorName, datetime, platform, meetingLink, location, role }) => {
     const isSmallestScreens = useMediaQuery("(max-width: 426px)");
     return (
         <Box
@@ -58,9 +58,11 @@ const StudentDashboardMeetingCard = ({ title, type, tutorName, datetime, platfor
                     </>
                 </Box>
             </Box>
-            <Box display="flex" justifyContent="end">
-                <Button variant="text" sx={{ fontSize: isSmallestScreens ? "14px" : "16px", "&:hover": { bgcolor: "inherit" } }} endIcon={<ArrowCircleRightIcon />}>View all</Button>
-            </Box>
+            {role !== "Student" &&
+                <Box display="flex" justifyContent="end">
+                    <Button variant="text" sx={{ fontSize: isSmallestScreens ? "14px" : "16px", "&:hover": { bgcolor: "inherit" } }} endIcon={<ArrowCircleRightIcon />}>View all</Button>
+                </Box>
+            }
         </Box>
     )
 }

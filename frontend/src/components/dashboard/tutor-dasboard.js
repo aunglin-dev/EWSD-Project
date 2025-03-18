@@ -37,6 +37,7 @@ export default function TutorDashboard() {
   const { id } = useParams();
   const isSmallestScreens = useMediaQuery("(max-width: 426px)");
   const [tutor, setTutor] = useState(null);
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -63,7 +64,6 @@ export default function TutorDashboard() {
             ...tutorResponse.data
           };
           setTutor(tutor);
-          console.log(tutor);
 
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -73,6 +73,21 @@ export default function TutorDashboard() {
       };
       fetchData();
     }
+
+    const fetchDocuments = async (role, id) => {
+      try {
+        const documentResponse = await axiosInstance.get(
+          `http://localhost:8000/api/documents/allocation/${role}/${id}/last-five`
+        );
+        setDocuments(documentResponse.data);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDocuments("tutor", id ? id : currentUser._id);
   }, []);
 
   return (
@@ -128,7 +143,7 @@ export default function TutorDashboard() {
                     <SchoolIcon sx={{ width: isSmallestScreens ? "18px" : "20px", height: isSmallestScreens ? "18px" : "20px" }} />
                     <Typography variant={isSmallestScreens ? "caption" : "subtitle2"} fontWeight="400">Total Assigned Students</Typography>
                   </Box>
-                  <Typography mt="20px" variant={isSmallestScreens ? "h5" : "h4"} color="primary.main">{tutor.allocations.length} Students</Typography>
+                  <Typography mt="20px" variant={isSmallestScreens ? "h5" : "h4"} color="primary.main">{tutor?.allocations?.length} Students</Typography>
                 </Box>
 
                 <Box
@@ -191,14 +206,55 @@ export default function TutorDashboard() {
               </Box>
 
               {/* Second Row */}
+              {/* Meeting Card */}
+              <Box
+                paddingY="15px"
+                paddingX={isSmallestScreens ? "15px" : "25px"}
+                borderRadius="10px"
+                bgcolor="#fff"
+                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+              >
+                <Box>
+                  <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
+                    <CalendarMonthIcon sx={{ width: isSmallestScreens ? "14px" : "24px", height: isSmallestScreens ? "14px" : "24px" }} />
+                    <Typography variant={isSmallestScreens ? "h6" : "h4"}>Today Scheduled (3 Meetings)</Typography>
+                  </Box>
+                  <Box display="flex" flexDirection="column" justifyContent="space-between" gap="30px" mt="40px">
+                    <TutorDashboardMeetingCard
+                      studentName="Student Name 1"
+                      studentEmail="studentname1@edx.ac.uk"
+                      type="Offline"
+                      datetime="9/3/2025 10:30"
+                    />
+                    <TutorDashboardMeetingCard
+                      studentName="Student Name 2"
+                      studentEmail="studentname2@edx.ac.uk"
+                      type="Online"
+                      datetime="9/3/2025 10:30"
+                    />
+                    <TutorDashboardMeetingCard
+                      studentName="Student Name 3"
+                      studentEmail="studentname3@edx.ac.uk"
+                      type="Online"
+                      datetime="9/3/2025 10:30"
+                    />
+                  </Box>
+                </Box>
+              </Box>
+
+              {/* Third Row */}
               <Box
                 display="grid"
-                gridTemplateColumns={isNonMobileScreens ? "2fr 1fr" : "minmax(0, 700px)"}
+                gridTemplateColumns={isNonMobileScreens ? "repeat(2,minmax(450px, 700px))" : "minmax(0, 700px)"}
                 gridAutoRows="minmax(350px, auto)"
                 justifyContent="center"
                 gap="20px"
               >
-                {/* Meeting Card */}
+
+                {/* Document Card */}
                 <Box
                   paddingY="15px"
                   paddingX={isSmallestScreens ? "15px" : "25px"}
@@ -207,34 +263,61 @@ export default function TutorDashboard() {
                   boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
                   display="flex"
                   flexDirection="column"
-                  justifyContent="space-between"
+                  justifyContent="start"
+                  gap="30px"
                 >
-                  <Box>
-                    <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
-                      <CalendarMonthIcon sx={{ width: isSmallestScreens ? "14px" : "24px", height: isSmallestScreens ? "14px" : "24px" }} />
-                      <Typography variant={isSmallestScreens ? "h6" : "h4"}>Today Scheduled (3 Meetings)</Typography>
-                    </Box>
-                    <Box display="flex" flexDirection="column" justifyContent="space-between" gap="30px" mt="40px">
-                      <TutorDashboardMeetingCard
-                        studentName="Student Name 1"
-                        studentEmail="studentname1@edx.ac.uk"
-                        type="Offline"
-                        datetime="9/3/2025 10:30"
-                      />
-                      <TutorDashboardMeetingCard
-                        studentName="Student Name 2"
-                        studentEmail="studentname2@edx.ac.uk"
-                        type="Online"
-                        datetime="9/3/2025 10:30"
-                      />
-                      <TutorDashboardMeetingCard
-                        studentName="Student Name 3"
-                        studentEmail="studentname3@edx.ac.uk"
-                        type="Online"
-                        datetime="9/3/2025 10:30"
-                      />
-                    </Box>
+                  <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
+                    <DescriptionIcon sx={{ width: isSmallestScreens ? "16px" : "24px", height: isSmallestScreens ? "16px" : "24px" }} />
+                    <Typography variant={isSmallestScreens ? "h6" : "h4"}>Recent Shared Document</Typography>
                   </Box>
+                  {documents.length ?
+                    <TableContainer>
+                      <Table aria-label="simple table">
+                        <TableHead>
+                          <TableRow sx={{ borderBottom: "1px solid #93909080" }}>
+                            <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", minWidth: "150px" }}>
+                              Name
+                            </TableCell>
+                            <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500" }}>
+                              Date
+                            </TableCell>
+                            <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", minWidth: "150px" }}>
+                              Uploaded By
+                            </TableCell>
+                            <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500" }}>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {documents.map(document =>
+                            <TableRow key={document._id} sx={{ borderBottom: "1px solid #93909080" }}>
+                              <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
+                                {document.description}
+                              </TableCell>
+                              <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
+                                {new Date(document.createdAt).toLocaleDateString()}
+                              </TableCell>
+                              <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
+                                {document.documentOwner.name}
+                              </TableCell>
+                              <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
+                                <IconButton>
+                                  <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    :
+                    <Typography variant="h5">No uploaded document.</Typography>
+                  }
+                  {currentUser?.role === "Tutor" &&
+                    <Box display="flex" justifyContent="end">
+                      <Button variant="text" sx={{ fontSize: isSmallestScreens ? "14px" : "16px", "&:hover": { bgcolor: "inherit" } }} endIcon={<ArrowCircleRightIcon />}>View all</Button>
+                    </Box>
+                  }
                 </Box>
 
                 {/* Attendance Card */}
@@ -244,11 +327,17 @@ export default function TutorDashboard() {
                   borderRadius="10px"
                   bgcolor="#fff"
                   boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="start"
+                  gap="35px"
                 >
+
                   <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
                     <PermContactCalendarIcon sx={{ width: isSmallestScreens ? "16px" : "24px", height: isSmallestScreens ? "16px" : "24px" }} />
                     <Typography variant={isSmallestScreens ? "h6" : "h4"}>Attendance Summary</Typography>
                   </Box>
+
                   <Box
                     mt="20px"
                     display="flex"
@@ -281,170 +370,6 @@ export default function TutorDashboard() {
                       }}
                     />
                   </Box>
-                </Box>
-              </Box>
-
-              {/* Third Row */}
-              <Box
-                display="grid"
-                gridTemplateColumns={isNonMobileScreens ? "repeat(2,minmax(450px, 700px))" : "minmax(0, 700px)"}
-                gridAutoRows="minmax(350px, auto)"
-                justifyContent="center"
-                gap="20px"
-              >
-
-                {/* Document Card */}
-                <Box
-                  paddingY="15px"
-                  paddingX={isSmallestScreens ? "15px" : "25px"}
-                  borderRadius="10px"
-                  bgcolor="#fff"
-                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="start"
-                  gap="30px"
-                >
-                  <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
-                    <DescriptionIcon sx={{ width: isSmallestScreens ? "16px" : "24px", height: isSmallestScreens ? "16px" : "24px" }} />
-                    <Typography variant={isSmallestScreens ? "h6" : "h4"}>Recent Shared Document</Typography>
-                  </Box>
-                  <TableContainer>
-                    <Table aria-label="simple table">
-                      <TableHead>
-                        <TableRow sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", minWidth: "150px" }}>
-                            Name
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500" }}>
-                            Date
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500", minWidth: "150px" }}>
-                            Uploaded By
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: isSmallestScreens ? "14px" : "18px", fontWeight: "500" }}>
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow key="1" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            document.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow key="2" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            Lecture Notes.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow key="3" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            document.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow key="4" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            document.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        <TableRow key="5" sx={{ borderBottom: "1px solid #93909080" }}>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            document.pdf
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            28/2/2025
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            John Doe
-                          </TableCell>
-                          <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                            <IconButton>
-                              <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <Box display="flex" justifyContent="end">
-                    <Button variant="text" sx={{ fontSize: isSmallestScreens ? "14px" : "16px", "&:hover": { bgcolor: "inherit" } }} endIcon={<ArrowCircleRightIcon />}>View all</Button>
-                  </Box>
-                </Box>
-
-                {/* Comment Card */}
-                <Box
-                  paddingY="15px"
-                  paddingX={isSmallestScreens ? "15px" : "25px"}
-                  borderRadius="10px"
-                  bgcolor="#fff"
-                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="start"
-                  gap="35px"
-                >
-                  <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
-                    <RateReviewIcon sx={{ width: isSmallestScreens ? "16px" : "24px", height: isSmallestScreens ? "16px" : "24px" }} />
-                    <Typography variant={isSmallestScreens ? "h6" : "h4"}>Recent Comments</Typography>
-                  </Box>
-                  <DashboardCommentCard
-                    title="Very long blog title for blog named Class Discussions & Q&A"
-                    createdDateTime="27/2/2025 12:00"
-                    description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque optio excepturi debitis eius laboriosam non aliquam, eos officiis iure odio?"
-                    commentCount="2"
-                    ownerName="John Doe"
-                  />
-                  <DashboardCommentCard
-                    title="Very long blog title for blog named Class Discussions & Q&A"
-                    createdDateTime="27/2/2025 12:00"
-                    description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque optio excepturi debitis eius laboriosam non aliquam, eos officiis iure odio?"
-                    commentCount="2"
-                    ownerName="John Doe"
-                  />
                 </Box>
               </Box>
 

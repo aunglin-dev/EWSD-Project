@@ -43,7 +43,7 @@ export default function LoginForm() {
         password: data.password,
         role: data.role,
       }, {
-        withCredentials : true
+        withCredentials: true
       });
 
       if (res.status === 200) {
@@ -54,7 +54,7 @@ export default function LoginForm() {
         console.log("user data=>", user);
         dispatch(loginSuccess(user));
 
-        if (role === "staff") {
+        if (role === "Staff") {
           navigate("/staff-dashboard");
         } else if (role === "Student") {
           navigate(`/student-dashboard/${user._id}`);
