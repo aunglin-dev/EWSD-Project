@@ -240,10 +240,10 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
         // Capitalize the first letter of the role for consistency
         const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
 
+        // Validate role
         if (formattedRole !== "Student" && formattedRole !== "Tutor") {
             return res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
         }
-
         // Find allocations by studentId or tutorId
         const allocations = await Allocation.find({ [formattedRole.toLowerCase()]: id });
 
@@ -252,17 +252,15 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
         }
 
         const allocationIds = allocations.map(allocation => allocation._id);
-        console.log(allocationIds);
-        const uploaderRole = formattedRole === "Student" ? "Tutor" : "Student";
 
         // Find documents related to these allocations
-        const documents = await Document.find({ allocationId: { $in: allocationIds }, role: uploaderRole })
+        const documents = await Document.find({ allocationId: { $in: allocationIds }, role: "Student" })
             .sort({ createdAt: -1 })
             .limit(5)
             .lean();
 
         if (!documents.length) {
-            return res.status(404).json({ error: "No documents found for the given allocations" });
+            return res.json([]);
         }
 
         // Attach the correct user details (Student or Tutor) to each document based on its allocation
@@ -272,15 +270,7 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
             // Find the allocation related to the current document
             const allocation = await Allocation.findById(doc.allocationId);
 
-            if (allocation) {
-                if (formattedRole === "Tutor") {
-                    // If the role is Tutor, the owner is the Student in this allocation
-                    ownerDetails = await Student.findById(allocation.student);
-                } else {
-                    // If the role is Student, the owner is the Tutor in this allocation
-                    ownerDetails = await Tutor.findById(allocation.tutor);
-                }
-            }
+            ownerDetails = await Student.findById(allocation.student);
 
             return {
                 ...doc,
@@ -288,8 +278,8 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
             };
         }));
 
-        res.json(response);
+        return res.json(response);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };

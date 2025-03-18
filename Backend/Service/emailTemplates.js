@@ -291,3 +291,24 @@ export function tutorAssignmentNotificationEmail(student, tutor) {
 
     return { subject, text, html };
 }
+
+export const forgotPasswordEmail = (user, token) => {
+    return {
+        subject: "Verification Email! Forgot Password.",
+        text: `Dear ${user.name},
+
+
+<p>Click on the link below.</p>
+<a href="http://localhost:8000/api/auth/forgotPassword?token=${token}">Reset Password</a>
+
+Best regards,  
+The Admin Team`,
+        html: `
+            <p>Dear <strong>${user.name}</strong>,</p>
+            <p>Click on the link below. Link will expire in 1 hour.</p>
+            <a href="http://localhost:8000/api/auth/forgotPassword?token=${token}">Reset Password</a>
+            <p>Best regards,</p>
+            <p><strong>The Admin Team</strong></p>
+        `
+    };
+};
