@@ -244,13 +244,12 @@ export const getLastFiveDocumentsByStudentOrTutorId = async (req, res) => {
         // Find allocations by studentId or tutorId
         const allocations = await Allocation.find({ [formattedRole.toLowerCase()]: id });
 
-        if (!allocations?.length) {
-            return res.status(404).json({ error: "No allocations found for the given student/tutor ID" });
+        if (!allocations.length) {
+             res.status(404).json({ error: "No allocations found for the given student/tutor ID" });
         }
 
         const allocationIds = allocations.map(allocation => allocation._id);
-        console.log(allocationIds);
-        
+
         // Find documents related to these allocations
         const documents = await Document.find({ allocationId: { $in: allocationIds }, role: "Student" })
             .sort({ createdAt: -1 })

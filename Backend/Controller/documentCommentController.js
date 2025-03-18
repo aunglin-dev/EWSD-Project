@@ -205,14 +205,14 @@ export const getLastTwoCommentsByTutorOrStudentId = async (req, res) => {
 
         // Validate role
         if (formattedRole !== "Student" && formattedRole !== "Tutor") {
-            return res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
+             res.status(400).json({ error: "Invalid role. It should be 'Student' or 'Tutor'." });
         }
 
         // Find all allocations by studentId or tutorId
         const allocations = await Allocation.find({ [formattedRole.toLowerCase()]: id });
 
         if (!allocations.length) {
-            return res.status(404).json({ error: "No allocations found for the given user ID." });
+             res.status(404).json({ error: "No allocations found for the given user ID." });
         }
 
         // Get all allocation IDs
