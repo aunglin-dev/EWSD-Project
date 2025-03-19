@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Button, Typography, useMediaQuery } from "@mui/material";
-import axiosInstance from "../../services/AxiosInstance";
+import axiosInstance from "../../Services/AxiosInstance";
 import { useState } from "react";
 export default function RequestedCard({
   meetingId,

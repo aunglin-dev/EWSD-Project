@@ -16,7 +16,7 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
-import axiosInstance from "../../services/AxiosInstance";
+import axiosInstance from "../../Services/AxiosInstance";
 
 export default function DocumentPage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");

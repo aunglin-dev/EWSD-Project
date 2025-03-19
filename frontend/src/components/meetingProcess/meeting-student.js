@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 import CompletedCard from "./completed-card";
 import RequestedCard from "./requested-card";
 import ScheduledCard from "./scheduled-card";
-import axiosInstance from "../../services/AxiosInstance";
+import axiosInstance from "../../Services/AxiosInstance";
 import { useSelector } from "react-redux";
 
 function CustomTabPanel(props) {
