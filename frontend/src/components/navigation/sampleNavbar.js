@@ -63,10 +63,10 @@ export default function Navbar() {
           currentUser.role === "staff"
             ? navigate("/staff-dashboard")
             : currentUser.role === "Student"
-            ? navigate(`/student-dashboard/${currentUser?._id}`)
-            : currentUser.role === "Tutor"
-            ? navigate("/tutor-dashboard")
-            : navigate("/");
+              ? navigate(`/student-dashboard/${currentUser?._id}`)
+              : currentUser.role === "Tutor"
+                ? navigate(`/tutor-dashboard/${currentUser?._id}`)
+                : navigate("/");
         }}
         sx={{ cursor: "pointer" }}
       >
@@ -229,16 +229,16 @@ export default function Navbar() {
             {currentUser.role === "Tutor" && (
               <>
                 <Link
-                  to={"/tutor-dashboard"}
+                  to={`/tutor-dashboard/${currentUser?._id}`}
                   style={{ textDecoration: "none", width: "119px" }}
                 >
                   <Button
                     sx={{
                       width: "100%",
                       color: "#fff",
-                      fontWeight: path === "/tutor-dashboard" ? "600" : "400",
+                      fontWeight: path === `/tutor-dashboard/${currentUser?._id}` ? "600" : "400",
                       textDecoration:
-                        path === "/tutor-dashboard" ? "underline" : "none",
+                        path === `/tutor-dashboard/${currentUser?._id}` ? "underline" : "none",
                       "&:hover": { fontWeight: "600" },
                     }}
                   >

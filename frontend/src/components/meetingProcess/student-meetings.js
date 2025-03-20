@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../Services/AxiosInstance.js";
+import axiosInstance from "../../services/AxiosInstance.js";
 import ScheduledCard from "./scheduled-card";
 import RequestedCard from "./requested-card";
 import CompletedCard from "./completed-card";
