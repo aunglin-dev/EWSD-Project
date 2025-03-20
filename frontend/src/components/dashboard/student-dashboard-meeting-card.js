@@ -3,7 +3,7 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import { Link } from "react-router-dom";
 
-const StudentDashboardMeetingCard = ({ title, type, tutorName, datetime, platform, meetingLink, location }) => {
+const StudentDashboardMeetingCard = ({ title, type, tutorName, datetime, platform, meetingLink, location, role }) => {
     const isSmallestScreens = useMediaQuery("(max-width: 426px)");
     return (
         <Box
@@ -14,7 +14,8 @@ const StudentDashboardMeetingCard = ({ title, type, tutorName, datetime, platfor
             boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
             display="flex"
             flexDirection="column"
-            justifyContent="space-between"
+            justifyContent="start"
+            gap="45px"
         >
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
@@ -58,9 +59,11 @@ const StudentDashboardMeetingCard = ({ title, type, tutorName, datetime, platfor
                     </>
                 </Box>
             </Box>
-            <Box display="flex" justifyContent="end">
-                <Button variant="text" sx={{ fontSize: isSmallestScreens ? "14px" : "16px", "&:hover": { bgcolor: "inherit" } }} endIcon={<ArrowCircleRightIcon />}>View all</Button>
-            </Box>
+            {role === "Student" &&
+                <Box display="flex" justifyContent="end">
+                    <Button href="/student/meeting" variant="text" sx={{ fontSize: isSmallestScreens ? "14px" : "16px", "&:hover": { bgcolor: "inherit" } }} endIcon={<ArrowCircleRightIcon />}>View all</Button>
+                </Box>
+            }
         </Box>
     )
 }
