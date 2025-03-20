@@ -257,13 +257,13 @@ export default function StudentDashboard() {
                           data: [
                             {
                               id: 0,
-                              value: 20,
+                              value: 40,
                               label: "Absent",
                               color: "#E10022",
                             },
                             {
                               id: 1,
-                              value: 80,
+                              value: 66.0,
                               label: "Present",
                               color: "#69E106",
                             },

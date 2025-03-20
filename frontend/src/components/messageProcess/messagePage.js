@@ -132,7 +132,8 @@ export default function MessagePage() {
     socket.emit("stopTyping", { allocationId, role });
   };
 
-  if (currentUser?.role != "Student") return <NoAthnicationCase />;
+  if (currentUser?.role != "Student" || currentUser?.role != "Tutor")
+    return <NoAthnicationCase />;
   return (
     <Box
       paddingTop="80px"
