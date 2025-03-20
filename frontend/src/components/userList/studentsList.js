@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../Services/AxiosInstance";
+import axiosInstance from "../../Services/AxiosInstance.js";
 import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 export default function AllocatePage() {

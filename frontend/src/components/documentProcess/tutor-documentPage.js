@@ -16,7 +16,7 @@ import CommentIcon from "@mui/icons-material/Comment";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
-import axiosInstance from "../../Services/AxiosInstance";
+import axiosInstance from "../../Services/AxiosInstance.js";
 
 export default function DocumentPage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");

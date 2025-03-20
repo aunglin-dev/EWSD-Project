@@ -6,7 +6,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import axiosInstance from "../../Services/AxiosInstance";
+import axiosInstance from "../../Services/AxiosInstance.js";
 import LinkIcon from "@mui/icons-material/Link";
 import { useState } from "react";
 export default function ScheduledCard({

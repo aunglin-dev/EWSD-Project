@@ -8,7 +8,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance from "../../Services/AxiosInstance";
+import axiosInstance from "../../Services/AxiosInstance.js";
 import { useSelector } from "react-redux";
 
 export default function MeetingTutor() {
