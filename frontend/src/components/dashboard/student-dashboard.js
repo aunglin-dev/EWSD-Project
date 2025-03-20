@@ -64,6 +64,12 @@ export default function StudentDashboard() {
           };
           setStudent(student);
 
+          // const meetingsResponse = await axiosInstance.get(
+          //   `http://localhost:8000/api/meetings/allocation/${student.allocations[0]._id}`
+          // );
+
+          // setMeeting(meetingsResponse.data);
+
         } catch (error) {
           console.error("Error fetching data:", error);
         }

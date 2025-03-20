@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import axiosInstance from "../../services/AxiosInstance";
+import axiosInstance from "../../Services/AxiosInstance";
 import { useLocation } from "react-router-dom";
 
 export default function OtherMessageParty() {
