@@ -13,11 +13,11 @@ import ErrorIcon from "@mui/icons-material/Error";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import AddIcon from "@mui/icons-material/Add";
-import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
-import { BarChart } from '@mui/x-charts/BarChart';
-import { PieChart } from '@mui/x-charts/PieChart';
+import DoDisturbAltIcon from "@mui/icons-material/DoDisturbAlt";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { PieChart } from "@mui/x-charts/PieChart";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../services/AxiosInstance";
+import axiosInstance from "../../Services/AxiosInstance.js";
 import dayjs from "dayjs";
 
 export default function StaffDashboard() {
@@ -63,7 +63,11 @@ export default function StaffDashboard() {
 
         setMostUsedBrowser(mostUsedBrowserResponse.data);
         setMostViewPage(mostViewPageResponse.data);
-        setInactiveStudents(studentResponse.data.filter(student => student.lastLoginDate === null))
+        setInactiveStudents(
+          studentResponse.data.filter(
+            (student) => student.lastLoginDate === null
+          )
+        );
         setMostUsedPlatform(mostUsedPlatformResponse.data);
         setMostActiveUer(mostActiveUserResponse.data);
         setData(response.data);
@@ -91,9 +95,9 @@ export default function StaffDashboard() {
 
   return (
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
-      {loading ?
+      {loading ? (
         <CircularProgress />
-        :
+      ) : (
         <Box
           display="flex"
           flexDirection="column"
@@ -108,10 +112,17 @@ export default function StaffDashboard() {
             gap="18px"
           >
             <Box>
-              <Typography variant={isNonMobileScreens ? "h2" : "h3"}>Welcome, {currentUser?.name}!</Typography>
-              <Typography variant="subtitle1">Manage Allocations and Monitor System Activity</Typography>
+              <Typography variant={isNonMobileScreens ? "h2" : "h3"}>
+                Welcome, {currentUser?.name}!
+              </Typography>
+              <Typography variant="subtitle1">
+                Manage Allocations and Monitor System Activity
+              </Typography>
             </Box>
-            <Typography variant="subtitle2">Last Login: {dayjs(currentUser?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")}</Typography>
+            <Typography variant="subtitle2">
+              Last Login:{" "}
+              {dayjs(currentUser?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")}
+            </Typography>
           </Box>
 
           <Box
@@ -413,19 +424,22 @@ export default function StaffDashboard() {
                       mostActiveUser[2]?.user.name,
                       mostActiveUser[3]?.user.name,
                       mostActiveUser[4]?.user.name,
-                    ]
-                  }
+                    ],
+                  },
                 ]}
-                yAxis={[{ scaleType: "linear", }]}
-                series={[{
-                  data: [
-                    mostActiveUser[0]?.count,
-                    mostActiveUser[1]?.count,
-                    mostActiveUser[2]?.count,
-                    mostActiveUser[3]?.count,
-                    mostActiveUser[4]?.count,
-                  ], color: "#0A1F44"
-                }]}
+                yAxis={[{ scaleType: "linear" }]}
+                series={[
+                  {
+                    data: [
+                      mostActiveUser[0]?.count,
+                      mostActiveUser[1]?.count,
+                      mostActiveUser[2]?.count,
+                      mostActiveUser[3]?.count,
+                      mostActiveUser[4]?.count,
+                    ],
+                    color: "#0A1F44",
+                  },
+                ]}
                 width={isNonMobileScreens ? 500 : isSmallestScreens ? 300 : 420}
                 height={400}
               />
@@ -472,7 +486,9 @@ export default function StaffDashboard() {
                       fontSize: isSmallestScreens && "16px",
                     }}
                     href="/allocate"
-                    startIcon={<AddIcon sx={{ width: "24px", height: "24px" }} />}
+                    startIcon={
+                      <AddIcon sx={{ width: "24px", height: "24px" }} />
+                    }
                   >
                     Allocate
                   </Button>
@@ -484,7 +500,8 @@ export default function StaffDashboard() {
                 ).length > 0 ? (
                   students
                     .filter(
-                      (student) => !alreadyAllocatedStudents.includes(student._id)
+                      (student) =>
+                        !alreadyAllocatedStudents.includes(student._id)
                     )
                     ?.map((student, index) => (
                       <Box
@@ -549,7 +566,10 @@ export default function StaffDashboard() {
               <PieChart
                 series={[
                   {
-                    data: mostUsedPlatform?.map((platform) => ({ value: platform.count, label: platform.platform })),
+                    data: mostUsedPlatform?.map((platform) => ({
+                      value: platform.count,
+                      label: platform.platform,
+                    })),
                   },
                 ]}
                 width={isSmallestScreens ? 300 : 600}
@@ -575,36 +595,66 @@ export default function StaffDashboard() {
               overflow="auto"
               maxHeight="500px"
             >
-              <Box display="flex" flexDirection={isSmallestScreens && "column"} justifyContent="space-between" gap="15px">
-                <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
-                  <DoDisturbAltIcon sx={{ width: isSmallestScreens ? "14px" : "24px", height: isSmallestScreens ? "14px" : "24px" }} />
-                  <Typography variant={isSmallestScreens ? "h6" : "h4"}>Inactive Students</Typography>
-                </Box>
-              </Box>
               <Box
                 display="flex"
-                flexDirection="column"
-                gap="25px"
-                mt="40px"
+                flexDirection={isSmallestScreens && "column"}
+                justifyContent="space-between"
+                gap="15px"
               >
-                {inactiveStudents.length ?
-                  inactiveStudents.map((student, index) =>
-                    <Box key={index}
+                <Box
+                  display="flex"
+                  justifyContent="start"
+                  alignItems="center"
+                  gap="5px"
+                >
+                  <DoDisturbAltIcon
+                    sx={{
+                      width: isSmallestScreens ? "14px" : "24px",
+                      height: isSmallestScreens ? "14px" : "24px",
+                    }}
+                  />
+                  <Typography variant={isSmallestScreens ? "h6" : "h4"}>
+                    Inactive Students
+                  </Typography>
+                </Box>
+              </Box>
+              <Box display="flex" flexDirection="column" gap="25px" mt="40px">
+                {inactiveStudents.length ? (
+                  inactiveStudents.map((student, index) => (
+                    <Box
+                      key={index}
                       display="flex"
                       justifyContent="space-between"
                       alignItems="start"
                       borderRadius="3px"
                       gap="10px"
                     >
-                      <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
-                        justifyContent="space-between" alignContent="center" flex="2">
+                      <Box
+                        display="flex"
+                        flexDirection={isNonMobileScreens ? "row" : "column"}
+                        justifyContent="space-between"
+                        alignContent="center"
+                        flex="2"
+                      >
                         <Box>
-                          <Typography fontSize={isSmallestScreens && "16px"} fontWeight="500">{student.name}</Typography>
-                          <Typography fontSize={isSmallestScreens ? "13px" : "14px"}>{student.name}</Typography>
+                          <Typography
+                            fontSize={isSmallestScreens && "16px"}
+                            fontWeight="500"
+                          >
+                            {student.name}
+                          </Typography>
+                          <Typography
+                            fontSize={isSmallestScreens ? "13px" : "14px"}
+                          >
+                            {student.name}
+                          </Typography>
                         </Box>
                       </Box>
                     </Box>
-                  ) : (<Typography>No unallocated student.</Typography>)}
+                  ))
+                ) : (
+                  <Typography>No unallocated student.</Typography>
+                )}
               </Box>
             </Box>
 
@@ -618,8 +668,12 @@ export default function StaffDashboard() {
               boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
             >
               <Box>
-                <Typography variant={isNonMobileScreens ? "h4" : "h5"}>Most View Pages</Typography>
-                <Typography variant="subtitle1" fontSize="14px">Most view pages of the platform within a month</Typography>
+                <Typography variant={isNonMobileScreens ? "h4" : "h5"}>
+                  Most View Pages
+                </Typography>
+                <Typography variant="subtitle1" fontSize="14px">
+                  Most view pages of the platform within a month
+                </Typography>
               </Box>
               <BarChart
                 xAxis={[
@@ -631,23 +685,26 @@ export default function StaffDashboard() {
                       mostViewPage[2]?.page,
                       mostViewPage[3]?.page,
                       mostViewPage[4]?.page,
-                    ]
-                  }
+                    ],
+                  },
                 ]}
                 yAxis={[
                   {
                     scaleType: "linear",
-                  }
+                  },
                 ]}
-                series={[{
-                  data: [
-                    mostViewPage[0]?.count,
-                    mostViewPage[1]?.count,
-                    mostViewPage[2]?.count,
-                    mostViewPage[3]?.count,
-                    mostViewPage[4]?.count,
-                  ], color: "#0A1F44"
-                }]}
+                series={[
+                  {
+                    data: [
+                      mostViewPage[0]?.count,
+                      mostViewPage[1]?.count,
+                      mostViewPage[2]?.count,
+                      mostViewPage[3]?.count,
+                      mostViewPage[4]?.count,
+                    ],
+                    color: "#0A1F44",
+                  },
+                ]}
                 width={isNonMobileScreens ? 500 : isSmallestScreens ? 300 : 420}
                 height={400}
               />
@@ -666,14 +723,31 @@ export default function StaffDashboard() {
               gap="20px"
             >
               <Box width="100%">
-                <Typography variant={isNonMobileScreens ? "h4" : "h5"}>Most Used Browsers</Typography>
-                <Typography variant="subtitle1" fontSize="14px">Most commonly used browsers to access the system</Typography>
+                <Typography variant={isNonMobileScreens ? "h4" : "h5"}>
+                  Most Used Browsers
+                </Typography>
+                <Typography variant="subtitle1" fontSize="14px">
+                  Most commonly used browsers to access the system
+                </Typography>
               </Box>
-              <Box width="100%" height="100%" overflow="hidden" display="flex" justifyContent="center" alignItems="center">
+              <Box
+                width="100%"
+                height="100%"
+                overflow="hidden"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
                 <PieChart
                   series={[
                     {
-                      data: mostUsedBrowser?.map((browser) => (browser.browser && { value: browser.count, label: browser.browser })),
+                      data: mostUsedBrowser?.map(
+                        (browser) =>
+                          browser.browser && {
+                            value: browser.count,
+                            label: browser.browser,
+                          }
+                      ),
                     },
                   ]}
                   width={isSmallestScreens ? 300 : 600}
@@ -691,7 +765,7 @@ export default function StaffDashboard() {
             </Box>
           </Box>
         </Box>
-      }
+      )}
     </Box>
   );
 }
