@@ -163,447 +163,33 @@ export default function TutorDashboard() {
                 boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
               >
                 <Box
-                  paddingY="15px"
-                  paddingX={isSmallestScreens ? "15px" : "25px"}
-                  borderRadius="10px"
-                  bgcolor="#fff"
-                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+                  display="flex"
+                  justifyContent="start"
+                  alignItems={isSmallestScreens ? "center" : "start"}
+                  gap="5px"
                 >
-                  <Box
-                    display="flex"
-                    justifyContent="start"
-                    alignItems={isSmallestScreens ? "center" : "start"}
-                    gap="5px"
-                  >
-                    <SchoolIcon
-                      sx={{
-                        width: isSmallestScreens ? "18px" : "20px",
-                        height: isSmallestScreens ? "18px" : "20px",
-                      }}
-                    />
-                    <Typography
-                      variant={isSmallestScreens ? "caption" : "subtitle2"}
-                      fontWeight="400"
-                    >
-                      Total Assigned Students
-                    </Typography>
-                  </Box>
+                  <SchoolIcon
+                    sx={{
+                      width: isSmallestScreens ? "18px" : "20px",
+                      height: isSmallestScreens ? "18px" : "20px",
+                    }}
+                  />
                   <Typography
-                    mt="20px"
-                    variant={isSmallestScreens ? "h5" : "h4"}
-                    color="primary.main"
-                  >
-                    {tutor?.allocations?.length} Students
-                  </Typography>
-                </Box>
-
-                <Box
-                  paddingY="15px"
-                  paddingX={isSmallestScreens ? "15px" : "25px"}
-                  borderRadius="10px"
-                  bgcolor="#fff"
-                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
-                >
-                  <Box
-                    display="flex"
-                    justifyContent="start"
-                    alignItems={isSmallestScreens ? "center" : "start"}
-                    gap="5px"
-                  >
-                    <InsertInvitationIcon
-                      sx={{
-                        width: isSmallestScreens ? "18px" : "20px",
-                        height: isSmallestScreens ? "18px" : "20px",
-                      }}
-                    />
-                    <Typography
-                      variant={isSmallestScreens ? "caption" : "subtitle2"}
-                      fontWeight="400"
-                    >
-                      Upcoming Meetings
-                    </Typography>
-                  </Box>
-                  <Typography
-                    mt="20px"
-                    variant={isSmallestScreens ? "h5" : "h4"}
-                    color="primary.main"
-                  >
-                    4 Meetings
-                  </Typography>
-                  <Box display="flex" justifyContent="end">
-                    <IconButton>
-                      <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                    </IconButton>
-                  </Box>
-                </Box>
-
-                <Box
-                  paddingY="15px"
-                  paddingX={isSmallestScreens ? "15px" : "25px"}
-                  borderRadius="10px"
-                  bgcolor="#fff"
-                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
-                >
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems={isSmallestScreens ? "center" : "start"}
-                    gap="5px"
-                  >
-                    <Typography
-                      variant={isSmallestScreens ? "h5" : "h4"}
-                      color="#E10022"
-                    >
-                      2 Meeting Requests
-                    </Typography>
-                    <PendingActionsIcon
-                      sx={{
-                        width: isSmallestScreens ? "18px" : "20px",
-                        height: isSmallestScreens ? "18px" : "20px",
-                      }}
-                    />
-                  </Box>
-                  <Typography
-                    mt="20px"
                     variant={isSmallestScreens ? "caption" : "subtitle2"}
                     fontWeight="400"
                   >
-                    Awaiting tutor approval
+                    Total Assigned Students
                   </Typography>
-                  <Box display="flex" justifyContent="end">
-                    <IconButton>
-                      <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                    </IconButton>
-                  </Box>
                 </Box>
-
-                <Box
-                  paddingY="15px"
-                  paddingX={isSmallestScreens ? "15px" : "25px"}
-                  borderRadius="10px"
-                  bgcolor="#fff"
-                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+                <Typography
+                  mt="20px"
+                  variant={isSmallestScreens ? "h5" : "h4"}
+                  color="primary.main"
                 >
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems={isSmallestScreens ? "center" : "start"}
-                    gap="5px"
-                  >
-                    <Typography
-                      variant={isSmallestScreens ? "h5" : "h4"}
-                      color="primary.main"
-                    >
-                      10 Meetings
-                    </Typography>
-                    <VerifiedIcon
-                      sx={{
-                        width: isSmallestScreens ? "18px" : "20px",
-                        height: isSmallestScreens ? "18px" : "20px",
-                      }}
-                    />
-                  </Box>
-                  <Typography
-                    mt="20px"
-                    variant={isSmallestScreens ? "caption" : "subtitle2"}
-                    fontWeight="400"
-                  >
-                    Completed this month
-                  </Typography>
-                  <Box display="flex" justifyContent="end">
-                    <IconButton>
-                      <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                    </IconButton>
-                  </Box>
-                </Box>
+                  {tutor?.allocations?.length} Students
+                </Typography>
               </Box>
 
-              {/* Second Row */}
-              {/* Meeting Card */}
-              <Box
-                paddingY="15px"
-                paddingX={isSmallestScreens ? "15px" : "25px"}
-                borderRadius="10px"
-                bgcolor="#fff"
-                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
-                display="flex"
-                flexDirection="column"
-                justifyContent="space-between"
-              >
-                <Box>
-                  <Box
-                    display="flex"
-                    justifyContent="start"
-                    alignItems="center"
-                    gap="5px"
-                  >
-                    <CalendarMonthIcon
-                      sx={{
-                        width: isSmallestScreens ? "14px" : "24px",
-                        height: isSmallestScreens ? "14px" : "24px",
-                      }}
-                    />
-                    <Typography variant={isSmallestScreens ? "h6" : "h4"}>
-                      Today Scheduled (3 Meetings)
-                    </Typography>
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="space-between"
-                    gap="30px"
-                    mt="40px"
-                  >
-                    <TutorDashboardMeetingCard
-                      studentName="Student Name 1"
-                      studentEmail="studentname1@edx.ac.uk"
-                      type="Offline"
-                      datetime="9/3/2025 10:30"
-                    />
-                    <TutorDashboardMeetingCard
-                      studentName="Student Name 2"
-                      studentEmail="studentname2@edx.ac.uk"
-                      type="Online"
-                      datetime="9/3/2025 10:30"
-                    />
-                    <TutorDashboardMeetingCard
-                      studentName="Student Name 3"
-                      studentEmail="studentname3@edx.ac.uk"
-                      type="Online"
-                      datetime="9/3/2025 10:30"
-                    />
-                  </Box>
-                </Box>
-              </Box>
-
-              {/* Third Row */}
-              <Box
-                display="grid"
-                gridTemplateColumns={
-                  isNonMobileScreens
-                    ? "repeat(2,minmax(450px, 700px))"
-                    : "minmax(0, 700px)"
-                }
-                gridAutoRows="minmax(350px, auto)"
-                justifyContent="center"
-                gap="20px"
-              >
-                {/* Document Card */}
-                <Box
-                  paddingY="15px"
-                  paddingX={isSmallestScreens ? "15px" : "25px"}
-                  borderRadius="10px"
-                  bgcolor="#fff"
-                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="start"
-                  gap="30px"
-                >
-                  <Box
-                    display="flex"
-                    justifyContent="start"
-                    alignItems="center"
-                    gap="5px"
-                  >
-                    <DescriptionIcon
-                      sx={{
-                        width: isSmallestScreens ? "16px" : "24px",
-                        height: isSmallestScreens ? "16px" : "24px",
-                      }}
-                    />
-                    <Typography variant={isSmallestScreens ? "h6" : "h4"}>
-                      Recent Shared Document
-                    </Typography>
-                  </Box>
-                  {documents.length ? (
-                    <TableContainer>
-                      <Table aria-label="simple table">
-                        <TableHead>
-                          <TableRow
-                            sx={{ borderBottom: "1px solid #93909080" }}
-                          >
-                            <TableCell
-                              sx={{
-                                paddingBottom: "5px",
-                                paddingTop: "15px",
-                                fontSize: isSmallestScreens ? "14px" : "18px",
-                                fontWeight: "500",
-                                minWidth: "150px",
-                              }}
-                            >
-                              Name
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                paddingBottom: "5px",
-                                paddingTop: "15px",
-                                fontSize: isSmallestScreens ? "14px" : "18px",
-                                fontWeight: "500",
-                              }}
-                            >
-                              Date
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                paddingBottom: "5px",
-                                paddingTop: "15px",
-                                fontSize: isSmallestScreens ? "14px" : "18px",
-                                fontWeight: "500",
-                                minWidth: "150px",
-                              }}
-                            >
-                              Uploaded By
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                paddingBottom: "5px",
-                                paddingTop: "15px",
-                                fontSize: isSmallestScreens ? "14px" : "18px",
-                                fontWeight: "500",
-                              }}
-                            ></TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {documents.map((document) => (
-                            <TableRow
-                              key={document._id}
-                              sx={{ borderBottom: "1px solid #93909080" }}
-                            >
-                              <TableCell
-                                sx={{
-                                  paddingBottom: "5px",
-                                  paddingTop: "15px",
-                                  fontSize: "14px",
-                                  fontWeight: "400",
-                                }}
-                              >
-                                {document.description}
-                              </TableCell>
-                              <TableCell
-                                sx={{
-                                  paddingBottom: "5px",
-                                  paddingTop: "15px",
-                                  fontSize: "14px",
-                                  fontWeight: "400",
-                                }}
-                              >
-                                {new Date(
-                                  document.createdAt
-                                ).toLocaleDateString()}
-                              </TableCell>
-                              <TableCell
-                                sx={{
-                                  paddingBottom: "5px",
-                                  paddingTop: "15px",
-                                  fontSize: "14px",
-                                  fontWeight: "400",
-                                }}
-                              >
-                                {document.documentOwner.name}
-                              </TableCell>
-                              <TableCell
-                                sx={{
-                                  paddingBottom: "5px",
-                                  paddingTop: "15px",
-                                  fontSize: "14px",
-                                  fontWeight: "400",
-                                }}
-                              >
-                                <IconButton>
-                                  <DownloadIcon
-                                    sx={{
-                                      color: "#000",
-                                      width: "24px",
-                                      height: "24px",
-                                    }}
-                                  />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  ) : (
-                    <Typography variant="h5">No uploaded document.</Typography>
-                  )}
-                  {currentUser?.role === "Tutor" && (
-                    <Box display="flex" justifyContent="end">
-                      <Button
-                        variant="text"
-                        sx={{
-                          fontSize: isSmallestScreens ? "14px" : "16px",
-                          "&:hover": { bgcolor: "inherit" },
-                        }}
-                        endIcon={<ArrowCircleRightIcon />}
-                      >
-                        View all
-                      </Button>
-                    </Box>
-                  )}
-                </Box>
-
-                {/* Attendance Card */}
-                <Box
-                  paddingY="15px"
-                  paddingX={isSmallestScreens ? "15px" : "25px"}
-                  borderRadius="10px"
-                  bgcolor="#fff"
-                  boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="start"
-                  gap="35px"
-                >
-                  <Box
-                    display="flex"
-                    justifyContent="start"
-                    alignItems="center"
-                    gap="5px"
-                  >
-                    <PermContactCalendarIcon
-                      sx={{
-                        width: isSmallestScreens ? "16px" : "24px",
-                        height: isSmallestScreens ? "16px" : "24px",
-                      }}
-                    />
-                    <Typography variant={isSmallestScreens ? "h6" : "h4"}>
-                      Attendance Summary
-                    </Typography>
-                  </Box>
-
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="space-between"
-                    gap="30px"
-                    mt="40px"
-                  >
-                    <TutorDashboardMeetingCard
-                      studentName="Student Name 1"
-                      studentEmail="studentname1@edx.ac.uk"
-                      type="Offline"
-                      datetime="9/3/2025 10:30"
-                    />
-                    <TutorDashboardMeetingCard
-                      studentName="Student Name 2"
-                      studentEmail="studentname2@edx.ac.uk"
-                      type="Online"
-                      datetime="9/3/2025 10:30"
-                    />
-                    <TutorDashboardMeetingCard
-                      studentName="Student Name 3"
-                      studentEmail="studentname3@edx.ac.uk"
-                      type="Online"
-                      datetime="9/3/2025 10:30"
-                    />
-                  </Box>
-                </Box>
-              </Box>
-
-              {/* Attendance Card */}
               <Box
                 paddingY="15px"
                 paddingX={isSmallestScreens ? "15px" : "25px"}
@@ -611,64 +197,173 @@ export default function TutorDashboard() {
                 bgcolor="#fff"
                 boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
               >
+                <Box
+                  display="flex"
+                  justifyContent="start"
+                  alignItems={isSmallestScreens ? "center" : "start"}
+                  gap="5px"
+                >
+                  <InsertInvitationIcon
+                    sx={{
+                      width: isSmallestScreens ? "18px" : "20px",
+                      height: isSmallestScreens ? "18px" : "20px",
+                    }}
+                  />
+                  <Typography
+                    variant={isSmallestScreens ? "caption" : "subtitle2"}
+                    fontWeight="400"
+                  >
+                    Upcoming Meetings
+                  </Typography>
+                </Box>
+                <Typography
+                  mt="20px"
+                  variant={isSmallestScreens ? "h5" : "h4"}
+                  color="primary.main"
+                >
+                  4 Meetings
+                </Typography>
+                <Box display="flex" justifyContent="end">
+                  <IconButton>
+                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                  </IconButton>
+                </Box>
+              </Box>
+
+              <Box
+                paddingY="15px"
+                paddingX={isSmallestScreens ? "15px" : "25px"}
+                borderRadius="10px"
+                bgcolor="#fff"
+                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+              >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems={isSmallestScreens ? "center" : "start"}
+                  gap="5px"
+                >
+                  <Typography
+                    variant={isSmallestScreens ? "h5" : "h4"}
+                    color="#E10022"
+                  >
+                    2 Meeting Requests
+                  </Typography>
+                  <PendingActionsIcon
+                    sx={{
+                      width: isSmallestScreens ? "18px" : "20px",
+                      height: isSmallestScreens ? "18px" : "20px",
+                    }}
+                  />
+                </Box>
+                <Typography
+                  mt="20px"
+                  variant={isSmallestScreens ? "caption" : "subtitle2"}
+                  fontWeight="400"
+                >
+                  Awaiting tutor approval
+                </Typography>
+                <Box display="flex" justifyContent="end">
+                  <IconButton>
+                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                  </IconButton>
+                </Box>
+              </Box>
+
+              <Box
+                paddingY="15px"
+                paddingX={isSmallestScreens ? "15px" : "25px"}
+                borderRadius="10px"
+                bgcolor="#fff"
+                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+              >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems={isSmallestScreens ? "center" : "start"}
+                  gap="5px"
+                >
+                  <Typography
+                    variant={isSmallestScreens ? "h5" : "h4"}
+                    color="primary.main"
+                  >
+                    10 Meetings
+                  </Typography>
+                  <VerifiedIcon
+                    sx={{
+                      width: isSmallestScreens ? "18px" : "20px",
+                      height: isSmallestScreens ? "18px" : "20px",
+                    }}
+                  />
+                </Box>
+                <Typography
+                  mt="20px"
+                  variant={isSmallestScreens ? "caption" : "subtitle2"}
+                  fontWeight="400"
+                >
+                  Completed this month
+                </Typography>
+                <Box display="flex" justifyContent="end">
+                  <IconButton>
+                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                  </IconButton>
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Second Row */}
+            {/* Meeting Card */}
+            <Box
+              paddingY="15px"
+              paddingX={isSmallestScreens ? "15px" : "25px"}
+              borderRadius="10px"
+              bgcolor="#fff"
+              boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
+            >
+              <Box>
                 <Box
                   display="flex"
                   justifyContent="start"
                   alignItems="center"
                   gap="5px"
                 >
-                  <PermContactCalendarIcon
+                  <CalendarMonthIcon
                     sx={{
-                      width: isSmallestScreens ? "16px" : "24px",
-                      height: isSmallestScreens ? "16px" : "24px",
+                      width: isSmallestScreens ? "14px" : "24px",
+                      height: isSmallestScreens ? "14px" : "24px",
                     }}
                   />
                   <Typography variant={isSmallestScreens ? "h6" : "h4"}>
-                    Attendance Summary
+                    Today Scheduled (3 Meetings)
                   </Typography>
                 </Box>
                 <Box
-                  mt="20px"
                   display="flex"
                   flexDirection="column"
                   justifyContent="space-between"
-                  alignItems="center"
-                  gap="7px"
+                  gap="30px"
+                  mt="40px"
                 >
-                  <Typography>80% of students attended this month.</Typography>
-                  <PieChart
-                    sx={{
-                      "& .MuiPieArc-root": { transform: "translateX(20%)" },
-                    }}
-                    series={[
-                      {
-                        data: [
-                          {
-                            id: 0,
-                            value: 20,
-                            label: "Absent",
-                            color: "#E10022",
-                          },
-                          {
-                            id: 1,
-                            value: 80,
-                            label: "Present",
-                            color: "#69E106",
-                          },
-                        ],
-                      },
-                    ]}
-                    width={250}
-                    height={250}
-                    slotProps={{
-                      legend: {
-                        direction: "row",
-                        position: { vertical: "bottom", horizontal: "middle" },
-                        labelStyle: { fontSize: 10 },
-                        itemMarkWidth: 12,
-                        itemMarkHeight: 12,
-                      },
-                    }}
+                  <TutorDashboardMeetingCard
+                    studentName="Student Name 1"
+                    studentEmail="studentname1@edx.ac.uk"
+                    type="Offline"
+                    datetime="9/3/2025 10:30"
+                  />
+                  <TutorDashboardMeetingCard
+                    studentName="Student Name 2"
+                    studentEmail="studentname2@edx.ac.uk"
+                    type="Online"
+                    datetime="9/3/2025 10:30"
+                  />
+                  <TutorDashboardMeetingCard
+                    studentName="Student Name 3"
+                    studentEmail="studentname3@edx.ac.uk"
+                    type="Online"
+                    datetime="9/3/2025 10:30"
                   />
                 </Box>
               </Box>
@@ -714,336 +409,134 @@ export default function TutorDashboard() {
                     Recent Shared Document
                   </Typography>
                 </Box>
-                <TableContainer>
-                  <Table aria-label="simple table">
-                    <TableHead>
-                      <TableRow sx={{ borderBottom: "1px solid #93909080" }}>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: isSmallestScreens ? "14px" : "18px",
-                            fontWeight: "500",
-                            minWidth: "150px",
-                          }}
-                        >
-                          Name
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: isSmallestScreens ? "14px" : "18px",
-                            fontWeight: "500",
-                          }}
-                        >
-                          Date
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: isSmallestScreens ? "14px" : "18px",
-                            fontWeight: "500",
-                            minWidth: "150px",
-                          }}
-                        >
-                          Uploaded By
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: isSmallestScreens ? "14px" : "18px",
-                            fontWeight: "500",
-                          }}
-                        ></TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow
-                        key="1"
-                        sx={{ borderBottom: "1px solid #93909080" }}
-                      >
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          document.pdf
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          28/2/2025
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          John Doe
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          <IconButton>
-                            <DownloadIcon
+                {documents.length ? (
+                  <TableContainer>
+                    <Table aria-label="simple table">
+                      <TableHead>
+                        <TableRow sx={{ borderBottom: "1px solid #93909080" }}>
+                          <TableCell
+                            sx={{
+                              paddingBottom: "5px",
+                              paddingTop: "15px",
+                              fontSize: isSmallestScreens ? "14px" : "18px",
+                              fontWeight: "500",
+                              minWidth: "150px",
+                            }}
+                          >
+                            Name
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              paddingBottom: "5px",
+                              paddingTop: "15px",
+                              fontSize: isSmallestScreens ? "14px" : "18px",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Date
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              paddingBottom: "5px",
+                              paddingTop: "15px",
+                              fontSize: isSmallestScreens ? "14px" : "18px",
+                              fontWeight: "500",
+                              minWidth: "150px",
+                            }}
+                          >
+                            Uploaded By
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              paddingBottom: "5px",
+                              paddingTop: "15px",
+                              fontSize: isSmallestScreens ? "14px" : "18px",
+                              fontWeight: "500",
+                            }}
+                          ></TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {documents.map((document) => (
+                          <TableRow
+                            key={document._id}
+                            sx={{ borderBottom: "1px solid #93909080" }}
+                          >
+                            <TableCell
                               sx={{
-                                color: "#000",
-                                width: "24px",
-                                height: "24px",
+                                paddingBottom: "5px",
+                                paddingTop: "15px",
+                                fontSize: "14px",
+                                fontWeight: "400",
                               }}
-                            />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        key="2"
-                        sx={{ borderBottom: "1px solid #93909080" }}
-                      >
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          Lecture Notes.pdf
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          28/2/2025
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          John Doe
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          <IconButton>
-                            <DownloadIcon
+                            >
+                              {document.description}
+                            </TableCell>
+                            <TableCell
                               sx={{
-                                color: "#000",
-                                width: "24px",
-                                height: "24px",
+                                paddingBottom: "5px",
+                                paddingTop: "15px",
+                                fontSize: "14px",
+                                fontWeight: "400",
                               }}
-                            />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        key="3"
-                        sx={{ borderBottom: "1px solid #93909080" }}
-                      >
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          document.pdf
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          28/2/2025
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          John Doe
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          <IconButton>
-                            <DownloadIcon
+                            >
+                              {new Date(
+                                document.createdAt
+                              ).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell
                               sx={{
-                                color: "#000",
-                                width: "24px",
-                                height: "24px",
+                                paddingBottom: "5px",
+                                paddingTop: "15px",
+                                fontSize: "14px",
+                                fontWeight: "400",
                               }}
-                            />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        key="4"
-                        sx={{ borderBottom: "1px solid #93909080" }}
-                      >
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          document.pdf
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          28/2/2025
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          John Doe
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          <IconButton>
-                            <DownloadIcon
+                            >
+                              {document.documentOwner.name}
+                            </TableCell>
+                            <TableCell
                               sx={{
-                                color: "#000",
-                                width: "24px",
-                                height: "24px",
+                                paddingBottom: "5px",
+                                paddingTop: "15px",
+                                fontSize: "14px",
+                                fontWeight: "400",
                               }}
-                            />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        key="5"
-                        sx={{ borderBottom: "1px solid #93909080" }}
-                      >
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          document.pdf
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          28/2/2025
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          John Doe
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            paddingBottom: "5px",
-                            paddingTop: "15px",
-                            fontSize: "14px",
-                            fontWeight: "400",
-                          }}
-                        >
-                          <IconButton>
-                            <DownloadIcon
-                              sx={{
-                                color: "#000",
-                                width: "24px",
-                                height: "24px",
-                              }}
-                            />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <Box display="flex" justifyContent="end">
-                  <Button
-                    variant="text"
-                    sx={{
-                      fontSize: isSmallestScreens ? "14px" : "16px",
-                      "&:hover": { bgcolor: "inherit" },
-                    }}
-                    endIcon={<ArrowCircleRightIcon />}
-                  >
-                    View all
-                  </Button>
-                </Box>
+                            >
+                              <IconButton>
+                                <DownloadIcon
+                                  sx={{
+                                    color: "#000",
+                                    width: "24px",
+                                    height: "24px",
+                                  }}
+                                />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <Typography variant="h5">No uploaded document.</Typography>
+                )}
+                {currentUser?.role === "Tutor" && (
+                  <Box display="flex" justifyContent="end">
+                    <Button
+                      variant="text"
+                      sx={{
+                        fontSize: isSmallestScreens ? "14px" : "16px",
+                        "&:hover": { bgcolor: "inherit" },
+                      }}
+                      endIcon={<ArrowCircleRightIcon />}
+                    >
+                      View all
+                    </Button>
+                  </Box>
+                )}
               </Box>
 
-              {/* Comment Card */}
+              {/* Attendance Card */}
               <Box
                 paddingY="15px"
                 paddingX={isSmallestScreens ? "15px" : "25px"}
@@ -1061,30 +554,61 @@ export default function TutorDashboard() {
                   alignItems="center"
                   gap="5px"
                 >
-                  <RateReviewIcon
+                  <PermContactCalendarIcon
                     sx={{
                       width: isSmallestScreens ? "16px" : "24px",
                       height: isSmallestScreens ? "16px" : "24px",
                     }}
                   />
                   <Typography variant={isSmallestScreens ? "h6" : "h4"}>
-                    Recent Comments
+                    Attendance Summary
                   </Typography>
                 </Box>
-                <DashboardCommentCard
-                  title="Very long blog title for blog named Class Discussions & Q&A"
-                  createdDateTime="27/2/2025 12:00"
-                  description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque optio excepturi debitis eius laboriosam non aliquam, eos officiis iure odio?"
-                  commentCount="2"
-                  ownerName="John Doe"
-                />
-                <DashboardCommentCard
-                  title="Very long blog title for blog named Class Discussions & Q&A"
-                  createdDateTime="27/2/2025 12:00"
-                  description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque optio excepturi debitis eius laboriosam non aliquam, eos officiis iure odio?"
-                  commentCount="2"
-                  ownerName="John Doe"
-                />
+
+                <Box
+                  mt="20px"
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  gap="7px"
+                >
+                  <Typography>80% of students attended this month.</Typography>
+                  <PieChart
+                    sx={{
+                      "& .MuiPieArc-root": { transform: "translateX(20%)" },
+                    }}
+                    series={[
+                      {
+                        data: [
+                          {
+                            id: 0,
+                            value: 20,
+                            label: "Absent",
+                            color: "#E10022",
+                          },
+                          {
+                            id: 1,
+                            value: 80,
+                            label: "Present",
+                            color: "#69E106",
+                          },
+                        ],
+                      },
+                    ]}
+                    width={250}
+                    height={250}
+                    slotProps={{
+                      legend: {
+                        direction: "row",
+                        position: { vertical: "bottom", horizontal: "middle" },
+                        labelStyle: { fontSize: 10 },
+                        itemMarkWidth: 12,
+                        itemMarkHeight: 12,
+                      },
+                    }}
+                  />
+                </Box>
               </Box>
             </Box>
 
