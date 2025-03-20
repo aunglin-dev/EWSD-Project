@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../Services/AxiosInstance.js";
+import axiosInstance from "../../services/AxiosInstance.js";
 import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 export default function AllocatePage() {
@@ -191,9 +191,9 @@ export default function AllocatePage() {
                       (allocation) => allocation.tutor._id === selectedTutor._id
                     ).length > 0
                       ? allocations.filter(
-                          (allocation) =>
-                            allocation.tutor._id === selectedTutor._id
-                        )[0].length
+                        (allocation) =>
+                          allocation.tutor._id === selectedTutor._id
+                      )[0].length
                       : "0"}
                   </TableCell>
                   <TableCell>{/* this is last active */}</TableCell>
@@ -287,8 +287,8 @@ export default function AllocatePage() {
                         (allocation) => allocation.tutor._id === tutor._id
                       ).length > 0
                         ? allocations.filter(
-                            (allocation) => allocation.tutor._id === tutor._id
-                          ).length
+                          (allocation) => allocation.tutor._id === tutor._id
+                        ).length
                         : "0"}
                     </TableCell>
                     <TableCell>{/* this is last active */}</TableCell>

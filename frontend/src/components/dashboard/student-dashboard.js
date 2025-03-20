@@ -24,7 +24,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useSelector } from "react-redux";
 import StudentDashboardMeetingCard from "./student-dashboard-meeting-card";
 import DashboardCommentCard from "./dashboard-comment-card";
-import axiosInstance from "../../Services/AxiosInstance.js";
+import axiosInstance from "../../services/AxiosInstance.js";
 import dayjs from "dayjs";
 
 export default function StudentDashboard() {

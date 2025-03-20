@@ -30,7 +30,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useSelector } from "react-redux";
 import DashboardCommentCard from "./dashboard-comment-card";
 import TutorDashboardMeetingCard from "./tutor-dashboard-meeting-card";
-import axiosInstance from "../../Services/AxiosInstance.js";
+import axiosInstance from "../../services/AxiosInstance.js";
 
 export default function TutorDashboard() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1070px)");
@@ -148,8 +148,8 @@ export default function TutorDashboard() {
                 isNonMobileScreens
                   ? "1fr 1fr 1fr 1fr"
                   : isSmallestScreens
-                  ? "1fr"
-                  : "1fr 1fr"
+                    ? "1fr"
+                    : "1fr 1fr"
               }
               gridAutoRows="minmax(150px, auto)"
               justifyContent="center"
