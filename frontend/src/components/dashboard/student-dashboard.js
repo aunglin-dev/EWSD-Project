@@ -25,6 +25,7 @@ import { useSelector } from "react-redux";
 import StudentDashboardMeetingCard from "./student-dashboard-meeting-card";
 import DashboardCommentCard from "./dashboard-comment-card";
 import axiosInstance from "../../services/AxiosInstance";
+import dayjs from "dayjs";
 
 export default function StudentDashboard() {
   const { id } = useParams();
@@ -42,7 +43,6 @@ export default function StudentDashboard() {
   useEffect(() => {
     if (currentUser && currentUser.role === "Student") {
       setStudent(currentUser);
-      setLoading(false);
     };
 
     if (id) {
@@ -64,54 +64,54 @@ export default function StudentDashboard() {
           };
           setStudent(student);
 
-          // const meetingsResponse = await axiosInstance.get(
-          //   `http://localhost:8000/api/meetings/allocation/${student.allocations[0]._id}`
-          // );
-
-          // setMeeting(meetingsResponse.data);
-
         } catch (error) {
           console.error("Error fetching data:", error);
-        } finally {
-          setLoading(false);
         }
       };
       fetchData();
     }
 
-    // const fetchDocumentComments = async (role, id) => {
-    //   try {
-    //     const documentCommentResponse = await axiosInstance.get(
-    //       `http://localhost:8000/api/documentcomments/last2/${role}/${id}`
-    //     );
+    const fetchDocumentComments = async (role, id) => {
+      try {
+        const documentCommentResponse = await axiosInstance.get(
+          `http://localhost:8000/api/documentcomments/last2/${role}/${id}`
+        );
 
-    //     console.log("Document Comments", documentCommentResponse.data);
-    //     setDocumentComments(documentCommentResponse.data);
+        setDocumentComments(documentCommentResponse.data);
 
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-    // fetchDocumentComments("student", id ? id : currentUser._id);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDocumentComments("student", id ? id : currentUser._id);
 
-    // const fetchDocuments = async (role, id) => {
-    //   try {
-    //     const documentResponse = await axiosInstance.get(
-    //       `http://localhost:8000/api/documents/allocation/${role}/${id}/last-five`
-    //     );
-    //     setDocuments(documentResponse.data);
+    const fetchDocuments = async (role, id) => {
+      try {
+        const documentResponse = await axiosInstance.get(
+          `http://localhost:8000/api/documents/allocation/${role}/${id}/last-five`
+        );
+        setDocuments(documentResponse.data);
 
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-    // fetchDocuments("student", id ? id : currentUser._id);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDocuments("student", id ? id : currentUser._id);
 
+    setLoading(false);
   }, []);
+
+  const handleDownload = (url) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.download = url.split("/").pop();
+    link.click();
+  };
 
   return (
     <Box
@@ -143,7 +143,7 @@ export default function StudentDashboard() {
                     <Typography variant="subtitle1">Stay on track with your meetings and progress.</Typography>
                   }
                 </Box>
-                <Typography variant="subtitle2">Last Login: 3/7/2025 22:00</Typography>
+                <Typography variant="subtitle2">Last Login: {dayjs(student?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")}</Typography>
               </Box>
               <Box
                 display="grid"
@@ -270,7 +270,12 @@ export default function StudentDashboard() {
                                 {document.documentOwner.name}
                               </TableCell>
                               <TableCell sx={{ paddingBottom: "5px", paddingTop: "15px", fontSize: "14px", fontWeight: "400" }}>
-                                <IconButton>
+                                <IconButton
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDownload(document.url);
+                                  }}
+                                >
                                   <DownloadIcon sx={{ color: "#000", width: "24px", height: "24px" }} />
                                 </IconButton>
                               </TableCell>
@@ -305,20 +310,20 @@ export default function StudentDashboard() {
                     <RateReviewIcon sx={{ width: isSmallestScreens ? "16px" : "24px", height: isSmallestScreens ? "16px" : "24px" }} />
                     <Typography variant={isSmallestScreens ? "h6" : "h4"}>Recent Comments</Typography>
                   </Box>
-                  <DashboardCommentCard
-                    title="Very long blog title for blog named Class Discussions & Q&A"
-                    createdDateTime="27/2/2025 12:00"
-                    description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque optio excepturi debitis eius laboriosam non aliquam, eos officiis iure odio?"
-                    commentCount="2"
-                    ownerName="John Doe"
-                  />
-                  <DashboardCommentCard
-                    title="Very long blog title for blog named Class Discussions & Q&A"
-                    createdDateTime="27/2/2025 12:00"
-                    description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque optio excepturi debitis eius laboriosam non aliquam, eos officiis iure odio?"
-                    commentCount="2"
-                    ownerName="John Doe"
-                  />
+                  {documentComments.length ?
+                    documentComments.map(documentComments =>
+                      <DashboardCommentCard
+                        key={documentComments._id}
+                        title={documentComments.document.description}
+                        createdDateTime={dayjs(document.createdAt).format("DD/MM/YYYY, hh:mm A")}
+                        description={documentComments.comment}
+                        ownerName={documentComments.commentOwner.name}
+                        role={currentUser?.role}
+                      />
+                    )
+                    :
+                    <Typography variant="h5">No uploaded document.</Typography>
+                  }
                 </Box>
               </Box>
             </>

@@ -12,20 +12,26 @@ import ErrorIcon from '@mui/icons-material/Error';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import AddIcon from "@mui/icons-material/Add";
+import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from '@mui/x-charts/PieChart';
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axiosInstance from "../../services/AxiosInstance";
+import dayjs from "dayjs";
 
 export default function StaffDashboard() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1156px)");
   const isSmallestScreens = useMediaQuery("(max-width: 426px)");
-  const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.auth);
   const [data, setData] = useState([]);
   const [tutors, setTutors] = useState([]);
   const [students, setStudents] = useState([]);
   const [allocatedTutorStudents, setAllocatedTutorStudents] = useState([]);
   const [alreadyAllocatedStudents, setAlreadyAllocatedStudents] = useState([]);
+  const [mostActiveUser, setMostActiveUer] = useState([]);
+  const [mostUsedPlatform, setMostUsedPlatform] = useState([]);
+  const [inactiveStudents, setInactiveStudents] = useState([]);
+  const [mostViewPage, setMostViewPage] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +45,20 @@ export default function StaffDashboard() {
         const studentResponse = await axiosInstance.get(
           "http://localhost:8000/api/students"
         );
+        const mostActiveUserResponse = await axiosInstance.get(
+          "http://localhost:8000/api/activities/mostActiveUser"
+        );
+        const mostViewPageResponse = await axiosInstance.get(
+          "http://localhost:8000/api/activities/mostViewPage"
+        );
+        const mostUsedPlatformResponse = await axiosInstance.get(
+          "http://localhost:8000/api/meetings/mostUsedPlatform"
+        );
+
+        setMostViewPage(mostViewPageResponse.data);
+        setInactiveStudents(studentResponse.data.filter(student => student.lastLoginDate === null))
+        setMostUsedPlatform(mostUsedPlatformResponse.data);
+        setMostActiveUer(mostActiveUserResponse.data);
         setData(response.data);
         setTutors(tutorResponse.data);
         setStudents(studentResponse.data);
@@ -61,33 +81,6 @@ export default function StaffDashboard() {
     };
     fetchData();
   }, []);
-  const handleDeleteAllocation = async (allocationId) => {
-    const isConfirmed = window.confirm(
-      `Are you sure you want to delete this allocation ${allocationId}?`
-    );
-
-    if (isConfirmed) {
-      try {
-        const response = await axiosInstance.delete(
-          `http://localhost:8000/api/allocations/${allocationId}`
-        );
-        if (response.status === 200) {
-          setData((prevData) =>
-            prevData.filter((allocation) => allocation._id !== allocationId)
-          );
-          console.log("Allocation deleted successfully");
-        }
-      } catch (error) {
-        console.error("Error deleting allocation:", error);
-      }
-    } else {
-      console.log("Deletion canceled");
-    }
-  };
-
-  if (!data || data.length === 0) {
-    return <h1>Staff dashboard has no data</h1>;
-  }
 
   return (
     <Box
@@ -102,10 +95,10 @@ export default function StaffDashboard() {
       >
         <Box display="flex" flexDirection={isSmallestScreens && "column"} justifyContent="space-between" alignItems={isSmallestScreens ? "start" : "center"} gap="18px">
           <Box>
-            <Typography variant={isNonMobileScreens ? "h2" : "h3"}>Welcome, Admin!</Typography>
+            <Typography variant={isNonMobileScreens ? "h2" : "h3"}>Welcome, {currentUser?.name}!</Typography>
             <Typography variant="subtitle1">Manage Allocations and Monitor System Activity</Typography>
           </Box>
-          <Typography variant="subtitle2">Last Login: 3/7/2025 22:00</Typography>
+          <Typography variant="subtitle2">Last Login: {dayjs(currentUser?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")}</Typography>
         </Box>
 
         <Box
@@ -202,6 +195,8 @@ export default function StaffDashboard() {
               </Box>
             </Box>
           </Box>
+
+          {/* Unallocated Teacher */}
           <Box
             paddingY="15px"
             paddingX={isSmallestScreens ? "15px" : "25px"}
@@ -254,6 +249,7 @@ export default function StaffDashboard() {
           </Box>
 
           {/* Second Row */}
+          {/* Most Active User */}
           <Box
             paddingY="15px"
             paddingX={isSmallestScreens ? "15px" : "25px"}
@@ -269,27 +265,39 @@ export default function StaffDashboard() {
               xAxis={[
                 {
                   scaleType: "band",
-                  data: ["User 1", "User 2", "User 3", "User 4", "User 5"]
+                  data: [
+                    mostActiveUser[0]?.user.name,
+                    mostActiveUser[1]?.user.name,
+                    mostActiveUser[2]?.user.name,
+                    mostActiveUser[3]?.user.name,
+                    mostActiveUser[4]?.user.name,
+                  ]
                 }
               ]}
-              yAxis={[
-                {
-                  scaleType: "linear",
-                  valueFormatter: (value) => `${value} hr`
-                }
-              ]}
-              series={[{ data: [22, 18, 20, 3, 3], color: "#0A1F44" }]}
+              yAxis={[{ scaleType: "linear", }]}
+              series={[{
+                data: [
+                  mostActiveUser[0]?.count,
+                  mostActiveUser[1]?.count,
+                  mostActiveUser[2]?.count,
+                  mostActiveUser[3]?.count,
+                  mostActiveUser[4]?.count,
+                ], color: "#0A1F44"
+              }]}
               width={isNonMobileScreens ? 500 : isSmallestScreens ? 300 : 420}
               height={400}
             />
           </Box>
 
+          {/* Unallocated students */}
           <Box
             paddingY="15px"
             paddingX={isSmallestScreens ? "15px" : "25px"}
             borderRadius="10px"
             bgcolor="#fff"
             boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+            maxHeight="500px"
+            overflow="auto"
           >
             <Box display="flex" flexDirection={isSmallestScreens && "column"} justifyContent="space-between" gap="15px">
               <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
@@ -311,7 +319,7 @@ export default function StaffDashboard() {
               display="flex"
               flexDirection="column"
               gap="25px"
-              mt="20px"
+              mt="40px"
             >
               {students.filter(student => (!alreadyAllocatedStudents.includes(student._id))).length > 0
                 ? students.filter(student => (!alreadyAllocatedStudents.includes(student._id)))?.map((student, index) =>
@@ -334,34 +342,8 @@ export default function StaffDashboard() {
             </Box>
           </Box>
 
-          <Box
-            paddingY="15px"
-            paddingX={isSmallestScreens ? "15px" : "25px"}
-            borderRadius="10px"
-            bgcolor="#fff"
-            boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
-          >
-            <Box>
-              <Typography variant={isNonMobileScreens ? "h4" : "h5"}>Most View Pages</Typography>
-              <Typography variant="subtitle1" fontSize="14px">Most view pages of the platform within a month</Typography>
-            </Box>
-            <BarChart
-              xAxis={[
-                {
-                  scaleType: "band",
-                  data: ["Page 1", "Page 2", "Page 3", "Page 4", "Page 5"]
-                }
-              ]}
-              yAxis={[
-                {
-                  scaleType: "linear",
-                }
-              ]}
-              series={[{ data: [750, 600, 650, 100, 100], color: "#0A1F44" }]}
-              width={isNonMobileScreens ? 500 : isSmallestScreens ? 300 : 420}
-              height={400}
-            />
-          </Box>
+          {/* Third Row */}
+          {/* Most used meeting platform */}
           <Box
             paddingY="15px"
             paddingX={isSmallestScreens ? "15px" : "25px"}
@@ -381,12 +363,136 @@ export default function StaffDashboard() {
             <PieChart
               series={[
                 {
+                  data: mostUsedPlatform?.map((platform) => ({ value: platform.count, label: platform.platform })),
+                },
+              ]}
+              width={isSmallestScreens ? 280 : 400}
+              height={200}
+              slotProps={{
+                legend: {
+                  direction: "column",
+                  labelStyle: { fontSize: 12 },
+                  itemMarkWidth: 14,
+                  itemMarkHeight: 14,
+                },
+              }}
+            />
+          </Box>
+
+          {/* Inactive students */}
+          <Box
+            paddingY="15px"
+            paddingX={isSmallestScreens ? "15px" : "25px"}
+            borderRadius="10px"
+            bgcolor="#fff"
+            boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+            overflow="auto"
+            maxHeight="500px"
+          >
+            <Box display="flex" flexDirection={isSmallestScreens && "column"} justifyContent="space-between" gap="15px">
+              <Box display="flex" justifyContent="start" alignItems="center" gap="5px">
+                <DoDisturbAltIcon sx={{ width: isSmallestScreens ? "14px" : "24px", height: isSmallestScreens ? "14px" : "24px" }} />
+                <Typography variant={isSmallestScreens ? "h6" : "h4"}>Inactive Students</Typography>
+              </Box>
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap="25px"
+              mt="40px"
+            >
+              {inactiveStudents.length ?
+                inactiveStudents.map((student, index) =>
+                  <Box key={index}
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="start"
+                    borderRadius="3px"
+                    gap="10px"
+                  >
+                    <Box display="flex" flexDirection={isNonMobileScreens ? "row" : "column"}
+                      justifyContent="space-between" alignContent="center" flex="2">
+                      <Box>
+                        <Typography fontSize={isSmallestScreens && "16px"} fontWeight="500">{student.name}</Typography>
+                        <Typography fontSize={isSmallestScreens ? "13px" : "14px"}>{student.name}</Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                ) : (<Typography>No unallocated student.</Typography>)}
+            </Box>
+          </Box>
+
+          {/* Fourth Row */}
+          {/* Most view page */}
+          <Box
+            paddingY="15px"
+            paddingX={isSmallestScreens ? "15px" : "25px"}
+            borderRadius="10px"
+            bgcolor="#fff"
+            boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+          >
+            <Box>
+              <Typography variant={isNonMobileScreens ? "h4" : "h5"}>Most View Pages</Typography>
+              <Typography variant="subtitle1" fontSize="14px">Most view pages of the platform within a month</Typography>
+            </Box>
+            <BarChart
+              xAxis={[
+                {
+                  scaleType: "band",
                   data: [
-                    { id: 0, value: 60, label: 'Zoom', color: "#0A1F44" },
-                    { id: 1, value: 20, label: 'Google Meet', color: "#4A90E2" },
-                    { id: 2, value: 10, label: 'Microsoft Team', color: "#939090" },
+                    mostViewPage[0]?.page,
+                    mostViewPage[1]?.page,
+                    mostViewPage[2]?.page,
+                    mostViewPage[3]?.page,
+                    mostViewPage[4]?.page,
+                  ]
+                }
+              ]}
+              yAxis={[
+                {
+                  scaleType: "linear",
+                }
+              ]}
+              series={[{
+                data: [
+                  mostViewPage[0]?.count,
+                  mostViewPage[1]?.count,
+                  mostViewPage[2]?.count,
+                  mostViewPage[3]?.count,
+                  mostViewPage[4]?.count,
+                ], color: "#0A1F44"
+              }]}
+              width={isNonMobileScreens ? 500 : isSmallestScreens ? 300 : 420}
+              height={400}
+            />
+          </Box>
+          {/* Most used browser */}
+          <Box
+            paddingY="15px"
+            paddingX={isSmallestScreens ? "15px" : "25px"}
+            borderRadius="10px"
+            bgcolor="#fff"
+            boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            gap="20px"
+          >
+            <Box width="100%">
+              <Typography variant={isNonMobileScreens ? "h4" : "h5"}>Most Used Browsers</Typography>
+              <Typography variant="subtitle1" fontSize="14px">Most commonly used browsers to access the system</Typography>
+            </Box>
+            <PieChart
+              series={[
+                {
+                  data: [
+                    { id: 0, value: 60, label: 'Chrome', color: "#0A1F44" },
+                    { id: 1, value: 20, label: 'Firefox', color: "#4A90E2" },
+                    { id: 2, value: 10, label: 'Microsoft Edge', color: "#939090" },
                     { id: 3, value: 5, label: 'Other', color: "#CBCBCB" },
                   ],
+
                 },
               ]}
               width={isSmallestScreens ? 280 : 400}

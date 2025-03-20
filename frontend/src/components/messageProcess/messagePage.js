@@ -1,42 +1,69 @@
 import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
-import { Box, Button, TextField, Typography, Paper, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  useMediaQuery,
+  IconButton,
+} from "@mui/material";
 import LoginUserSide from "./login-user-side";
 import OtherMessageParty from "./otherMessageParty";
-import AttachmentIcon from "@mui/icons-material/Attachment";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../services/AxiosInstance";
+import { useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const socket = io("http://localhost:8000");
 
 export default function MessagePage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const { currentUser } = useSelector((state) => state.auth);
-  //console.log("current user allocation id =>", currentUser?.allocations[0].id);
-  //console.log("current user roel=>", currentUser?.role);
-  const hasAllocations =
-    currentUser?.allocations && currentUser.allocations.length > 0;
+  console.log("current user=>", currentUser);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [otherPartyId, setOtherPartyId] = useState(null);
+  const [allocationId, setAllocationId] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [allocationId, setAllocationId] = useState(
-    hasAllocations ? currentUser.allocations[0].id : null
-  );
   const [role, setRole] = useState(currentUser?.role);
   const chatBoxRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    if (!hasAllocations) {
-      console.log("User has no allocations.");
-      return;
+    if (location.state && location.state.otherPartyId) {
+      setOtherPartyId(location.state.otherPartyId);
+    } else {
+      console.error("no otherParty id found");
     }
+  }, [location]);
+
+  useEffect(() => {
+    if (currentUser && currentUser.allocations.length > 0) {
+      const allocation = currentUser.allocations.find(
+        (allocation) =>
+          allocation.student === otherPartyId ||
+          allocation.tutor === otherPartyId
+      );
+      if (allocation) {
+        setAllocationId(allocation.id);
+      }
+    }
+  }, [currentUser, otherPartyId]);
+  //console.log("allocatin id=>", allocationId);
+  useEffect(() => {
+    if (!allocationId) return;
+
     axiosInstance
       .get(`http://localhost:8000/api/messages/${allocationId}`)
       .then((response) => {
         setMessages(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching messages:", error);
+        console.error("error fetching messages=>", error);
       });
 
     socket.emit("joinRoom", allocationId);
@@ -58,7 +85,7 @@ export default function MessagePage() {
       socket.off("stopTyping");
       socket.emit("leaveRoom", allocationId);
     };
-  }, [allocationId, hasAllocations]);
+  }, [allocationId]);
 
   const handleSend = () => {
     console.log("msg sent ");
@@ -92,58 +119,45 @@ export default function MessagePage() {
   }, [messages]);
 
   const handleInputChange = (e) => {
-    setNewMessage(e.target.value);
-    socket.emit("typing", { allocationId, role });
+    if (e.key === "Enter" && e.ctrlKey) {
+      handleSend();
+    } else {
+      setNewMessage(e.target.value);
+      socket.emit("typing", { allocationId, role });
+    }
   };
 
   const handleInputBlur = () => {
     socket.emit("stopTyping", { allocationId, role });
   };
 
-  if (!hasAllocations) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-        <Paper
-          elevation={3}
-          sx={{ p: 4, maxWidth: "500px", textAlign: "center" }}
-        >
-          <Typography variant="h5" gutterBottom>
-            No Allocations Found
-          </Typography>
-          <Typography severity="warning" sx={{ mb: 2 }}>
-            You have not been allocated with anyone yet.
-          </Typography>
-          <Typography variant="body1" color="textSecondary">
-            Please contact your administrator to get assigned to a tutor or
-            student.
-          </Typography>
-        </Paper>
-      </Box>
-    );
-  }
-
   return (
     <Box
       paddingTop="80px"
       paddingX={isNonMobileScreens ? "20px" : "10px"}
-      style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <Typography
-        variant="h4"
-        gutterBottom
-        textAlign={"center"}
-        sx={{ padding: "10px", borderBottom: "1px solid #ccc" }}
+      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px",
+          borderBottom: "1px solid #ccc",
+        }}
       >
-        Message Room
-      </Typography>
+        <IconButton onClick={() => navigate(-1)} size="large">
+          <ArrowBackIcon />
+        </IconButton>
+        <Typography
+          variant="h4"
+          gutterBottom
+          textAlign={"center"}
+          sx={{ flexGrow: 1, marginLeft: "10px" }}
+        >
+          Message Room
+        </Typography>
+      </Box>
       <Box sx={{ display: "flex", height: "100vh" }}>
         <LoginUserSide />
         {/* middle part start */}
@@ -181,10 +195,6 @@ export default function MessagePage() {
                     marginBottom: "5px",
                   }}
                 >
-                  {/* {new Date(message.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })} */}
                   {new Date(message.updatedDate).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -202,28 +212,7 @@ export default function MessagePage() {
                   }}
                 >
                   <Typography>{message.text}</Typography>
-                  {/* {message.file && (
-                  <Box sx={{ marginTop: "5px" }}>
-                    <AttachmentIcon
-                      sx={{ fontSize: "16px", marginRight: "5px" }}
-                    />
-                    <Typography variant="body2">{message.file.name}</Typography>
-                  </Box>
-                )} */}
                 </Box>
-
-                {/* cmt btn */}
-                {/* <Button
-                variant="text"
-                size="small"
-                sx={{
-                  alignSelf: "flex-end",
-                  marginLeft: "10px",
-                  textTransform: "none",
-                }}
-              >
-                Reply
-              </Button> */}
               </Box>
             </Box>
           ))}
@@ -261,6 +250,8 @@ export default function MessagePage() {
           label="Enter Message"
           variant="outlined"
           fullWidth
+          multiline
+          rows={1}
           sx={{ marginRight: "10px" }}
         />
         <Button

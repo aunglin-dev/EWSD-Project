@@ -1,7 +1,7 @@
 import { Box, Divider, Typography, Button, useMediaQuery } from "@mui/material"
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 
-const DashboardCommentCard = ({ title, createdDateTime, description, commentCount, ownerName }) => {
+const DashboardCommentCard = ({ title, createdDateTime, description, ownerName, role }) => {
     const isSmallestScreens = useMediaQuery("(max-width: 426px)");
 
     return (
@@ -14,7 +14,7 @@ const DashboardCommentCard = ({ title, createdDateTime, description, commentCoun
             <Typography variant="subtitle2" fontWeight="400">{description}</Typography>
             <Box display="flex" justifyContent="space-between" alignItems="end" borderTop="1px solid #93909080" paddingTop="10px">
                 <Typography fontSize={isSmallestScreens ? "13px" : "15px"} fontWeight="600" flex="1" lineHeight={isSmallestScreens && "22.75px"}>Posted By {ownerName}</Typography>
-                <Button variant="text" sx={{ fontSize: isSmallestScreens ? "13px" : "15px", "&:hover": { bgcolor: "inherit" }, fontWeight: "600", padding: "0", }} endIcon={<ArrowCircleRightIcon />}>View Details</Button>
+                {role === "Student" && <Button href="/student/document" variant="text" sx={{ fontSize: isSmallestScreens ? "13px" : "15px", "&:hover": { bgcolor: "inherit" }, fontWeight: "600", padding: "0", }} endIcon={<ArrowCircleRightIcon />}>View Details</Button>}
             </Box>
         </Box>
 
