@@ -106,7 +106,9 @@ export const getConfirmedMeetingsTodayByTutorId = async (req, res) => {
         let allMeetings = [];
 
         for (const allocation of allocations) {
-            const meetings = await Meeting.find({ allocationId: allocation._id,
+            // Find meetings for the allocation with status 3 (confirmed) and today's date
+            const meetings = await Meeting.find({ 
+                allocationId: allocation._id, // Allocation Id that link meeting to tutor & student
                 status: 3, //Confirmed Status
                 dateTime: {               
                     $gte: todayStart,    // Greater than or equal to today's start
