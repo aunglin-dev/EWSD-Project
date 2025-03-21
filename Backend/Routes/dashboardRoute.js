@@ -22,6 +22,7 @@ import {
   upcommingMeetingCountOfStudent,
   upcommingMeetings,
   upcommingMeetingsOfStudent,
+  fetchMeetingsForStudent,
 } from "../Controller/dashboardController.js";
 const dashboardRoute = express.Router();
 
@@ -68,6 +69,11 @@ dashboardRoute.get("/tutor/:tutorId/recentComment", recentCommentByTutor);
 dashboardRoute.get(
   "/student/:studentId/upcommingMeetings",
   upcommingMeetingsOfStudent
+);
+
+dashboardRoute.get(
+  "/student/:studentId/fetchoneUpcommingMeetingForStudent",
+  fetchMeetingsForStudent
 );
 dashboardRoute.get(
   "/student/:studentId/upcommingMeetingCount",

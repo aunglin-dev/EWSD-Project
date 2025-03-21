@@ -381,6 +381,58 @@ export const upcommingMeetingsOfStudent = async (req, res) => {
   }
 };
 
+export const fetchMeetingsForStudent = async (req, res) => {
+  try {
+    const id = req.params.studentId;
+
+    const studentAllocation = await Allocation.findOne({ student: id }).exec();
+    if (!studentAllocation) {
+      return res
+        .status(404)
+        .json({ message: "No allocation found for this student" });
+    }
+
+    const currentDate = new Date();
+
+    const [latestUpcomingMeeting, lastMissedMeeting, lastCompetedMeeting] =
+      await Promise.all([
+        Meeting.findOne({
+          allocationId: studentAllocation._id,
+          status: 1,
+          dateTime: { $gte: currentDate },
+        })
+          .sort({ dateTime: 1 })
+          .limit(1),
+
+        Meeting.findOne({
+          allocationId: studentAllocation._id,
+          status: 3,
+          dateTime: { $lte: currentDate },
+        })
+          .sort({ dateTime: -1 })
+          .limit(1),
+
+        Meeting.findOne({
+          allocationId: studentAllocation._id,
+          status: 4,
+          dateTime: { $lte: currentDate },
+        })
+          .sort({ dateTime: -1 })
+          .limit(1),
+      ]);
+
+    const response = {
+      latestUpcomingMeeting: latestUpcomingMeeting || null,
+      lastMissedMeeting: lastMissedMeeting || null,
+      lastCompetedMeeting: lastCompetedMeeting || null,
+    };
+
+    // Send the combined response
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 export const totalMeetingsOfStudent = async (req, res) => {
   try {
     const id = req.params.studentId;
@@ -397,10 +449,26 @@ export const totalMeetingsOfStudent = async (req, res) => {
       allocationId: studentAllocation._id,
     });
 
-    res.status(200).json(meetings.flat());
+    const meetingPercentages = {
+      pending: calculatePercentage(meetings, 0),
+      confirmed: calculatePercentage(meetings, 1),
+      cancelled: calculatePercentage(meetings, 2),
+      missed: calculatePercentage(meetings, 3),
+      completed: calculatePercentage(meetings, 4),
+    };
+
+    // Return the percentages in the response
+    res.status(200).json(meetingPercentages);
   } catch (err) {
     res.status(500).json(err.message);
   }
+};
+
+const calculatePercentage = (meetings, status) => {
+  const filteredMeetings = meetings.filter((el) => el.status === status);
+  return meetings.length > 0
+    ? (filteredMeetings.length / meetings.length) * 100
+    : 0;
 };
 
 export const upcommingMeetingCountOfStudent = async (req, res) => {

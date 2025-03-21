@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { data, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -26,6 +26,7 @@ import StudentDashboardMeetingCard from "./student-dashboard-meeting-card";
 import DashboardCommentCard from "./dashboard-comment-card";
 import axiosInstance from "../../Services/AxiosInstance.js";
 import dayjs from "dayjs";
+import axios from "axios";
 
 export default function StudentDashboard() {
   const { id } = useParams();
@@ -34,10 +35,99 @@ export default function StudentDashboard() {
   const { currentUser } = useSelector((state) => state.auth);
   const [student, setStudent] = useState(null);
   const [meeting, setMeeting] = useState(null);
+  const [upComingMeeting, setUpComingMeeting] = useState(null);
+  const [lastMissedMeeting, setlastMissedMeeting] = useState(null);
+  const [lastCompetedMeeting, setlastCompetedMeeting] = useState(null);
   const [documents, setDocuments] = useState([]);
+
+  const [meetingPercentage, setMeetingPercentage] = useState({});
   const [documentComments, setDocumentComments] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchMeetingPercentage = async (id) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/api/dashboard/student/${id}/totalMeetingsOfStudent `
+      );
+
+      if (res.status == 200) {
+        console.log("meeting percentage_____________", res.data);
+        setMeetingPercentage(res.data);
+        console.log("meeting percentage_____________", meetingPercentage);
+      } else {
+        setMeetingPercentage(res.data);
+        console.log("erorrrrr", meetingPercentage);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatAndSetDate = (dateTime, setStateFunction) => {
+    if (!dateTime) {
+      setStateFunction(null); // Set state to null if dateTime is undefined or null
+      return;
+    }
+
+    const date = new Date(dateTime);
+    const formattedDate = `${date.getUTCDate()}/${
+      date.getUTCMonth() + 1
+    }/${date.getUTCFullYear()} ${date.getUTCHours()}:${date
+      .getUTCMinutes()
+      .toString()
+      .padStart(2, "0")}`;
+
+    setStateFunction(formattedDate); // Update the state with the formatted date
+  };
+
+  const fetchUpcomingMetting = async (id) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/api/dashboard/student/${id}/fetchoneUpcommingMeetingForStudent`
+      );
+
+      if (res.status == 200) {
+        console.log("Upcoming meeting _____________", res.data);
+
+        //Upcoming Date
+        // const upcomingdate = new Date(
+        //   res.data?.latestUpcomingMeeting?.dateTime
+        // );
+
+        // const formattedDateupcomingdate = `${upcomingdate.getUTCDate()}/${
+        //   upcomingdate.getUTCMonth() + 1
+        // }/${upcomingdate.getUTCFullYear()} ${upcomingdate.getUTCHours()}:${upcomingdate
+        //   .getUTCMinutes()
+        //   .toString()
+        //   .padStart(2, "0")}`;
+
+        // setUpComingMeeting(formattedDateupcomingdate);
+
+        formatAndSetDate(
+          res.data.latestUpcomingMeeting?.dateTime,
+          setUpComingMeeting
+        );
+
+        // Format and set last missed meeting date
+        formatAndSetDate(
+          res.data.lastMissedMeeting?.dateTime,
+          setlastMissedMeeting
+        );
+
+        // Format and set last completed meeting date
+        formatAndSetDate(
+          res.data.lastCompetedMeeting?.dateTime,
+          setlastCompetedMeeting
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     if (currentUser && currentUser.role === "Student") {
       setStudent(currentUser);
@@ -66,6 +156,8 @@ export default function StudentDashboard() {
         }
       };
       fetchData();
+      fetchMeetingPercentage(id);
+      fetchUpcomingMetting(id);
     }
 
     const fetchDocumentComments = async (role, id) => {
@@ -98,7 +190,7 @@ export default function StudentDashboard() {
     fetchDocuments("student", id ? id : currentUser._id);
 
     setLoading(false);
-  }, []);
+  }, [upComingMeeting]);
 
   const handleDownload = (url) => {
     const link = document.createElement("a");
@@ -206,120 +298,167 @@ export default function StudentDashboard() {
                     Attendance Summary
                   </Typography>
                 </Box>
-                <Box
-                  display="flex"
-                  flexDirection={isSmallestScreens ? "column" : "row"}
-                  justifyContent="space-between"
-                  alignItems="center"
-                  gap="7px"
-                >
+                {Object.keys(meetingPercentage).length > 0 ? (
                   <Box
-                    flex="2"
                     display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    paddingTop="50px"
-                    gap="40px"
+                    flexDirection={isSmallestScreens ? "column" : "row"}
+                    justifyContent="space-between"
+                    alignItems="center"
+                    gap="7px"
                   >
-                    <Typography>80% attendance in the last 1 month.</Typography>
                     <Box
+                      flex="2"
                       display="flex"
                       flexDirection="column"
-                      justifyContent="start"
-                      gap="20px"
+                      justifyContent="center"
+                      paddingTop="50px"
+                      gap="40px"
                     >
+                      <Typography>
+                        {Math.round(meetingPercentage?.completed * 10) / 10} %
+                        attendance in the last one month.
+                      </Typography>
                       <Box
                         display="flex"
-                        justifyContent="space-between"
-                        justifyItems="start"
-                        gap="6px"
+                        flexDirection="column"
+                        justifyContent="start"
+                        gap="20px"
                       >
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          justifyItems="start"
+                          gap="6px"
+                        >
+                          <Box>
+                            <Typography
+                              variant={isSmallestScreens ? "h6" : "subtitle2"}
+                              fontWeight="600"
+                            >
+                              Last Attended
+                            </Typography>
+                            <Typography
+                              variant={isSmallestScreens ? "caption" : "h6"}
+                              fontWeight="400"
+                            >
+                              {lastCompetedMeeting == null
+                                ? "None"
+                                : lastCompetedMeeting}
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Typography
+                              variant={isSmallestScreens ? "h6" : "subtitle2"}
+                              fontWeight="600"
+                            >
+                              Upcoming Session
+                            </Typography>
+                            <Typography
+                              variant={isSmallestScreens ? "caption" : "h6"}
+                              fontWeight="400"
+                            >
+                              {upComingMeeting == null
+                                ? "None"
+                                : upComingMeeting}
+                            </Typography>
+                          </Box>
+                        </Box>
+
                         <Box>
                           <Typography
                             variant={isSmallestScreens ? "h6" : "subtitle2"}
                             fontWeight="600"
+                            color="#E10022"
                           >
-                            Last Attended
+                            Last Missed Session
                           </Typography>
                           <Typography
                             variant={isSmallestScreens ? "caption" : "h6"}
                             fontWeight="400"
                           >
-                            20/2/2025 22:00
+                            {lastMissedMeeting == null
+                              ? "None"
+                              : lastMissedMeeting}
                           </Typography>
                         </Box>
-                        <Box>
-                          <Typography
-                            variant={isSmallestScreens ? "h6" : "subtitle2"}
-                            fontWeight="600"
-                          >
-                            Upcoming Session
-                          </Typography>
-                          <Typography
-                            variant={isSmallestScreens ? "caption" : "h6"}
-                            fontWeight="400"
-                          >
-                            1/3/2025 12:00
-                          </Typography>
-                        </Box>
-                      </Box>
-                      <Box>
-                        <Typography
-                          variant={isSmallestScreens ? "h6" : "subtitle2"}
-                          fontWeight="600"
-                          color="#E10022"
-                        >
-                          Last Missed Session
-                        </Typography>
-                        <Typography
-                          variant={isSmallestScreens ? "caption" : "h6"}
-                          fontWeight="400"
-                        >
-                          27/2/2025 12:00
-                        </Typography>
                       </Box>
                     </Box>
-                  </Box>
-                  <Box flex="1">
-                    <PieChart
-                      sx={{
-                        "& .MuiPieArc-root": { transform: "translateX(20%)" },
-                      }}
-                      series={[
-                        {
-                          data: [
-                            {
-                              id: 0,
-                              value: 40,
-                              label: "Absent",
-                              color: "#E10022",
-                            },
-                            {
-                              id: 1,
-                              value: 66.0,
-                              label: "Present",
-                              color: "#69E106",
-                            },
-                          ],
-                        },
-                      ]}
-                      width={250}
-                      height={250}
-                      slotProps={{
-                        legend: {
-                          direction: "row",
-                          position: {
-                            vertical: "bottom",
-                            horizontal: "middle",
+                    <Box flex="1">
+                      <PieChart
+                        sx={{
+                          "& .MuiPieArc-root": { transform: "translateX(20%)" },
+                        }}
+                        series={[
+                          {
+                            data: [
+                              {
+                                id: 0,
+                                value: meetingPercentage?.pending,
+                                label: "Pending",
+                                color: "#FFFF00",
+                              },
+                              {
+                                id: 1,
+                                value: meetingPercentage?.confirmed,
+                                label: "Confirm",
+                                color: "#0000FF",
+                              },
+                              {
+                                id: 2,
+                                value: meetingPercentage?.cancelled,
+                                label: "Cancel",
+                                color: "#FFA500",
+                              },
+                              {
+                                id: 3,
+                                value: meetingPercentage?.missed,
+                                label: "missed",
+                                color: "#FF0000",
+                              },
+                              {
+                                id: 4,
+                                value: meetingPercentage?.completed,
+                                label: "completed",
+                                color: "#00FF00",
+                              },
+                            ],
                           },
-                          labelStyle: { fontSize: 10 },
-                          itemMarkWidth: 12,
-                          itemMarkHeight: 12,
-                        },
-                      }}
-                    />
+                        ]}
+                        width={250}
+                        height={250}
+                        slotProps={{
+                          legend: {
+                            direction: "row",
+                            position: {
+                              vertical: "bottom",
+                              horizontal: "middle",
+                            },
+                            labelStyle: { fontSize: 10 },
+                            itemMarkWidth: 12,
+                            itemMarkHeight: 12,
+                          },
+                        }}
+                      />
+                    </Box>
                   </Box>
-                </Box>
+                ) : (
+                  <Box
+                    display="flex"
+                    flexDirection={isSmallestScreens ? "column" : "row"}
+                    justifyContent="center" // Center horizontally
+                    alignItems="center" // Center vertically
+                    gap="7px"
+                    height="100%" // Ensure the Box takes full height (if needed)
+                  >
+                    <Typography
+                      variant="h2"
+                      textAlign="center"
+                      color="textSecondary"
+                    >
+                      No meeting data available.
+                    </Typography>
+                  </Box>
+                )}
               </Box>
 
               {/* Document Card */}
