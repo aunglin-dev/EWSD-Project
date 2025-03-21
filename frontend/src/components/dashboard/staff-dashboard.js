@@ -411,7 +411,7 @@ export default function StaffDashboard() {
                   Most Active Users
                 </Typography>
                 <Typography variant="subtitle1" fontSize="14px">
-                  Most active users of the platform within a month
+                  Most active users of the platform
                 </Typography>
               </Box>
               <BarChart
@@ -672,7 +672,7 @@ export default function StaffDashboard() {
                   Most View Pages
                 </Typography>
                 <Typography variant="subtitle1" fontSize="14px">
-                  Most view pages of the platform within a month
+                  Most view pages of the platform
                 </Typography>
               </Box>
               <BarChart
