@@ -93,6 +93,18 @@ export default function StudentDashboard() {
     };
     fetchDocuments("student", id ? id : currentUser._id);
 
+    const fetchMeeting = async (id) => {
+      try {
+        const meetingResponse = await axiosInstance.get(
+          `http://localhost:8000/api/meetings/student/confirmed/lastmeeting/${id}`
+        );
+        setMeeting(meetingResponse.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchMeeting(id ? id : currentUser._id);
+
     setLoading(false);
   }, []);
 
@@ -108,7 +120,7 @@ export default function StudentDashboard() {
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
       {currentUser?.role !== "Student" && (
         <Button
-          href={currentUser?.role === "Staff" ? "/students" : `/tutor-dashboard/${currentUser._id}`}
+          href={currentUser?.role === "Staff" ? "/students" : `/tutor-dashboard/${currentUser?._id}`}
           type="button"
           variant="text"
           sx={{ padding: 0, fontSize: "16px" }}
@@ -153,7 +165,7 @@ export default function StudentDashboard() {
               </Box>
               <Typography variant="subtitle2">
                 Last Login:{" "}
-                {dayjs(student?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")}
+                {student?.lastLoginDate ? dayjs(student?.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}
               </Typography>
             </Box>
             <Box
@@ -167,16 +179,32 @@ export default function StudentDashboard() {
               justifyContent="center"
               gap="20px"
             >
-              <StudentDashboardMeetingCard
-                title="This is meeting title"
-                type="online"
-                tutorName="John Doe"
-                datetime="12/3/2/25 15:00"
-                platform="Google Meet"
-                location=""
-                meetingLink=""
-                role={currentUser?.role}
-              />
+              <Box
+                paddingY="15px"
+                paddingX={isSmallestScreens ? "15px" : "25px"}
+                borderRadius="10px"
+                bgcolor="#fff"
+                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+                display="flex"
+                flexDirection="column"
+                justifyContent="start"
+                gap="45px"
+              >
+                {meeting?.length ?
+                  <StudentDashboardMeetingCard
+                    title={meeting[0].title}
+                    type={meeting[0].type}
+                    tutorName={meeting[0].tutor.name}
+                    datetime={dayjs(meeting[0].dateTime).format("DD/MM/YYYY, hh:mm A")}
+                    platform={meeting[0].meetingPlatform}
+                    location={meeting[0].meetingLocation}
+                    meetingLink={meeting[0].meetingLink}
+                    role={currentUser?.role}
+                  />
+                  :
+                  <Typography>No upcoming meeting.</Typography>
+                }
+              </Box>
 
               {/* Attendance Card */}
               <Box

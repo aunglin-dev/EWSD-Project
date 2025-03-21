@@ -3,7 +3,7 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 
 
 const TutorDashboardMeetingCard = (
-    { studentName, studentEmail, type, datetime, studentId }
+    { studentName, studentEmail, type, datetime, studentId, role }
 ) => {
     const isSmallestScreens = useMediaQuery("(max-width: 573px)");
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -25,11 +25,13 @@ const TutorDashboardMeetingCard = (
                     <Typography variant={!isNonMobileScreens ? "caption" : "subtitle2"} fontWeight="400" noWrap>{datetime}</Typography>
                 </Box>
             </Box>
-            <Box flex="1" display="flex" justifyContent="end" width={isSmallestScreens && "100%"}>
-                <IconButton href={`/tutor/meeting/${studentId}`}>
-                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                </IconButton>
-            </Box>
+            {role === "Tutor" &&
+                <Box flex="1" display="flex" justifyContent="end" width={isSmallestScreens && "100%"}>
+                    <IconButton href={`/tutor/meeting/${studentId}`}>
+                        <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                    </IconButton>
+                </Box>
+            }
         </Box >
     )
 }

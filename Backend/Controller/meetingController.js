@@ -152,7 +152,7 @@ export const getLastConfirmedMeetingByStudentId = async (req, res) => {
         // Find the last confirmed meeting for the given allocation (sorted by dateTime descending)
         const meeting = await Meeting.findOne({
             allocationId: allocation._id,
-            status: 3, // Status 3 represents confirmed meetings
+            status: 1, // Status 3 represents confirmed meetings
         })
             .sort({ dateTime: -1 });  // Sort by dateTime in descending order to get the latest meeting
 

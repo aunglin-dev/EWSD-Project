@@ -17,6 +17,7 @@ import {
 import { useSelector } from "react-redux";
 import axiosInstance from "../../services/AxiosInstance.js";
 import NoAthnicationCase from "../error/NoAuthenicationcase";
+import dayjs from "dayjs";
 
 export default function AllocatePage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -135,7 +136,7 @@ export default function AllocatePage() {
                       minWidth: "180px",
                     }}
                   >
-                    tutor Name
+                    Tutor Name
                   </TableCell>
                   <TableCell
                     sx={{
@@ -164,7 +165,7 @@ export default function AllocatePage() {
                       fontWeight: "500",
                       bgcolor: "primary.main",
                       color: "#fff",
-                      minWidth: "160px",
+                      minWidth: "220px",
                     }}
                   >
                     Last Active
@@ -196,7 +197,7 @@ export default function AllocatePage() {
                       )[0].length
                       : "0"}
                   </TableCell>
-                  <TableCell>{/* this is last active */}</TableCell>
+                  <TableCell>{selectedTutor.lastLoginDate ? dayjs(selectedTutor.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}</TableCell>
                   <TableCell>
                     <Button
                       href={`/student-dashboard/${selectedTutor._id}`}
@@ -227,7 +228,7 @@ export default function AllocatePage() {
                       minWidth: "180px",
                     }}
                   >
-                    tutor Name
+                    Tutor Name
                   </TableCell>
                   <TableCell
                     sx={{
@@ -256,7 +257,7 @@ export default function AllocatePage() {
                       fontWeight: "500",
                       bgcolor: "primary.main",
                       color: "#fff",
-                      minWidth: "160px",
+                      minWidth: "220px",
                     }}
                   >
                     Last Active
@@ -291,7 +292,7 @@ export default function AllocatePage() {
                         ).length
                         : "0"}
                     </TableCell>
-                    <TableCell>{/* this is last active */}</TableCell>
+                    <TableCell>{tutor.lastLoginDate ? dayjs(tutor.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}</TableCell>
                     <TableCell>
                       <Button
                         href={`/tutor-dashboard/${tutor._id}`}

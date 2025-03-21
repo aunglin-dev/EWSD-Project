@@ -173,7 +173,7 @@ export default function TutorDashboard() {
                 )}
               </Box>
               <Typography variant="subtitle2">
-                Last Login: {dayjs(tutor?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")}
+                Last Login: {tutor?.lastLoginDate ? dayjs(tutor?.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}
               </Typography>
             </Box>
 
@@ -259,11 +259,13 @@ export default function TutorDashboard() {
                 >
                   {upcomingMeetings.length} Meetings
                 </Typography>
-                <Box display="flex" justifyContent="end">
-                  <IconButton href="/tutor/meeting">
-                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                  </IconButton>
-                </Box>
+                {currentUser?.role === "Tutor" &&
+                  <Box display="flex" justifyContent="end">
+                    <IconButton href="/tutor/meeting">
+                      <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                    </IconButton>
+                  </Box>
+                }
               </Box>
 
               <Box
@@ -299,11 +301,13 @@ export default function TutorDashboard() {
                 >
                   Awaiting tutor approval
                 </Typography>
-                <Box display="flex" justifyContent="end">
-                  <IconButton href="/tutor/meeting">
-                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                  </IconButton>
-                </Box>
+                {currentUser?.role === "Tutor" &&
+                  <Box display="flex" justifyContent="end">
+                    <IconButton href="/tutor/meeting">
+                      <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                    </IconButton>
+                  </Box>
+                }
               </Box>
 
               <Box
@@ -339,11 +343,13 @@ export default function TutorDashboard() {
                 >
                   Completed this month
                 </Typography>
-                <Box display="flex" justifyContent="end">
-                  <IconButton href="/tutor/meeting">
-                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                  </IconButton>
-                </Box>
+                {currentUser?.role === "Tutor" &&
+                  <Box display="flex" justifyContent="end">
+                    <IconButton href="/tutor/meeting">
+                      <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                    </IconButton>
+                  </Box>
+                }
               </Box>
             </Box>
 
@@ -391,6 +397,7 @@ export default function TutorDashboard() {
                         type={meeting.type}
                         datetime={dayjs(meeting.datetime).format("DD/MM/YYYY, hh:mm A")}
                         studentId={meeting.student._id}
+                        role={currentUser?.role}
                       />
                     )
                     :
@@ -650,7 +657,7 @@ export default function TutorDashboard() {
             </Box>
 
             {/* Forth Row */}
-            {tutor.allocations.length > 0 && (
+            {tutor?.allocations.length > 0 && (
               <Box
                 paddingY="15px"
                 paddingX={isSmallestScreens ? "15px" : "25px"}
