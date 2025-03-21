@@ -49,7 +49,7 @@ export const getAllMeetingsbyTutorId = async (req, res) => {
         const { tutorId } = req.params;
 
         // Find the allocation for the given tutorId
-        const allocations = await Allocation.find({ tutor: tutorId });
+        var allocations = await Allocation.find({ tutor: tutorId });
 
         if (!allocations || allocations.length === 0) {
             return res.status(404).json({ error: "No meetings found for this tutor" });
@@ -59,15 +59,15 @@ export const getAllMeetingsbyTutorId = async (req, res) => {
         let allMeetings = [];
 
         // Loop through the allocations to get the meetings
-        for (const allocation of allocations) {
-            const meetings = await Meeting.find({ allocationId: allocation._id });
+        for (var allocation of allocations) {
+            var meetings = await Meeting.find({ allocationId: allocation._id });
 
             // Fetch student details using the Student model
-            const student = await Student.findById(allocation.student);
+            var student = await Student.findById(allocation.student);
 
             console.log(student);
             // Add student information to each meeting
-            for (const meeting of meetings) {
+            for (var meeting of meetings) {
                 meeting.student = student; // Attach full student details from the Student model
             }
             
