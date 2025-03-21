@@ -110,7 +110,7 @@ export const getConfirmedMeetingsTodayByTutorId = async (req, res) => {
             // Find meetings for the allocation with status 3 (confirmed) and today's date
             const meetings = await Meeting.find({ 
                 allocationId: allocation._id, // Allocation Id that link meeting to tutor & student
-                status: 3, //Confirmed Status
+                status: 1, //Confirmed Status
                 dateTime: {               
                     $gte: todayStart,    // Greater than or equal to today's start
                     $lte: todayEnd      // Less than or equal to today's end
@@ -152,7 +152,7 @@ export const getLastConfirmedMeetingByStudentId = async (req, res) => {
         // Find the last confirmed meeting for the given allocation (sorted by dateTime descending)
         const meeting = await Meeting.findOne({
             allocationId: allocation._id,
-            status: 3, // Status 3 represents confirmed meetings
+            status: 1, // Status 3 represents confirmed meetings
         })
             .sort({ dateTime: -1 });  // Sort by dateTime in descending order to get the latest meeting
 
