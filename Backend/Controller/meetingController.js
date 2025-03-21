@@ -84,7 +84,56 @@ export const getAllMeetingsbyTutorId = async (req, res) => {
     }
 };
 
+export const getConfirmedMeetingsTodayByTutorId = async (req, res) => {
+    try{
+        const { tutorId } = req.params;
 
+        // Get today's date (start of the day and end of the day)
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0); // Set to the start of today (midnight)
+
+        const todayEnd = new Date();
+        todayEnd.setHours(23, 59, 59, 999); // Set to the end of today (just before
+
+        // Find the allocation for the given tutorId
+        const allocations = await Allocation.find({ tutor: tutorId });
+
+        if (!allocations || allocations.length === 0) {
+            return res.status(404).json({ error: "No meetings found for this tutor" });
+        }
+
+        // Array to hold all meetings with student information
+        let allMeetings = [];
+
+        for (const allocation of allocations) {
+            const meetings = await Meeting.find({ allocationId: allocation._id,
+                status: 3, //Confirmed Status
+                dateTime: {               
+                    $gte: todayStart,    // Greater than or equal to today's start
+                    $lte: todayEnd      // Less than or equal to today's end
+                }
+            });
+
+            // Fetch student details using the Student model
+            const student = await Student.findById(allocation.student);
+
+            // Loop through each meeting and create a new object containing both the meeting and student
+            meetings.forEach(meeting => {
+                const meetingWithStudent = {
+                    ...meeting.toObject(), // Convert meeting to plain object
+                    student: student,      // Add the student details to the meeting object
+                };
+
+                // Add the new object with meeting and student to the array
+                allMeetings.push(meetingWithStudent);
+            });
+        }
+        res.json(allMeetings);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 //  Get a single meeting by ID
 export const getMeetingById = async (req, res) => {
