@@ -170,11 +170,9 @@ export const getLastConfirmedMeetingByStudentId = async (req, res) => {
         
         // Construct the response object
         const meetingWithDetails = {
-            meeting: {
                 ...meeting.toObject(),
                 student: student, // Attach full student details
                 tutor: tutor,     // Attach full tutor details
-            }
         };
 
         // Return the meeting with student and tutor details
