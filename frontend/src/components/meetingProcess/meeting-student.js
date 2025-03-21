@@ -380,7 +380,7 @@ export default function MeetingStudent() {
                 />
               ))
             ) : (
-              <Typography>No scheduled meetings found.</Typography>
+              <Typography>No scheduled meeting found.</Typography>
             )}
           </Box>
         </CustomTabPanel>
@@ -431,7 +431,7 @@ export default function MeetingStudent() {
                 />
               ))
             ) : (
-              <Typography>No meetings foud.</Typography>
+              <Typography>No meetings found.</Typography>
             )}
           </Box>
         </CustomTabPanel>
@@ -464,7 +464,7 @@ export default function MeetingStudent() {
                 />
               ))
             ) : (
-              <Typography>No completed meetings fond.</Typography>
+              <Typography>No completed meeting found.</Typography>
             )}
           </Box>
         </CustomTabPanel>

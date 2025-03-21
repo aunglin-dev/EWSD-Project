@@ -29,7 +29,7 @@ import dayjs from "dayjs";
 
 export default function StudentDashboard() {
   const { id } = useParams();
-  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+  const isNonMobileScreens = useMediaQuery("(min-width: 1140px)");
   const isSmallestScreens = useMediaQuery("(max-width: 426px)");
   const { currentUser } = useSelector((state) => state.auth);
   const [student, setStudent] = useState(null);
@@ -77,8 +77,6 @@ export default function StudentDashboard() {
         setDocumentComments(documentCommentResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchDocumentComments("student", id ? id : currentUser._id);
@@ -91,8 +89,6 @@ export default function StudentDashboard() {
         setDocuments(documentResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchDocuments("student", id ? id : currentUser._id);
@@ -112,7 +108,7 @@ export default function StudentDashboard() {
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
       {currentUser?.role !== "Student" && (
         <Button
-          href="/students"
+          href={currentUser?.role === "Staff" ? "/students" : `/tutor-dashboard/${currentUser._id}`}
           type="button"
           variant="text"
           sx={{ padding: 0, fontSize: "16px" }}
