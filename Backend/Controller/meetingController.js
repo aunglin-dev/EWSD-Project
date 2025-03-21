@@ -49,37 +49,41 @@ export const getAllMeetingsbyTutorId = async (req, res) => {
         const { tutorId } = req.params;
 
         // Find the allocation for the given tutorId
-        var allocations = await Allocation.find({ tutor: tutorId });
+        const allocations = await Allocation.find({ tutor: tutorId });
 
         if (!allocations || allocations.length === 0) {
             return res.status(404).json({ error: "No meetings found for this tutor" });
         }
 
-        // Array to hold all meetings
+        // Array to hold all meetings with student information
         let allMeetings = [];
 
         // Loop through the allocations to get the meetings
-        for (var allocation of allocations) {
-            var meetings = await Meeting.find({ allocationId: allocation._id });
+        for (const allocation of allocations) {
+            const meetings = await Meeting.find({ allocationId: allocation._id });
 
             // Fetch student details using the Student model
-            var student = await Student.findById(allocation.student);
+            const student = await Student.findById(allocation.student);
 
-            console.log(student);
-            // Add student information to each meeting
-            for (var meeting of meetings) {
-                meeting.student = student; // Attach full student details from the Student model
-            }
-            
-            allMeetings.push(...meetings); // Spread operator to push all meetings into the array
+            // Loop through each meeting and create a new object containing both the meeting and student
+            meetings.forEach(meeting => {
+                const meetingWithStudent = {
+                    ...meeting.toObject(), // Convert meeting to plain object
+                    student: student,      // Add the student details to the meeting object
+                };
+
+                // Add the new object with meeting and student to the array
+                allMeetings.push(meetingWithStudent);
+            });
         }
 
-        // Return the meetings associated with the tutor
+        // Return the meetings with associated student details
         res.json(allMeetings);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 
 //  Get a single meeting by ID
