@@ -66,15 +66,15 @@ export const getAllMeetingsbyTutorId = async (req, res) => {
             const student = await Student.findById(allocation.student);
 
             // Loop through each meeting and create a new object containing both the meeting and student
-            meetings.forEach(meeting => {
-                const meetingWithStudent = {
+            for (var meeting of meetings) {
+                var meetingWithStudent = {
                     ...meeting.toObject(), // Convert meeting to plain object
                     student: student,      // Add the student details to the meeting object
                 };
 
                 // Add the new object with meeting and student to the array
                 allMeetings.push(meetingWithStudent);
-            });
+            }
         }
 
         // Return the meetings with associated student details
@@ -120,15 +120,15 @@ export const getConfirmedMeetingsTodayByTutorId = async (req, res) => {
             const student = await Student.findById(allocation.student);
 
             // Loop through each meeting and create a new object containing both the meeting and student
-            meetings.forEach(meeting => {
-                const meetingWithStudent = {
+            for (var meeting of meetings) {
+                var meetingWithStudent = {
                     ...meeting.toObject(), // Convert meeting to plain object
                     student: student,      // Add the student details to the meeting object
                 };
 
                 // Add the new object with meeting and student to the array
                 allMeetings.push(meetingWithStudent);
-            });
+            }
         }
         res.json(allMeetings);
 
@@ -136,6 +136,51 @@ export const getConfirmedMeetingsTodayByTutorId = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+
+export const getLastConfirmedMeetingByStudentId = async (req, res) => {
+    try {
+        const { studentId } = req.params;
+
+        // Find the allocation that belongs to the student
+        const allocation = await Allocation.findOne({ student: studentId });
+
+        if (!allocation) {
+            return res.status(404).json({ error: "No allocation found for this student" });
+        }
+
+        // Find the last confirmed meeting for the given allocation (sorted by dateTime descending)
+        const meeting = await Meeting.findOne({
+            allocationId: allocation._id,
+            status: 3, // Status 3 represents confirmed meetings
+        })
+            .sort({ dateTime: -1 });  // Sort by dateTime in descending order to get the latest meeting
+
+        if (!meeting) {
+            return res.status(404).json([]);
+        }
+
+        // Fetch the tutor associated with this meeting
+        const tutor = await Tutor.findById(allocation.tutor);
+        
+        // Fetch the student details (even though we already have the student in allocation, we'll do this to add any additional info if needed)
+        const student = await Student.findById(studentId);
+        
+        // Construct the response object
+        const meetingWithDetails = {
+            meeting: {
+                ...meeting.toObject(),
+                student: student, // Attach full student details
+                tutor: tutor,     // Attach full tutor details
+            }
+        };
+
+        // Return the meeting with student and tutor details
+        res.json(meetingWithDetails);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 //  Get a single meeting by ID
 export const getMeetingById = async (req, res) => {
