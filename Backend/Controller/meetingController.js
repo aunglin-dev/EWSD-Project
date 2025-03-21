@@ -37,7 +37,7 @@ export const getAllMeetings = async (req, res) => {
         const meetings = await Meeting.find();
 
         if (!meetings.length) {
-            return res.status(404).json({ error: "No meetings found for this role and allocation ID" });
+            return res.status(404).json([]);
         }
         res.json(meetings);
     } catch (error) {
