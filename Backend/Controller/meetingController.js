@@ -178,7 +178,7 @@ export const getLastConfirmedMeetingByStudentId = async (req, res) => {
         };
 
         // Return the meeting with student and tutor details
-        res.json(meetingWithDetails);
+        res.json([meetingWithDetails]);
 
     } catch (error) {
         res.status(500).json({ error: error.message });
