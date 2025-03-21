@@ -1,5 +1,6 @@
 import Meeting from "../Model/Meeting.js";
 import Student from "../Model/Student.js";
+import Tutor from "../Model/Tutor.js";
 import Allocation from "../Model/Allocation.js";
 
 //  Create a new meeting
@@ -160,10 +161,12 @@ export const getLastConfirmedMeetingByStudentId = async (req, res) => {
         }
 
         // Fetch the tutor associated with this meeting
-        const tutor = await Tutor.findById(allocation.tutor);
+        var tutor = {_id: allocation.tutor};
+        tutor = await Tutor.findById(allocation.tutor);
         
         // Fetch the student details (even though we already have the student in allocation, we'll do this to add any additional info if needed)
-        const student = await Student.findById(studentId);
+        var student = {_id: allocation.student}
+        student = await Student.findById(studentId);
         
         // Construct the response object
         const meetingWithDetails = {
