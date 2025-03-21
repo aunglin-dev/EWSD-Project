@@ -17,6 +17,7 @@ import {
 import { useSelector } from "react-redux";
 import axiosInstance from "../../services/AxiosInstance.js";
 import NoAthnicationCase from "../error/NoAuthenicationcase";
+import dayjs from "dayjs";
 
 export default function AllocatePage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -163,7 +164,7 @@ export default function AllocatePage() {
                       fontWeight: "500",
                       bgcolor: "primary.main",
                       color: "#fff",
-                      minWidth: "180px",
+                      minWidth: "170px",
                     }}
                   >
                     Total Meetings
@@ -174,7 +175,7 @@ export default function AllocatePage() {
                       fontWeight: "500",
                       bgcolor: "primary.main",
                       color: "#fff",
-                      minWidth: "160px",
+                      minWidth: "220px",
                     }}
                   >
                     Last Active
@@ -218,7 +219,7 @@ export default function AllocatePage() {
                       )[0].meetings.length
                       : "0"}
                   </TableCell>
-                  <TableCell>{/* this is last active */}</TableCell>
+                  <TableCell>{selectedStudent.lastLoginDate ? dayjs(selectedStudent.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}</TableCell>
                   <TableCell>
                     <Button
                       href={`/student-dashboard/${selectedStudent._id}`}
@@ -278,7 +279,7 @@ export default function AllocatePage() {
                       fontWeight: "500",
                       bgcolor: "primary.main",
                       color: "#fff",
-                      minWidth: "180px",
+                      minWidth: "170px",
                     }}
                   >
                     Total Meetings
@@ -289,7 +290,7 @@ export default function AllocatePage() {
                       fontWeight: "500",
                       bgcolor: "primary.main",
                       color: "#fff",
-                      minWidth: "160px",
+                      minWidth: "220px",
                     }}
                   >
                     Last Active
@@ -335,7 +336,7 @@ export default function AllocatePage() {
                         )[0].meetings.length
                         : "0"}
                     </TableCell>
-                    <TableCell>{/* this is last active */}</TableCell>
+                    <TableCell>{student.lastLoginDate ? dayjs(student.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}</TableCell>
                     <TableCell>
                       <Button
                         href={`/student-dashboard/${student._id}`}

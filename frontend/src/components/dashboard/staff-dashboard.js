@@ -121,7 +121,7 @@ export default function StaffDashboard() {
             </Box>
             <Typography variant="subtitle2">
               Last Login:{" "}
-              {dayjs(currentUser?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")}
+              {currentUser?.lastLoginDate ? dayjs(currentUser?.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}
             </Typography>
           </Box>
 

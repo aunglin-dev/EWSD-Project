@@ -31,6 +31,7 @@ import { useSelector } from "react-redux";
 import DashboardCommentCard from "./dashboard-comment-card";
 import TutorDashboardMeetingCard from "./tutor-dashboard-meeting-card";
 import axiosInstance from "../../services/AxiosInstance.js";
+import dayjs from "dayjs";
 
 export default function TutorDashboard() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1070px)");
@@ -39,12 +40,15 @@ export default function TutorDashboard() {
   const isSmallestScreens = useMediaQuery("(max-width: 426px)");
   const [tutor, setTutor] = useState(null);
   const [documents, setDocuments] = useState([]);
+  const [upcomingMeetings, setUpcomingMeetings] = useState([]);
+  const [requestedMeetings, setRequestedMeetings] = useState([]);
+  const [completedMeetings, setCompletedMeetings] = useState([]);
+  const [todayMeetings, setTodayMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (currentUser && currentUser.role === "Tutor") {
       setTutor(currentUser);
-      setLoading(false);
     }
 
     if (id) {
@@ -67,8 +71,6 @@ export default function TutorDashboard() {
           setTutor(tutor);
         } catch (error) {
           console.error("Error fetching data:", error);
-        } finally {
-          setLoading(false);
         }
       };
       fetchData();
@@ -82,12 +84,46 @@ export default function TutorDashboard() {
         setDocuments(documentResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchDocuments("tutor", id ? id : currentUser._id);
+
+    const fetchAllMeetings = async (id) => {
+      try {
+        const allMeetingsResponse = await axiosInstance.get(
+          `http://localhost:8000/api/meetings/tutor/${id}`
+        );
+        setUpcomingMeetings(allMeetingsResponse.data.filter(meeting => meeting.status === 1));
+        setRequestedMeetings(allMeetingsResponse.data.filter(meeting => meeting.status === 0));
+        setCompletedMeetings(allMeetingsResponse.data.filter(meeting => meeting.status === 4));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchAllMeetings(id ? id : currentUser._id);
+
+    const fetchTodayMeetings = async (id) => {
+      try {
+        const todayMeetingResponse = await axiosInstance.get(
+          `http://localhost:8000/api/meetings/tutor/confirmed/todaydate/${id}`
+        );
+        setTodayMeetings(todayMeetingResponse.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchTodayMeetings(id ? id : currentUser._id);
+
+    setLoading(false);
   }, []);
+
+  const handleDownload = (url) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.download = url.split("/").pop();
+    link.click();
+  };
 
   return (
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
@@ -137,7 +173,7 @@ export default function TutorDashboard() {
                 )}
               </Box>
               <Typography variant="subtitle2">
-                Last Login: 3/7/2025 22:00
+                Last Login: {tutor?.lastLoginDate ? dayjs(tutor?.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}
               </Typography>
             </Box>
 
@@ -221,13 +257,15 @@ export default function TutorDashboard() {
                   variant={isSmallestScreens ? "h5" : "h4"}
                   color="primary.main"
                 >
-                  4 Meetings
+                  {upcomingMeetings.length} Meetings
                 </Typography>
-                <Box display="flex" justifyContent="end">
-                  <IconButton>
-                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                  </IconButton>
-                </Box>
+                {currentUser?.role === "Tutor" &&
+                  <Box display="flex" justifyContent="end">
+                    <IconButton href="/tutor/meeting">
+                      <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                    </IconButton>
+                  </Box>
+                }
               </Box>
 
               <Box
@@ -245,9 +283,9 @@ export default function TutorDashboard() {
                 >
                   <Typography
                     variant={isSmallestScreens ? "h5" : "h4"}
-                    color="#E10022"
+                    color={requestedMeetings.length ? "#E10022" : "primary.main"}
                   >
-                    2 Meeting Requests
+                    {requestedMeetings.length} Meeting Requests
                   </Typography>
                   <PendingActionsIcon
                     sx={{
@@ -263,11 +301,13 @@ export default function TutorDashboard() {
                 >
                   Awaiting tutor approval
                 </Typography>
-                <Box display="flex" justifyContent="end">
-                  <IconButton>
-                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                  </IconButton>
-                </Box>
+                {currentUser?.role === "Tutor" &&
+                  <Box display="flex" justifyContent="end">
+                    <IconButton href="/tutor/meeting">
+                      <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                    </IconButton>
+                  </Box>
+                }
               </Box>
 
               <Box
@@ -287,7 +327,7 @@ export default function TutorDashboard() {
                     variant={isSmallestScreens ? "h5" : "h4"}
                     color="primary.main"
                   >
-                    10 Meetings
+                    {completedMeetings.length} Meetings
                   </Typography>
                   <VerifiedIcon
                     sx={{
@@ -303,11 +343,13 @@ export default function TutorDashboard() {
                 >
                   Completed this month
                 </Typography>
-                <Box display="flex" justifyContent="end">
-                  <IconButton>
-                    <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
-                  </IconButton>
-                </Box>
+                {currentUser?.role === "Tutor" &&
+                  <Box display="flex" justifyContent="end">
+                    <IconButton href="/tutor/meeting">
+                      <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
+                    </IconButton>
+                  </Box>
+                }
               </Box>
             </Box>
 
@@ -337,7 +379,7 @@ export default function TutorDashboard() {
                     }}
                   />
                   <Typography variant={isSmallestScreens ? "h6" : "h4"}>
-                    Today Scheduled (3 Meetings)
+                    Today Scheduled ({todayMeetings.length} Meetings)
                   </Typography>
                 </Box>
                 <Box
@@ -347,24 +389,20 @@ export default function TutorDashboard() {
                   gap="30px"
                   mt="40px"
                 >
-                  <TutorDashboardMeetingCard
-                    studentName="Student Name 1"
-                    studentEmail="studentname1@edx.ac.uk"
-                    type="Offline"
-                    datetime="9/3/2025 10:30"
-                  />
-                  <TutorDashboardMeetingCard
-                    studentName="Student Name 2"
-                    studentEmail="studentname2@edx.ac.uk"
-                    type="Online"
-                    datetime="9/3/2025 10:30"
-                  />
-                  <TutorDashboardMeetingCard
-                    studentName="Student Name 3"
-                    studentEmail="studentname3@edx.ac.uk"
-                    type="Online"
-                    datetime="9/3/2025 10:30"
-                  />
+                  {todayMeetings.length ?
+                    todayMeetings.map(meeting =>
+                      <TutorDashboardMeetingCard
+                        studentName={meeting.student.name}
+                        studentEmail={meeting.student.email}
+                        type={meeting.type}
+                        datetime={dayjs(meeting.datetime).format("DD/MM/YYYY, hh:mm A")}
+                        studentId={meeting.student._id}
+                        role={currentUser?.role}
+                      />
+                    )
+                    :
+                    <Typography>No meeting today.</Typography>
+                  }
                 </Box>
               </Box>
             </Box>
@@ -502,7 +540,12 @@ export default function TutorDashboard() {
                                 fontWeight: "400",
                               }}
                             >
-                              <IconButton>
+                              <IconButton
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDownload(document.url);
+                                }}
+                              >
                                 <DownloadIcon
                                   sx={{
                                     color: "#000",
@@ -523,6 +566,7 @@ export default function TutorDashboard() {
                 {currentUser?.role === "Tutor" && (
                   <Box display="flex" justifyContent="end">
                     <Button
+                      href="/tutor/document"
                       variant="text"
                       sx={{
                         fontSize: isSmallestScreens ? "14px" : "16px",
@@ -613,7 +657,7 @@ export default function TutorDashboard() {
             </Box>
 
             {/* Forth Row */}
-            {tutor.allocations.length > 0 && (
+            {tutor?.allocations.length > 0 && (
               <Box
                 paddingY="15px"
                 paddingX={isSmallestScreens ? "15px" : "25px"}
@@ -633,7 +677,7 @@ export default function TutorDashboard() {
                       height: isSmallestScreens ? "14px" : "24px",
                     }}
                   />
-                  {currentUser !== "Tutor" ? (
+                  {currentUser?.role !== "Tutor" ? (
                     <Typography variant={isSmallestScreens ? "h6" : "h4"}>
                       Student List
                     </Typography>
@@ -643,7 +687,7 @@ export default function TutorDashboard() {
                     </Typography>
                   )}
                 </Box>
-                <Box
+                {/* <Box
                   display="flex"
                   justifyContent="start"
                   alignItems="center"
@@ -668,7 +712,7 @@ export default function TutorDashboard() {
                   >
                     Least Active
                   </Button>
-                </Box>
+                </Box> */}
                 <TableContainer sx={{ mt: "20px", bgcolor: "#fff" }}>
                   <Table sx={{ minWidth: 650 }}>
                     <TableBody>

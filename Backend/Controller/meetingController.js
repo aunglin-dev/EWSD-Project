@@ -86,7 +86,7 @@ export const getAllMeetingsbyTutorId = async (req, res) => {
 };
 
 export const getConfirmedMeetingsTodayByTutorId = async (req, res) => {
-    try{
+    try {
         const { tutorId } = req.params;
 
         // Get today's date (start of the day and end of the day)
@@ -108,10 +108,10 @@ export const getConfirmedMeetingsTodayByTutorId = async (req, res) => {
 
         for (const allocation of allocations) {
             // Find meetings for the allocation with status 3 (confirmed) and today's date
-            const meetings = await Meeting.find({ 
+            const meetings = await Meeting.find({
                 allocationId: allocation._id, // Allocation Id that link meeting to tutor & student
                 status: 1, //Confirmed Status
-                dateTime: {               
+                dateTime: {
                     $gte: todayStart,    // Greater than or equal to today's start
                     $lte: todayEnd      // Less than or equal to today's end
                 }
@@ -161,18 +161,18 @@ export const getLastConfirmedMeetingByStudentId = async (req, res) => {
         }
 
         // Fetch the tutor associated with this meeting
-        var tutor = {_id: allocation.tutor};
+        var tutor = { _id: allocation.tutor };
         tutor = await Tutor.findById(allocation.tutor);
-        
+
         // Fetch the student details (even though we already have the student in allocation, we'll do this to add any additional info if needed)
-        var student = {_id: allocation.student}
+        var student = { _id: allocation.student }
         student = await Student.findById(studentId);
-        
+
         // Construct the response object
         const meetingWithDetails = {
-                ...meeting.toObject(),
-                student: student, // Attach full student details
-                tutor: tutor,     // Attach full tutor details
+            ...meeting.toObject(),
+            student: student, // Attach full student details
+            tutor: tutor,     // Attach full tutor details
         };
 
         // Return the meeting with student and tutor details
@@ -187,7 +187,7 @@ export const getLastConfirmedMeetingByStudentId = async (req, res) => {
 export const getMeetingById = async (req, res) => {
     try {
         const { id } = req.params;
-        const meeting = await Meeting.findById( id );
+        const meeting = await Meeting.findById(id);
 
         if (!meeting) {
             return res.status(404).json({ error: "Meeting not found" });
@@ -259,41 +259,41 @@ export const getMeetingsByAllocationId = async (req, res) => {
 export const getMostUsedPlatform = async (req, res) => {
     try {
         const mostUsedPlatform = await Meeting.aggregate([
-          // Group by 'pageViewed' and count the occurrences
-          {
-            $group: {
-              _id: "$meetingPlatform", // Group by the pageViewed field
-              count: { $sum: 1 }  // Count the number of occurrences
+            // Group by 'pageViewed' and count the occurrences
+            {
+                $group: {
+                    _id: "$meetingPlatform", // Group by the pageViewed field
+                    count: { $sum: 1 }  // Count the number of occurrences
+                }
+            },
+            // Sort by count in descending order
+            {
+                $sort: { count: -1 }
+            },
+            // Limit to the top 10 results
+            {
+                $limit: 10
+            },
+            // Optionally, project the fields for a cleaner output
+            {
+                $project: {
+                    _id: 0,            // Exclude the default _id field
+                    platform: "$_id",      // Rename _id to 'page'
+                    count: 1            // Include the count field
+                }
             }
-          },
-          // Sort by count in descending order
-          {
-            $sort: { count: -1 }
-          },
-          // Limit to the top 10 results
-          {
-            $limit: 10
-          },
-          // Optionally, project the fields for a cleaner output
-          {
-            $project: {
-              _id: 0,            // Exclude the default _id field
-              platform: "$_id",      // Rename _id to 'page'
-              count: 1            // Include the count field
-            }
-          }
         ]);
-    
+
         // Check if there are any results
         if (!mostUsedPlatform.length) {
-          return res.status(404).json({ message: 'No platform found' });
+            return res.status(404).json({ message: 'No platform found' });
         }
-    
+
         // Return the top 10 most viewed pages
         res.status(200).json(mostUsedPlatform);
-      } catch (error) {
+    } catch (error) {
         res.status(500).json({ error: error.message });
-      }
+    }
 };
 
 //  Update a meeting by ID
