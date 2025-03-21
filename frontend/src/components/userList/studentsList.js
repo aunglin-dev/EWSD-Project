@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../services/AxiosInstance.js";
+import axiosInstance from "../../Services/AxiosInstance";
 import NoAthnicationCase from "../error/NoAuthenicationcase";
 import dayjs from "dayjs";
 
@@ -203,9 +203,9 @@ export default function AllocatePage() {
                         allocation.student._id === selectedStudent._id
                     ).length > 0
                       ? allocations.filter(
-                        (allocation) =>
-                          allocation.student._id === selectedStudent._id
-                      )[0].tutor.name
+                          (allocation) =>
+                            allocation.student._id === selectedStudent._id
+                        )[0].tutor.name
                       : "No tutor allocated."}
                   </TableCell>
                   <TableCell>
@@ -214,12 +214,18 @@ export default function AllocatePage() {
                         allocation.student._id === selectedStudent._id
                     ).length > 0
                       ? allocations.filter(
-                        (allocation) =>
-                          allocation.student._id === selectedStudent._id
-                      )[0].meetings.length
+                          (allocation) =>
+                            allocation.student._id === selectedStudent._id
+                        )[0].meetings.length
                       : "0"}
                   </TableCell>
-                  <TableCell>{selectedStudent.lastLoginDate ? dayjs(selectedStudent.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}</TableCell>
+                  <TableCell>
+                    {selectedStudent.lastLoginDate
+                      ? dayjs(selectedStudent.lastLoginDate).format(
+                          "DD/MM/YYYY, hh:mm A"
+                        )
+                      : "Never"}
+                  </TableCell>
                   <TableCell>
                     <Button
                       href={`/student-dashboard/${selectedStudent._id}`}
@@ -321,9 +327,9 @@ export default function AllocatePage() {
                         (allocation) => allocation.student._id === student._id
                       ).length > 0
                         ? allocations.filter(
-                          (allocation) =>
-                            allocation.student._id === student._id
-                        )[0].tutor.name
+                            (allocation) =>
+                              allocation.student._id === student._id
+                          )[0].tutor.name
                         : "No tutor allocated."}
                     </TableCell>
                     <TableCell>
@@ -331,12 +337,18 @@ export default function AllocatePage() {
                         (allocation) => allocation.student._id === student._id
                       ).length > 0
                         ? allocations.filter(
-                          (allocation) =>
-                            allocation.student._id === student._id
-                        )[0].meetings.length
+                            (allocation) =>
+                              allocation.student._id === student._id
+                          )[0].meetings.length
                         : "0"}
                     </TableCell>
-                    <TableCell>{student.lastLoginDate ? dayjs(student.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}</TableCell>
+                    <TableCell>
+                      {student.lastLoginDate
+                        ? dayjs(student.lastLoginDate).format(
+                            "DD/MM/YYYY, hh:mm A"
+                          )
+                        : "Never"}
+                    </TableCell>
                     <TableCell>
                       <Button
                         href={`/student-dashboard/${student._id}`}

@@ -24,7 +24,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useSelector } from "react-redux";
 import StudentDashboardMeetingCard from "./student-dashboard-meeting-card";
 import DashboardCommentCard from "./dashboard-comment-card";
-import axiosInstance from "../../services/AxiosInstance.js";
+import axiosInstance from "../../Services/AxiosInstance";
 import dayjs from "dayjs";
 import axios from "axios";
 
@@ -46,7 +46,7 @@ export default function StudentDashboard() {
 
   const fetchMeetingPercentage = async (id) => {
     try {
-      const res = await axios.get(
+      const res = await axiosInstance.get(
         `http://localhost:8000/api/dashboard/student/${id}/totalMeetingsOfStudent `
       );
 
@@ -84,7 +84,7 @@ export default function StudentDashboard() {
 
   const fetchUpcomingMetting = async (id) => {
     try {
-      const res = await axios.get(
+      const res = await axiosInstance.get(
         `http://localhost:8000/api/dashboard/student/${id}/fetchoneUpcommingMeetingForStudent`
       );
 
@@ -194,7 +194,7 @@ export default function StudentDashboard() {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-    }
+    };
     fetchMeeting(id ? id : currentUser._id);
 
     setLoading(false);
@@ -212,7 +212,11 @@ export default function StudentDashboard() {
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
       {currentUser?.role !== "Student" && (
         <Button
-          href={currentUser?.role === "Staff" ? "/students" : `/tutor-dashboard/${currentUser?._id}`}
+          href={
+            currentUser?.role === "Staff"
+              ? "/students"
+              : `/tutor-dashboard/${currentUser?._id}`
+          }
           type="button"
           variant="text"
           sx={{ padding: 0, fontSize: "16px" }}
@@ -257,7 +261,9 @@ export default function StudentDashboard() {
               </Box>
               <Typography variant="subtitle2">
                 Last Login:{" "}
-                {student?.lastLoginDate ? dayjs(student?.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}
+                {student?.lastLoginDate
+                  ? dayjs(student?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")
+                  : "Never"}
               </Typography>
             </Box>
             <Box
@@ -282,20 +288,22 @@ export default function StudentDashboard() {
                 justifyContent="start"
                 gap="45px"
               >
-                {meeting?.length ?
+                {meeting?.length ? (
                   <StudentDashboardMeetingCard
                     title={meeting[0].title}
                     type={meeting[0].type}
                     tutorName={meeting[0].tutor.name}
-                    datetime={dayjs(meeting[0].dateTime).format("DD/MM/YYYY, hh:mm A")}
+                    datetime={dayjs(meeting[0].dateTime).format(
+                      "DD/MM/YYYY, hh:mm A"
+                    )}
                     platform={meeting[0].meetingPlatform}
                     location={meeting[0].meetingLocation}
                     meetingLink={meeting[0].meetingLink}
                     role={currentUser?.role}
                   />
-                  :
+                ) : (
                   <Typography>No upcoming meeting.</Typography>
-                }
+                )}
               </Box>
 
               {/* Attendance Card */}

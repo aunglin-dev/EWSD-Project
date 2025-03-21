@@ -464,6 +464,36 @@ export const totalMeetingsOfStudent = async (req, res) => {
   }
 };
 
+export const totalMeetingsOfTutor = async (req, res) => {
+  try {
+    const id = req.params.tutorId;
+    console.log("Tutor Id", id);
+    console.log("Tutor Id", req.body.tutorId);
+    const TutorAllocation = await Allocation.findOne({ tutor: id }).exec();
+    if (!TutorAllocation) {
+      return res
+        .status(404)
+        .json({ message: "No allocation found for this Tutor" });
+    }
+
+    const meetings = await Meeting.find({
+      allocationId: TutorAllocation._id,
+    });
+
+    const meetingPercentages = {
+      pending: calculatePercentage(meetings, 0),
+      confirmed: calculatePercentage(meetings, 1),
+      cancelled: calculatePercentage(meetings, 2),
+      missed: calculatePercentage(meetings, 3),
+      completed: calculatePercentage(meetings, 4),
+    };
+
+    // Return the percentages in the response
+    res.status(200).json(meetingPercentages);
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
 const calculatePercentage = (meetings, status) => {
   const filteredMeetings = meetings.filter((el) => el.status === status);
   return meetings.length > 0

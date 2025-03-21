@@ -30,7 +30,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useSelector } from "react-redux";
 import DashboardCommentCard from "./dashboard-comment-card";
 import TutorDashboardMeetingCard from "./tutor-dashboard-meeting-card";
-import axiosInstance from "../../services/AxiosInstance.js";
+import axiosInstance from "../../Services/AxiosInstance";
 import dayjs from "dayjs";
 
 export default function TutorDashboard() {
@@ -44,7 +44,30 @@ export default function TutorDashboard() {
   const [requestedMeetings, setRequestedMeetings] = useState([]);
   const [completedMeetings, setCompletedMeetings] = useState([]);
   const [todayMeetings, setTodayMeetings] = useState([]);
+
+  const [meetingPercentage, setMeetingPercentage] = useState({});
   const [loading, setLoading] = useState(true);
+
+  const fetchMeetingPercentage = async (id) => {
+    try {
+      const res = await axiosInstance.get(
+        `http://localhost:8000/api/dashboard/tutor/${id}/totalMeetingsOfTutor `
+      );
+
+      if (res.status == 200) {
+        console.log("meeting percentage_____________", res.data);
+        setMeetingPercentage(res.data);
+        console.log("meeting percentage_____________", meetingPercentage);
+      } else {
+        setMeetingPercentage(res.data);
+        console.log("erorrrrr", meetingPercentage);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (currentUser && currentUser.role === "Tutor") {
@@ -74,6 +97,7 @@ export default function TutorDashboard() {
         }
       };
       fetchData();
+      fetchMeetingPercentage(id);
     }
 
     const fetchDocuments = async (role, id) => {
@@ -93,9 +117,15 @@ export default function TutorDashboard() {
         const allMeetingsResponse = await axiosInstance.get(
           `http://localhost:8000/api/meetings/tutor/${id}`
         );
-        setUpcomingMeetings(allMeetingsResponse.data.filter(meeting => meeting.status === 1));
-        setRequestedMeetings(allMeetingsResponse.data.filter(meeting => meeting.status === 0));
-        setCompletedMeetings(allMeetingsResponse.data.filter(meeting => meeting.status === 4));
+        setUpcomingMeetings(
+          allMeetingsResponse.data.filter((meeting) => meeting.status === 1)
+        );
+        setRequestedMeetings(
+          allMeetingsResponse.data.filter((meeting) => meeting.status === 0)
+        );
+        setCompletedMeetings(
+          allMeetingsResponse.data.filter((meeting) => meeting.status === 4)
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -173,7 +203,10 @@ export default function TutorDashboard() {
                 )}
               </Box>
               <Typography variant="subtitle2">
-                Last Login: {tutor?.lastLoginDate ? dayjs(tutor?.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}
+                Last Login:{" "}
+                {tutor?.lastLoginDate
+                  ? dayjs(tutor?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")
+                  : "Never"}
               </Typography>
             </Box>
 
@@ -184,8 +217,8 @@ export default function TutorDashboard() {
                 isNonMobileScreens
                   ? "1fr 1fr 1fr 1fr"
                   : isSmallestScreens
-                    ? "1fr"
-                    : "1fr 1fr"
+                  ? "1fr"
+                  : "1fr 1fr"
               }
               gridAutoRows="minmax(150px, auto)"
               justifyContent="center"
@@ -259,13 +292,13 @@ export default function TutorDashboard() {
                 >
                   {upcomingMeetings.length} Meetings
                 </Typography>
-                {currentUser?.role === "Tutor" &&
+                {currentUser?.role === "Tutor" && (
                   <Box display="flex" justifyContent="end">
                     <IconButton href="/tutor/meeting">
                       <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
                     </IconButton>
                   </Box>
-                }
+                )}
               </Box>
 
               <Box
@@ -283,7 +316,9 @@ export default function TutorDashboard() {
                 >
                   <Typography
                     variant={isSmallestScreens ? "h5" : "h4"}
-                    color={requestedMeetings.length ? "#E10022" : "primary.main"}
+                    color={
+                      requestedMeetings.length ? "#E10022" : "primary.main"
+                    }
                   >
                     {requestedMeetings.length} Meeting Requests
                   </Typography>
@@ -301,13 +336,13 @@ export default function TutorDashboard() {
                 >
                   Awaiting tutor approval
                 </Typography>
-                {currentUser?.role === "Tutor" &&
+                {currentUser?.role === "Tutor" && (
                   <Box display="flex" justifyContent="end">
                     <IconButton href="/tutor/meeting">
                       <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
                     </IconButton>
                   </Box>
-                }
+                )}
               </Box>
 
               <Box
@@ -343,13 +378,13 @@ export default function TutorDashboard() {
                 >
                   Completed this month
                 </Typography>
-                {currentUser?.role === "Tutor" &&
+                {currentUser?.role === "Tutor" && (
                   <Box display="flex" justifyContent="end">
                     <IconButton href="/tutor/meeting">
                       <ArrowCircleRightIcon sx={{ color: "primary.main" }} />
                     </IconButton>
                   </Box>
-                }
+                )}
               </Box>
             </Box>
 
@@ -389,20 +424,22 @@ export default function TutorDashboard() {
                   gap="30px"
                   mt="40px"
                 >
-                  {todayMeetings.length ?
-                    todayMeetings.map(meeting =>
+                  {todayMeetings.length ? (
+                    todayMeetings.map((meeting) => (
                       <TutorDashboardMeetingCard
                         studentName={meeting.student.name}
                         studentEmail={meeting.student.email}
                         type={meeting.type}
-                        datetime={dayjs(meeting.datetime).format("DD/MM/YYYY, hh:mm A")}
+                        datetime={dayjs(meeting.datetime).format(
+                          "DD/MM/YYYY, hh:mm A"
+                        )}
                         studentId={meeting.student._id}
                         role={currentUser?.role}
                       />
-                    )
-                    :
+                    ))
+                  ) : (
                     <Typography>No meeting today.</Typography>
-                  }
+                  )}
                 </Box>
               </Box>
             </Box>
@@ -617,7 +654,11 @@ export default function TutorDashboard() {
                   alignItems="center"
                   gap="7px"
                 >
-                  <Typography>80% of students attended this month.</Typography>
+                  <Typography>
+                    {" "}
+                    {Math.round(meetingPercentage?.completed * 10) / 10} % of
+                    students attended the meeting
+                  </Typography>
                   <PieChart
                     sx={{
                       "& .MuiPieArc-root": { transform: "translateX(20%)" },
@@ -627,13 +668,13 @@ export default function TutorDashboard() {
                         data: [
                           {
                             id: 0,
-                            value: 20,
+                            value: meetingPercentage?.missed,
                             label: "Absent",
                             color: "#E10022",
                           },
                           {
                             id: 1,
-                            value: 80,
+                            value: meetingPercentage?.completed,
                             label: "Present",
                             color: "#69E106",
                           },

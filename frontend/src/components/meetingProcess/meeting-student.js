@@ -23,7 +23,7 @@ import PropTypes from "prop-types";
 import CompletedCard from "./completed-card";
 import RequestedCard from "./requested-card";
 import ScheduledCard from "./scheduled-card";
-import axiosInstance from "../../services/AxiosInstance.js";
+import axiosInstance from "../../Services/AxiosInstance";
 import NoAthnicationCase from "../error/NoAuthenicationcase";
 import { useSelector } from "react-redux";
 
@@ -163,8 +163,8 @@ export default function MeetingStudent() {
               width: isNonMobileScreens
                 ? "700px"
                 : isSmallestScreens
-                  ? "310px"
-                  : "410px",
+                ? "310px"
+                : "410px",
               borderRadius: "10px",
               bgcolor: "#fff",
               p: "40px 30px",
@@ -299,13 +299,13 @@ export default function MeetingStudent() {
               fontSize: isNonMobileScreens
                 ? "18px"
                 : isSmallestScreens
-                  ? "14px"
-                  : "16px",
+                ? "14px"
+                : "16px",
               padding: isNonMobileScreens
                 ? "18px"
                 : isSmallestScreens
-                  ? "10px"
-                  : "15px",
+                ? "10px"
+                : "15px",
             }}
             label="Scheduled"
             {...a11yProps(0)}
@@ -315,13 +315,13 @@ export default function MeetingStudent() {
               fontSize: isNonMobileScreens
                 ? "18px"
                 : isSmallestScreens
-                  ? "14px"
-                  : "16px",
+                ? "14px"
+                : "16px",
               padding: isNonMobileScreens
                 ? "18px"
                 : isSmallestScreens
-                  ? "10px"
-                  : "15px",
+                ? "10px"
+                : "15px",
             }}
             label="Requested"
             {...a11yProps(1)}
@@ -331,13 +331,13 @@ export default function MeetingStudent() {
               fontSize: isNonMobileScreens
                 ? "18px"
                 : isSmallestScreens
-                  ? "14px"
-                  : "16px",
+                ? "14px"
+                : "16px",
               padding: isNonMobileScreens
                 ? "18px"
                 : isSmallestScreens
-                  ? "10px"
-                  : "15px",
+                ? "10px"
+                : "15px",
             }}
             label="Completed"
             {...a11yProps(2)}

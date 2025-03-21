@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../services/AxiosInstance.js";
+import axiosInstance from "../../Services/AxiosInstance";
 import ScheduledCard from "./scheduled-card";
 import RequestedCard from "./requested-card";
 import CompletedCard from "./completed-card";
@@ -17,7 +17,7 @@ import {
   OutlinedInput,
   Select,
   MenuItem,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";

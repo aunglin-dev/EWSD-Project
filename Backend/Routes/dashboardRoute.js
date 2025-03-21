@@ -23,6 +23,7 @@ import {
   upcommingMeetings,
   upcommingMeetingsOfStudent,
   fetchMeetingsForStudent,
+  totalMeetingsOfTutor,
 } from "../Controller/dashboardController.js";
 const dashboardRoute = express.Router();
 
@@ -35,6 +36,10 @@ dashboardRoute.get("/unallocatedStudentCount", unallocatedTutorCount);
 dashboardRoute.get("/unallocatedStudents", unallocatedStudents);
 
 //Tutors
+dashboardRoute.get(
+  "/tutor/:tutorId/totalMeetingsOfTutor",
+  totalMeetingsOfTutor
+);
 
 dashboardRoute.get(
   "/tutor/:tutorId/totalAssignedStudents",

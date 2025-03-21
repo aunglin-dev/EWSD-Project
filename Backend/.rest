@@ -24,10 +24,14 @@ Content-Type:application/json
 
 67af4bb66f27fd6ee90a8f17
 ####
-Get http://localhost:8000/api/dashboard/student/67af4bb66f27fd6ee90a8f17/fetchoneUpcommingMeetingForStudent
+Get http://localhost:8000/api/dashboard/student/67c5a2419c94ec0566ae1d14/fetchoneUpcommingMeetingForStudent
 
 
 ####
-Get http://localhost:8000/api/dashboard/student/67af4bb66f27fd6ee90a8f17/totalMeetingsOfStudent
+Get http://localhost:8000/api/dashboard/student/67c5a1e09c94ec0566ae1d0e/totalMeetingsOfStudent
+
+
+####
+Get http://localhost:8000/api/dashboard/tutor/67b67f31ffcd5b1a19e5c770/totalMeetingsOfTutor
 
 
