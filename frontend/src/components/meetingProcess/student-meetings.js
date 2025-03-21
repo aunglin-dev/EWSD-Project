@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../Services/AxiosInstance.js";
+import axiosInstance from "../../services/AxiosInstance.js";
 import ScheduledCard from "./scheduled-card";
 import RequestedCard from "./requested-card";
 import CompletedCard from "./completed-card";
@@ -17,6 +17,7 @@ import {
   OutlinedInput,
   Select,
   MenuItem,
+  useMediaQuery
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -30,6 +31,7 @@ function CustomTabPanel({ children, value, index }) {
 }
 
 export default function StudentMeetings() {
+  const isSmallestScreens = useMediaQuery("(max-width: 425px)");
   const { studentId } = useParams();
   const [meetings, setMeetings] = useState([]);
   const [studentName, setStudentName] = useState("Loading...");
@@ -150,8 +152,14 @@ export default function StudentMeetings() {
       <CustomTabPanel value={tab} index={0}>
         <Box
           display="grid"
-          gridTemplateColumns="repeat(auto-fill, 380px)"
-          gap="20px"
+          gridTemplateColumns={
+            isSmallestScreens ? "none" : "repeat(auto-fill, 380px)"
+          }
+          gridAutoFlow="dense"
+          justifyContent="center"
+          columnGap="15px"
+          rowGap="30px"
+          mt="30px"
         >
           {scheduledMeetings.length > 0 ? (
             scheduledMeetings.map((meeting) => (
@@ -180,7 +188,9 @@ export default function StudentMeetings() {
       <CustomTabPanel value={tab} index={1}>
         <Box
           display="grid"
-          gridTemplateColumns={"repeat(auto-fill, 380px)"}
+          gridTemplateColumns={
+            isSmallestScreens ? "none" : "repeat(auto-fill, 380px)"
+          }
           gridAutoFlow="dense"
           justifyContent="center"
           columnGap="15px"
@@ -227,8 +237,14 @@ export default function StudentMeetings() {
       <CustomTabPanel value={tab} index={2}>
         <Box
           display="grid"
-          gridTemplateColumns="repeat(auto-fill, 380px)"
-          gap="20px"
+          gridTemplateColumns={
+            isSmallestScreens ? "none" : "repeat(auto-fill, 380px)"
+          }
+          gridAutoFlow="dense"
+          justifyContent="center"
+          columnGap="15px"
+          rowGap="30px"
+          mt="30px"
         >
           {completedMeetings.length > 0 ? (
             completedMeetings.map((meeting) => (

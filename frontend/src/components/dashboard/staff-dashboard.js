@@ -17,7 +17,7 @@ import DoDisturbAltIcon from "@mui/icons-material/DoDisturbAlt";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../Services/AxiosInstance.js";
+import axiosInstance from "../../services/AxiosInstance.js";
 import dayjs from "dayjs";
 
 export default function StaffDashboard() {
@@ -121,7 +121,7 @@ export default function StaffDashboard() {
             </Box>
             <Typography variant="subtitle2">
               Last Login:{" "}
-              {dayjs(currentUser?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")}
+              {currentUser?.lastLoginDate ? dayjs(currentUser?.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}
             </Typography>
           </Box>
 
@@ -411,7 +411,7 @@ export default function StaffDashboard() {
                   Most Active Users
                 </Typography>
                 <Typography variant="subtitle1" fontSize="14px">
-                  Most active users of the platform within a month
+                  Most active users of the platform
                 </Typography>
               </Box>
               <BarChart
@@ -672,7 +672,7 @@ export default function StaffDashboard() {
                   Most View Pages
                 </Typography>
                 <Typography variant="subtitle1" fontSize="14px">
-                  Most view pages of the platform within a month
+                  Most view pages of the platform
                 </Typography>
               </Box>
               <BarChart

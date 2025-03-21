@@ -13,7 +13,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
-import axiosInstance from "../../Services/AxiosInstance";
+import axiosInstance from "../../services/AxiosInstance";
 
 import NoAthnicationCase from "../error/NoAuthenicationcase";
 

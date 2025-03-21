@@ -12,7 +12,7 @@ import {
 import LoginUserSide from "./login-user-side";
 import OtherMessageParty from "./otherMessageParty";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../Services/AxiosInstance";
+import axiosInstance from "../../services/AxiosInstance";
 import { useParams } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";

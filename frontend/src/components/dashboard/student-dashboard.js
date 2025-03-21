@@ -24,13 +24,13 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useSelector } from "react-redux";
 import StudentDashboardMeetingCard from "./student-dashboard-meeting-card";
 import DashboardCommentCard from "./dashboard-comment-card";
-import axiosInstance from "../../Services/AxiosInstance.js";
+import axiosInstance from "../../services/AxiosInstance.js";
 import dayjs from "dayjs";
 import axios from "axios";
 
 export default function StudentDashboard() {
   const { id } = useParams();
-  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+  const isNonMobileScreens = useMediaQuery("(min-width: 1140px)");
   const isSmallestScreens = useMediaQuery("(max-width: 426px)");
   const { currentUser } = useSelector((state) => state.auth);
   const [student, setStudent] = useState(null);
@@ -169,8 +169,6 @@ export default function StudentDashboard() {
         setDocumentComments(documentCommentResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchDocumentComments("student", id ? id : currentUser._id);
@@ -183,11 +181,21 @@ export default function StudentDashboard() {
         setDocuments(documentResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchDocuments("student", id ? id : currentUser._id);
+
+    const fetchMeeting = async (id) => {
+      try {
+        const meetingResponse = await axiosInstance.get(
+          `http://localhost:8000/api/meetings/student/confirmed/lastmeeting/${id}`
+        );
+        setMeeting(meetingResponse.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchMeeting(id ? id : currentUser._id);
 
     setLoading(false);
   }, [upComingMeeting]);
@@ -204,7 +212,7 @@ export default function StudentDashboard() {
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
       {currentUser?.role !== "Student" && (
         <Button
-          href="/students"
+          href={currentUser?.role === "Staff" ? "/students" : `/tutor-dashboard/${currentUser?._id}`}
           type="button"
           variant="text"
           sx={{ padding: 0, fontSize: "16px" }}
@@ -249,7 +257,7 @@ export default function StudentDashboard() {
               </Box>
               <Typography variant="subtitle2">
                 Last Login:{" "}
-                {dayjs(student?.lastLoginDate).format("DD/MM/YYYY, hh:mm A")}
+                {student?.lastLoginDate ? dayjs(student?.lastLoginDate).format("DD/MM/YYYY, hh:mm A") : "Never"}
               </Typography>
             </Box>
             <Box
@@ -263,16 +271,32 @@ export default function StudentDashboard() {
               justifyContent="center"
               gap="20px"
             >
-              <StudentDashboardMeetingCard
-                title="This is meeting title"
-                type="online"
-                tutorName="John Doe"
-                datetime="12/3/2/25 15:00"
-                platform="Google Meet"
-                location=""
-                meetingLink=""
-                role={currentUser?.role}
-              />
+              <Box
+                paddingY="15px"
+                paddingX={isSmallestScreens ? "15px" : "25px"}
+                borderRadius="10px"
+                bgcolor="#fff"
+                boxShadow="0px 4px 10px rgba(0, 0, 0, 0.1)"
+                display="flex"
+                flexDirection="column"
+                justifyContent="start"
+                gap="45px"
+              >
+                {meeting?.length ?
+                  <StudentDashboardMeetingCard
+                    title={meeting[0].title}
+                    type={meeting[0].type}
+                    tutorName={meeting[0].tutor.name}
+                    datetime={dayjs(meeting[0].dateTime).format("DD/MM/YYYY, hh:mm A")}
+                    platform={meeting[0].meetingPlatform}
+                    location={meeting[0].meetingLocation}
+                    meetingLink={meeting[0].meetingLink}
+                    role={currentUser?.role}
+                  />
+                  :
+                  <Typography>No upcoming meeting.</Typography>
+                }
+              </Box>
 
               {/* Attendance Card */}
               <Box
