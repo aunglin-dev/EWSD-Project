@@ -1,4 +1,5 @@
 import Meeting from "../Model/Meeting.js";
+import Allocation from "../Model/Allocation.js";
 
 //  Create a new meeting
 export const createMeeting = async (req, res) => {
@@ -41,6 +42,35 @@ export const getAllMeetings = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+export const getAllMeetingsbyTutorId = async (req, res) => {
+    try {
+        const { tutorId } = req.params;
+
+        // Find the allocation for the given tutorId
+        const allocations = await Allocation.find({ tutor: tutorId })
+            .populate("student tutor createdStaffId");
+
+        if (!allocations || allocations.length === 0) {
+            return res.status(404).json({ error: "No meetings found for this tutor" });
+        }
+
+        // Array to hold all meetings
+        let allMeetings = [];
+
+        // Loop through the allocations to get the meetings
+        for (const allocation of allocations) {
+            const meetings = await Meeting.find({ allocationId: allocation._id });
+            allMeetings.push(...meetings); // Spread operator to push all meetings into the array
+        }
+
+        // Return the meetings associated with the tutor
+        res.json(allMeetings);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 //  Get a single meeting by ID
 export const getMeetingById = async (req, res) => {
