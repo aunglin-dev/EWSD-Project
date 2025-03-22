@@ -16,7 +16,7 @@ import CommentIcon from "@mui/icons-material/Comment";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
-import axiosInstance from "../../Services/AxiosInstance";
+import axiosInstance from "../../services/AxiosInstance";
 
 export default function DocumentPage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -50,8 +50,8 @@ export default function DocumentPage() {
               const lastSubmissionDate =
                 documentsResponse.data.length > 0
                   ? new Date(
-                      documentsResponse.data[0].createdAt
-                    ).toLocaleDateString()
+                    documentsResponse.data[0].createdAt
+                  ).toLocaleDateString()
                   : "No submissions yet";
 
               return {

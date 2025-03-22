@@ -24,7 +24,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useSelector } from "react-redux";
 import StudentDashboardMeetingCard from "./student-dashboard-meeting-card";
 import DashboardCommentCard from "./dashboard-comment-card";
-import axiosInstance from "../../Services/AxiosInstance";
+import axiosInstance from "../../services/AxiosInstance";
 import dayjs from "dayjs";
 import axios from "axios";
 
@@ -72,12 +72,11 @@ export default function StudentDashboard() {
     }
 
     const date = new Date(dateTime);
-    const formattedDate = `${date.getUTCDate()}/${
-      date.getUTCMonth() + 1
-    }/${date.getUTCFullYear()} ${date.getUTCHours()}:${date
-      .getUTCMinutes()
-      .toString()
-      .padStart(2, "0")}`;
+    const formattedDate = `${date.getUTCDate()}/${date.getUTCMonth() + 1
+      }/${date.getUTCFullYear()} ${date.getUTCHours()}:${date
+        .getUTCMinutes()
+        .toString()
+        .padStart(2, "0")}`;
 
     setStateFunction(formattedDate); // Update the state with the formatted date
   };
