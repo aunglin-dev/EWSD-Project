@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../Services/AxiosInstance";
+import axiosInstance from "../../services/AxiosInstance";
 import NoAthnicationCase from "../error/NoAuthenicationcase";
 import dayjs from "dayjs";
 
@@ -192,16 +192,16 @@ export default function AllocatePage() {
                       (allocation) => allocation.tutor._id === selectedTutor._id
                     ).length > 0
                       ? allocations.filter(
-                          (allocation) =>
-                            allocation.tutor._id === selectedTutor._id
-                        )[0].length
+                        (allocation) =>
+                          allocation.tutor._id === selectedTutor._id
+                      )[0].length
                       : "0"}
                   </TableCell>
                   <TableCell>
                     {selectedTutor.lastLoginDate
                       ? dayjs(selectedTutor.lastLoginDate).format(
-                          "DD/MM/YYYY, hh:mm A"
-                        )
+                        "DD/MM/YYYY, hh:mm A"
+                      )
                       : "Never"}
                   </TableCell>
                   <TableCell>
@@ -294,15 +294,15 @@ export default function AllocatePage() {
                         (allocation) => allocation.tutor._id === tutor._id
                       ).length > 0
                         ? allocations.filter(
-                            (allocation) => allocation.tutor._id === tutor._id
-                          ).length
+                          (allocation) => allocation.tutor._id === tutor._id
+                        ).length
                         : "0"}
                     </TableCell>
                     <TableCell>
                       {tutor.lastLoginDate
                         ? dayjs(tutor.lastLoginDate).format(
-                            "DD/MM/YYYY, hh:mm A"
-                          )
+                          "DD/MM/YYYY, hh:mm A"
+                        )
                         : "Never"}
                     </TableCell>
                     <TableCell>
