@@ -25,6 +25,7 @@ import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 function CustomTabPanel({ children, value, index }) {
   return value === index && <Box>{children}</Box>;
@@ -44,10 +45,12 @@ export default function StudentMeetings() {
   const { currentUser } = useSelector((state) => state.auth);
 
   const getAllocationId = () => {
-    const allocation = currentUser.allocations.find(
-      (alloc) => alloc.student === studentId
-    );
-    return allocation?._id || null;
+    if (currentUser != null) {
+      const allocation = currentUser.allocations.find(
+        (alloc) => alloc.student === studentId
+      );
+      return allocation?._id || null;
+    }
   };
 
   const allocationId = getAllocationId();
@@ -128,11 +131,12 @@ export default function StudentMeetings() {
     return <Typography>Loading...</Typography>;
   }
 
+  if (currentUser?.role != "Tutor") return <NoAthnicationCase />;
   return (
     <Box paddingY="80px" paddingX="20px">
       <Box marginBottom="40px" display="flex" justifyContent="space-between">
         <Typography variant="h2">Meetings for {studentName}</Typography>
-        {currentUser.role === "Tutor" && (
+        {currentUser?.role === "Tutor" && (
           <Button
             variant="contained"
             color="primary"

@@ -10,6 +10,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../services/AxiosInstance";
 import { useSelector } from "react-redux";
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 export default function MeetingTutor() {
   const { currentUser } = useSelector((state) => state.auth);
@@ -37,7 +38,7 @@ export default function MeetingTutor() {
   if (loading) {
     return <Typography>Loading...</Typography>;
   }
-
+  if (currentUser?.role != "Tutor") return <NoAthnicationCase />;
   return (
     <Box paddingY="50px" paddingX="20px">
       <Box marginY="40px">

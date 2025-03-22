@@ -27,6 +27,7 @@ import DashboardCommentCard from "./dashboard-comment-card";
 import axiosInstance from "../../services/AxiosInstance";
 import dayjs from "dayjs";
 import axios from "axios";
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 export default function StudentDashboard() {
   const { id } = useParams();
@@ -72,11 +73,12 @@ export default function StudentDashboard() {
     }
 
     const date = new Date(dateTime);
-    const formattedDate = `${date.getUTCDate()}/${date.getUTCMonth() + 1
-      }/${date.getUTCFullYear()} ${date.getUTCHours()}:${date
-        .getUTCMinutes()
-        .toString()
-        .padStart(2, "0")}`;
+    const formattedDate = `${date.getUTCDate()}/${
+      date.getUTCMonth() + 1
+    }/${date.getUTCFullYear()} ${date.getUTCHours()}:${date
+      .getUTCMinutes()
+      .toString()
+      .padStart(2, "0")}`;
 
     setStateFunction(formattedDate); // Update the state with the formatted date
   };
@@ -206,7 +208,8 @@ export default function StudentDashboard() {
     link.download = url.split("/").pop();
     link.click();
   };
-
+  if (currentUser?.role != "Student" && currentUser?.role != "Staff")
+    return <NoAthnicationCase />;
   return (
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
       {currentUser?.role !== "Student" && (

@@ -32,6 +32,7 @@ import DashboardCommentCard from "./dashboard-comment-card";
 import TutorDashboardMeetingCard from "./tutor-dashboard-meeting-card";
 import axiosInstance from "../../services/AxiosInstance";
 import dayjs from "dayjs";
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 export default function TutorDashboard() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1070px)");
@@ -155,6 +156,8 @@ export default function TutorDashboard() {
     link.click();
   };
 
+  if (currentUser?.role != "Tutor" && currentUser?.role != "Staff")
+    return <NoAthnicationCase />;
   return (
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
       {currentUser?.role !== "Tutor" && (
@@ -217,8 +220,8 @@ export default function TutorDashboard() {
                 isNonMobileScreens
                   ? "1fr 1fr 1fr 1fr"
                   : isSmallestScreens
-                    ? "1fr"
-                    : "1fr 1fr"
+                  ? "1fr"
+                  : "1fr 1fr"
               }
               gridAutoRows="minmax(150px, auto)"
               justifyContent="center"

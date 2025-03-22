@@ -19,6 +19,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../services/AxiosInstance";
 import dayjs from "dayjs";
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 export default function StaffDashboard() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1156px)");
@@ -91,7 +92,7 @@ export default function StaffDashboard() {
     setLoading(false);
   }, []);
 
-  // if (currentUser?.role != "Staff") return <NoAthnicationCase />;
+  if (currentUser?.role != "Staff") return <NoAthnicationCase />;
 
   return (
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
@@ -123,8 +124,8 @@ export default function StaffDashboard() {
               Last Login:{" "}
               {currentUser?.lastLoginDate
                 ? dayjs(currentUser?.lastLoginDate).format(
-                  "DD/MM/YYYY, hh:mm A"
-                )
+                    "DD/MM/YYYY, hh:mm A"
+                  )
                 : "Never"}
             </Typography>
           </Box>
