@@ -133,7 +133,7 @@ export const getMe = async (req, res) => {
   }
 };
 
-export const forgotPassword = async (req, res) => {
+export const forgotPassword = async (req, res, next) => {
   const { email, role } = req.body;
   const formattedRole = role.charAt(0).toUpperCase() + role.slice(1);
 
