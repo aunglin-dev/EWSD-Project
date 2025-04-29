@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   IconButton,
-  InputAdornment,
   Button,
   Typography,
   OutlinedInput,
@@ -10,64 +9,42 @@ import {
   FormControl,
   FormLabel,
   useMediaQuery,
+  Box,
+  Alert,
 } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import {
-  loginStart,
-  loginSuccess,
-  loginFailure,
-} from "../../Storage/authSlice";
-import FormErrorMessage from "../error/formErrorMessage";
 import axios from "axios";
 
-export default function LoginForm() {
+export default function ForgotPassword() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
-  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onSubmit = async (data) => {
-    dispatch(loginStart());
     try {
-      const res = await axios.post("http://localhost:8000/api/auth/signin", {
-        email: data.email,
-        password: data.password,
-        role: data.role,
-      }, {
-        withCredentials: true
-      });
+      const res = await axios.post(
+        "http://localhost:8000/api/auth/forgotPassword",
+        {
+          email: data.email,
+          role: data.role,
+        }
+      );
 
       if (res.status === 200) {
-        const user = res.data;
-        const { role } = user;
-        // window.alert("Welcome to the E-Tutoring System!");
-
-        console.log("user data=>", user);
-        dispatch(loginSuccess(user));
-
-        if (role === "Staff") {
-          navigate("/staff-dashboard");
-        } else if (role === "Student") {
-          navigate(`/student-dashboard/${user._id}`);
-        } else if (role === "Tutor") {
-          navigate(`/tutor-dashboard/${user._id}`);
-        }
+        setSuccessMessage(`Password reset link has been sent to your email ${data.email}`);
+        setErrorMessage("");
       }
     } catch (err) {
-      window.alert(err.response?.data.message);
-      console.error("Login error=>", err.response?.data || err.message);
-      dispatch(
-        loginFailure(err.response?.data?.message || "Invalid credentials")
-      );
+      setErrorMessage(err.response?.data.message || "An error occurred");
+      setSuccessMessage("");
+      console.error("Forgot password error=>", err.response?.data || err.message);
     }
   };
 
@@ -95,11 +72,22 @@ export default function LoginForm() {
         }}
       >
         <Typography variant={isNonMobileScreens ? "h4" : "h4"}>
-          E-Tutoring Platform
+          Reset Password
         </Typography>
         <Typography variant="subtitle1" marginBottom="20px" gutterBottom>
-          Login to access your portal
+          Enter your details to reset password
         </Typography>
+
+        {successMessage && (
+          <Box mb={2}>
+            <Alert severity="success">{successMessage}</Alert>
+          </Box>
+        )}
+        {errorMessage && (
+          <Box mb={2}>
+            <Alert severity="error">{errorMessage}</Alert>
+          </Box>
+        )}
 
         <FormControl fullWidth>
           <FormLabel
@@ -138,11 +126,12 @@ export default function LoginForm() {
               {errors.role.message}
             </Typography>
           )}
-          {/* <FormErrorMessage error={errors.role?.message || "Invalid role"} /> */}
         </FormControl>
 
         <FormControl fullWidth sx={{ mt: 2 }}>
-          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>Email</FormLabel>
+          <FormLabel sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}>
+            Email
+          </FormLabel>
           <OutlinedInput
             type="text"
             size="small"
@@ -158,41 +147,13 @@ export default function LoginForm() {
               required: "* Email is required",
             })}
           />
-          <FormErrorMessage error={errors.email?.message || ""} />
+          {errors.email && (
+            <Typography variant="caption" color="error">
+              {errors.email.message}
+            </Typography>
+          )}
         </FormControl>
 
-        <FormControl fullWidth sx={{ mt: 2 }}>
-          <FormLabel
-            sx={{ fontSize: "16px", fontWeight: "500", color: "#000" }}
-          >
-            Password
-          </FormLabel>
-          <OutlinedInput
-            type={showPassword ? "text" : "password"}
-            size="small"
-            fullWidth
-            autoComplete="off"
-            sx={{ fontSize: "16px", fontWeight: "400" }}
-            {...register("password", {
-              pattern: {
-                value: /.{8,}/,
-                message: "Password must be more than 8 characters.",
-              },
-              required: "* Password is required",
-            })}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowPassword(!showPassword)}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-          <FormErrorMessage error={errors.password?.message || ""} />
-        </FormControl>
         <Button
           type="submit"
           variant="contained"
@@ -200,20 +161,21 @@ export default function LoginForm() {
           fullWidth
           sx={{ py: 1.5, fontWeight: "bold", mt: 4 }}
         >
-          Login
+          Reset Password
         </Button>
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             margin: "10px 0",
           }}
         >
-          <Button type="button" sx={{ textTransform: "none" }} onClick={() => navigate("/forgot-password")}>
-            Forgot password?
-          </Button>
-          <Button type="button" sx={{ textTransform: "none" }}>
-            Need Help?
+          <Button 
+            type="button" 
+            sx={{ textTransform: "none" }}
+            onClick={() => navigate("/")}
+          >
+            Back to Login
           </Button>
         </div>
       </form>

@@ -16,6 +16,7 @@ import axiosInstance from "../../services/AxiosInstance";
 import { useParams } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 const socket = io("http://localhost:8000");
 
@@ -131,6 +132,8 @@ export default function MessagePage() {
     socket.emit("stopTyping", { allocationId, role });
   };
 
+  if (currentUser?.role != "Student" && currentUser?.role != "Tutor")
+    return <NoAthnicationCase />;
   return (
     <Box
       paddingTop="80px"

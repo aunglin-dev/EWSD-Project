@@ -60,13 +60,13 @@ export default function Navbar() {
         variant={isNonMobileScreens ? "h3" : "h4"}
         py={isNonMobileScreens ? "" : "12px"}
         onClick={() => {
-          currentUser.role === "staff"
+          currentUser.role === "Staff"
             ? navigate("/staff-dashboard")
             : currentUser.role === "Student"
-            ? navigate(`/student-dashboard/${currentUser?._id}`)
-            : currentUser.role === "Tutor"
-            ? navigate("/tutor-dashboard")
-            : navigate("/");
+              ? navigate(`/student-dashboard/${currentUser?._id}`)
+              : currentUser.role === "Tutor"
+                ? navigate(`/tutor-dashboard/${currentUser?._id}`)
+                : navigate("/");
         }}
         sx={{ cursor: "pointer" }}
       >
@@ -173,16 +173,16 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <Link
-                  to="/student/message"
+                  to="/student/message-chat"
                   style={{ textDecoration: "none", width: "99px" }}
                 >
                   <Button
                     sx={{
                       width: "100%",
                       color: "#fff",
-                      fontWeight: path === "/student/message" ? "600" : "400",
+                      fontWeight: path === "/student/message-chat" ? "600" : "400",
                       textDecoration:
-                        path === "/student/message" ? "underline" : "none",
+                        path === "/student/message-chat" ? "underline" : "none",
                       "&:hover": { fontWeight: "600" },
                     }}
                   >
@@ -229,16 +229,16 @@ export default function Navbar() {
             {currentUser.role === "Tutor" && (
               <>
                 <Link
-                  to={"/tutor-dashboard"}
+                  to={`/tutor-dashboard/${currentUser?._id}`}
                   style={{ textDecoration: "none", width: "119px" }}
                 >
                   <Button
                     sx={{
                       width: "100%",
                       color: "#fff",
-                      fontWeight: path === "/tutor-dashboard" ? "600" : "400",
+                      fontWeight: path === `/tutor-dashboard/${currentUser?._id}` ? "600" : "400",
                       textDecoration:
-                        path === "/tutor-dashboard" ? "underline" : "none",
+                        path === `/tutor-dashboard/${currentUser?._id}` ? "underline" : "none",
                       "&:hover": { fontWeight: "600" },
                     }}
                   >
@@ -331,7 +331,7 @@ export default function Navbar() {
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-            {currentUser.role === "staff" && (
+            {currentUser.role === "Staff" && (
               <>
                 <Link
                   to="/staff-dashboard"
@@ -428,7 +428,7 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <Link
-                  to="/student/message"
+                  to="/student/message-chat"
                   style={{ textDecoration: "none", width: "100%" }}
                 >
                   <Button
@@ -436,9 +436,9 @@ export default function Navbar() {
                     sx={{
                       width: "100%",
                       color: "#fff",
-                      fontWeight: path === "/student/message" ? "600" : "400",
+                      fontWeight: path === "/student/message-chat" ? "600" : "400",
                       textDecoration:
-                        path === "/student/message" ? "underline" : "none",
+                        path === "/student/message-chat" ? "underline" : "none",
                     }}
                   >
                     Message
@@ -484,7 +484,7 @@ export default function Navbar() {
             {currentUser.role === "Tutor" && (
               <>
                 <Link
-                  to={"/tutor-dashboard"}
+                  to={`/tutor-dashboard/${currentUser?._id}`}
                   style={{ textDecoration: "none", width: "100%" }}
                 >
                   <Button
@@ -492,9 +492,9 @@ export default function Navbar() {
                     sx={{
                       width: "100%",
                       color: "#fff",
-                      fontWeight: path === "/tutor-dashboard" ? "600" : "400",
+                      fontWeight: path === `/tutor-dashboard/${currentUser?._id}` ? "600" : "400",
                       textDecoration:
-                        path === "/tutor-dashboard" ? "underline" : "none",
+                        path === `/tutor-dashboard/${currentUser?._id}` ? "underline" : "none",
                     }}
                   >
                     Dashboard

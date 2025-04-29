@@ -15,6 +15,8 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import axiosInstance from "../../services/AxiosInstance";
 
+import NoAthnicationCase from "../error/NoAuthenicationcase";
+
 export default function AllocateReallocate() {
   const { id } = useParams();
   const { handleSubmit, setValue } = useForm();
@@ -161,21 +163,38 @@ export default function AllocateReallocate() {
       }
     }
   };
-
+  if (currentUser?.role != "Staff") return <NoAthnicationCase />;
   return (
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
-      <Box display="flex" flexDirection={isSmallestScreens && "column"} justifyContent="start" alignItems={isSmallestScreens ? "start" : "center"} gap="10px">
+      <Box
+        display="flex"
+        flexDirection={isSmallestScreens && "column"}
+        justifyContent="start"
+        alignItems={isSmallestScreens ? "start" : "center"}
+        gap="10px"
+      >
         <Button
           href="/allocate"
           type="button"
           variant="text"
           sx={{ padding: 0, fontSize: "16px" }}
-          startIcon={<KeyboardBackspaceIcon sx={{ width: "18px", height: "18px" }} />}
+          startIcon={
+            <KeyboardBackspaceIcon sx={{ width: "18px", height: "18px" }} />
+          }
         >
           Back
         </Button>
         {successMsg && (
-          <span style={{ fontSize: "14px", fontWeight: "500", marginLeft: isSmallestScreens ? "0px" : "30px", padding: "5px 25px", borderRadius: "20px", backgroundColor: "#00c80040", }}>
+          <span
+            style={{
+              fontSize: "14px",
+              fontWeight: "500",
+              marginLeft: isSmallestScreens ? "0px" : "30px",
+              padding: "5px 25px",
+              borderRadius: "20px",
+              backgroundColor: "#00c80040",
+            }}
+          >
             {successMsg}
           </span>
         )}
@@ -398,14 +417,13 @@ export default function AllocateReallocate() {
                           </Box>
                         </Box>
                       )
-                    )
-                  }
-                </Box >
-              </Box >
-            </Box >
+                    )}
+                </Box>
+              </Box>
+            </Box>
           )
         )}
-      </Box >
-    </Box >
+      </Box>
+    </Box>
   );
 }

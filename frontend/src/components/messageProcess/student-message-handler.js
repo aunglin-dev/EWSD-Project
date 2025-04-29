@@ -1,12 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 export default function StudentMessageHandler() {
   const { currentUser } = useSelector((state) => state.auth);
   const hasTutor =
-    currentUser.allocations && currentUser.allocations.length > 0;
+    currentUser?.allocations && currentUser?.allocations.length > 0;
 
+  if (currentUser?.role != "Student") return <NoAthnicationCase />;
   if (!hasTutor) {
     return (
       <div

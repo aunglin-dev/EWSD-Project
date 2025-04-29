@@ -125,6 +125,46 @@ export const mostViewPage = async (req, res) => {
   }
 };
 
+export const mostUsedBrowser = async (req, res) => {
+  try {
+    const mostUsedBrowser = await UserActivity.aggregate([
+      // Group by 'pageViewed' and count the occurrences
+      {
+        $group: {
+          _id: "$browserInfo", // Group by the pageViewed field
+          count: { $sum: 1 }  // Count the number of occurrences
+        }
+      },
+      // Sort by count in descending order
+      {
+        $sort: { count: -1 }
+      },
+      // Limit to the top 10 results
+      {
+        $limit: 10
+      },
+      // Optionally, project the fields for a cleaner output
+      {
+        $project: {
+          _id: 0,            // Exclude the default _id field
+          browser: "$_id",      // Rename _id to 'page'
+          count: 1            // Include the count field
+        }
+      }
+    ]);
+
+    // Check if there are any results
+    if (!mostUsedBrowser.length) {
+      return res.status(404).json({ message: 'No activities found' });
+    }
+
+    // Return the top 10 most viewed pages
+    res.status(200).json(mostUsedBrowser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const mostActiveUser = async (req, res) => {
   try {
     // Step 1: Aggregate to find the top 10 most active users

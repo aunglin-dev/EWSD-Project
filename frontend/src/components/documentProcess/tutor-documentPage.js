@@ -17,6 +17,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
 import axiosInstance from "../../services/AxiosInstance";
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 export default function DocumentPage() {
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -301,6 +302,7 @@ export default function DocumentPage() {
     </Box>
   );
 
+  if (currentUser?.role != "Tutor") return <NoAthnicationCase />;
   return (
     <Box
       paddingY="100px"

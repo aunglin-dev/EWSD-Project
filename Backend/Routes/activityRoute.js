@@ -1,6 +1,6 @@
 import express from "express";
 import authMiddleware from "../Middleware/auth.js";
-import { getAll, getAllByPage, logActivity, mostActiveUser, mostViewPage } from "../Controller/userActivityController.js";
+import { getAll, getAllByPage, logActivity, mostActiveUser, mostUsedBrowser, mostViewPage } from "../Controller/userActivityController.js";
 
 const activityRouter = express.Router();
 
@@ -10,6 +10,7 @@ activityRouter.get("/", getAll);
 activityRouter.get("/page/:page",getAllByPage)
 activityRouter.get("/mostViewPage", mostViewPage)
 activityRouter.get("/mostActiveUser", mostActiveUser)
+activityRouter.get("/mostUsedBrowser", mostUsedBrowser)
 
 
 

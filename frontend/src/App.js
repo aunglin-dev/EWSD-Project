@@ -22,6 +22,8 @@ import MessageListPage from "./components/messageProcess/tutor-message-list.js";
 import StudentMessageHandler from "./components/messageProcess/student-message-handler.js";
 import MeetingTutor from "./components/meetingProcess/meeting-tutor.js";
 import StudentMeetings from "./components/meetingProcess/student-meetings.js";
+import NoAuthenicationCase from "./components/error/NoAuthenicationcase.js";
+import ForgotPassword from "./components/loginForm/ForgotPassword.jsx";
 
 const App = () => {
   const theme = useMemo(() => createTheme(themeSettings));
@@ -33,6 +35,7 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<LoginForm />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Staff */}
           <Route path="/staff-dashboard" element={<StaffDashboard />} />

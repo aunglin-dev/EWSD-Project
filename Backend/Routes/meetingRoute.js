@@ -10,7 +10,10 @@ import {
     deleteMeeting,
     deleteMeetingsByRoleAndAllocationId,
     deleteMeetingsByAllocationId,
-    getMostUsedPlatform
+    getMostUsedPlatform,
+    getAllMeetingsbyTutorId,
+    getConfirmedMeetingsTodayByTutorId,
+    getLastConfirmedMeetingByStudentId
 } from "../Controller/meetingController.js";
 
 export const meetingRouter = express.Router();
@@ -22,6 +25,9 @@ meetingRouter.get("/:id", getMeetingById); // Get a meeting by ID
 meetingRouter.get("/role/:role/", getAllMeetingsByRole); // Get All meetings by Role
 meetingRouter.get("/allocation/:allocationId", getMeetingsByAllocationId); // Get meetings by Allocation ID only
 meetingRouter.get("/allocation/:role/:allocationId", getMeetingsByRoleAndAllocationId); // Get meetings by Role and Allocation ID
+meetingRouter.get("/tutor/:tutorId", getAllMeetingsbyTutorId); // Get all meetings by Tutor ID
+meetingRouter.get("/tutor/confirmed/todaydate/:tutorId", getConfirmedMeetingsTodayByTutorId); // Get all meetings by Tutor ID
+meetingRouter.get("/student/confirmed/lastmeeting/:studentId", getLastConfirmedMeetingByStudentId); // Get all meetings by Tutor ID
 
 meetingRouter.post("/", createMeeting); // Create a new meeting
 

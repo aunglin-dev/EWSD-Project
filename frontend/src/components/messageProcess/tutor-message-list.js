@@ -10,7 +10,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 export default function MessageListPage() {
   const { currentUser } = useSelector((state) => state.auth);
   const [students, setStudents] = useState([]);
@@ -39,12 +39,13 @@ export default function MessageListPage() {
       }
     };
 
-    if (currentUser && currentUser.allocations.length > 0) {
+    if (currentUser && currentUser?.allocations.length > 0) {
       fetchStudentDetail();
     }
   }, [currentUser]);
 
-  const hasAllocations = currentUser.allocations.length > 0;
+  const hasAllocations = currentUser?.allocations.length > 0;
+  if (currentUser?.role != "Tutor") return <NoAthnicationCase />;
   if (!hasAllocations) {
     return (
       <Box

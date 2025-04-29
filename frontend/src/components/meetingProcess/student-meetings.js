@@ -17,6 +17,7 @@ import {
   OutlinedInput,
   Select,
   MenuItem,
+  useMediaQuery,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -24,12 +25,14 @@ import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+import NoAthnicationCase from "../error/NoAuthenicationcase";
 
 function CustomTabPanel({ children, value, index }) {
   return value === index && <Box>{children}</Box>;
 }
 
 export default function StudentMeetings() {
+  const isSmallestScreens = useMediaQuery("(max-width: 425px)");
   const { studentId } = useParams();
   const [meetings, setMeetings] = useState([]);
   const [studentName, setStudentName] = useState("Loading...");
@@ -42,10 +45,12 @@ export default function StudentMeetings() {
   const { currentUser } = useSelector((state) => state.auth);
 
   const getAllocationId = () => {
-    const allocation = currentUser.allocations.find(
-      (alloc) => alloc.student === studentId
-    );
-    return allocation?._id || null;
+    if (currentUser != null) {
+      const allocation = currentUser.allocations.find(
+        (alloc) => alloc.student === studentId
+      );
+      return allocation?._id || null;
+    }
   };
 
   const allocationId = getAllocationId();
@@ -126,11 +131,12 @@ export default function StudentMeetings() {
     return <Typography>Loading...</Typography>;
   }
 
+  if (currentUser?.role != "Tutor") return <NoAthnicationCase />;
   return (
     <Box paddingY="80px" paddingX="20px">
       <Box marginBottom="40px" display="flex" justifyContent="space-between">
         <Typography variant="h2">Meetings for {studentName}</Typography>
-        {currentUser.role === "Tutor" && (
+        {currentUser?.role === "Tutor" && (
           <Button
             variant="contained"
             color="primary"
@@ -150,8 +156,14 @@ export default function StudentMeetings() {
       <CustomTabPanel value={tab} index={0}>
         <Box
           display="grid"
-          gridTemplateColumns="repeat(auto-fill, 380px)"
-          gap="20px"
+          gridTemplateColumns={
+            isSmallestScreens ? "none" : "repeat(auto-fill, 380px)"
+          }
+          gridAutoFlow="dense"
+          justifyContent="center"
+          columnGap="15px"
+          rowGap="30px"
+          mt="30px"
         >
           {scheduledMeetings.length > 0 ? (
             scheduledMeetings.map((meeting) => (
@@ -180,7 +192,9 @@ export default function StudentMeetings() {
       <CustomTabPanel value={tab} index={1}>
         <Box
           display="grid"
-          gridTemplateColumns={"repeat(auto-fill, 380px)"}
+          gridTemplateColumns={
+            isSmallestScreens ? "none" : "repeat(auto-fill, 380px)"
+          }
           gridAutoFlow="dense"
           justifyContent="center"
           columnGap="15px"
@@ -227,8 +241,14 @@ export default function StudentMeetings() {
       <CustomTabPanel value={tab} index={2}>
         <Box
           display="grid"
-          gridTemplateColumns="repeat(auto-fill, 380px)"
-          gap="20px"
+          gridTemplateColumns={
+            isSmallestScreens ? "none" : "repeat(auto-fill, 380px)"
+          }
+          gridAutoFlow="dense"
+          justifyContent="center"
+          columnGap="15px"
+          rowGap="30px"
+          mt="30px"
         >
           {completedMeetings.length > 0 ? (
             completedMeetings.map((meeting) => (
