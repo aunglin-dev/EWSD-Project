@@ -171,7 +171,7 @@ export default function StudentMeetings() {
                 key={meeting._id}
                 meetingId={meeting._id}
                 title={meeting.title}
-                type={meeting.type === "virtual" ? "online" : "offline"}
+                type={meeting.type}
                 datetime={new Date(meeting.dateTime).toLocaleString()}
                 platform={meeting.meetingPlatform || ""}
                 location={meeting.meetingLocation || ""}
@@ -207,7 +207,7 @@ export default function StudentMeetings() {
                 key={meeting._id}
                 meetingId={meeting._id}
                 title={meeting.title}
-                type={meeting.type === "virtual" ? "online" : "offline"}
+                type={meeting.type === "online" ? "online" : "offline"}
                 datetime={new Date(meeting.dateTime).toLocaleString()}
                 remark={meeting.remark || ""}
                 declined={meeting.status === 2}

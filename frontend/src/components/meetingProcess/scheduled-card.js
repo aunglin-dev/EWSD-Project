@@ -68,27 +68,14 @@ export default function ScheduledCard({
         >
           {title}
         </Typography>
-        {type === "online" ? (
-          <Typography
-            variant={isSmallestScreens ? "caption" : "subtitle2"}
-            paddingX="18px"
-            borderRadius="20px"
-            backgroundColor="#00c80040"
-          >
-            {type}
-          </Typography>
-        ) : (
-          type === "offline" && (
-            <Typography
-              variant={isSmallestScreens ? "caption" : "subtitle2"}
-              paddingX="18px"
-              borderRadius="20px"
-              backgroundColor="#0000c840"
-            >
-              {type}
-            </Typography>
-          )
-        )}
+        <Typography
+          variant={isSmallestScreens ? "caption" : "subtitle2"}
+          paddingX="18px"
+          borderRadius="20px"
+          backgroundColor="#00c80040"
+        >
+          {type}
+        </Typography>
       </Box>
       <Box
         paddingX={isSmallestScreens ? "10px" : "22px"}
