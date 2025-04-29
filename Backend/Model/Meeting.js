@@ -26,6 +26,7 @@ const meetingSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: meetingTypes,
+      default: "offline",
       required: true,
     },
     title: {
