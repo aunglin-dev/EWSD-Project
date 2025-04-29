@@ -208,7 +208,11 @@ export default function StudentDashboard() {
     link.download = url.split("/").pop();
     link.click();
   };
-  if (currentUser?.role != "Student" && currentUser?.role != "Staff")
+  if (
+    currentUser?.role != "Student" &&
+    currentUser?.role != "Staff" &&
+    currentUser?.role != "Tutor"
+  )
     return <NoAthnicationCase />;
   return (
     <Box paddingY="100px" paddingX={isNonMobileScreens ? "20px" : "10px"}>
