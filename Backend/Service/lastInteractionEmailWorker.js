@@ -193,10 +193,10 @@ const startWorker = async () => {
 };
 
 // Listen for messages from the parent thread
-// parentPort.on('message', (message) => {
-//     if (message.action === 'startTask') { // Execute the function when the 'startTask' message is received
-//         startWorker().then(() => {
-//             parentPort.postMessage({ status: 'Re-running task after completion' });
-//         });
-//     }
-// });
+parentPort.on('message', (message) => {
+    if (message.action === 'startTask') { // Execute the function when the 'startTask' message is received
+        startWorker().then(() => {
+            parentPort.postMessage({ status: 'Re-running task after completion' });
+        });
+    }
+});
