@@ -173,16 +173,16 @@ export default function Navbar() {
                   </Button>
                 </Link>
                 <Link
-                  to="/student/message-chat"
+                  to="/student/message"
                   style={{ textDecoration: "none", width: "99px" }}
                 >
                   <Button
                     sx={{
                       width: "100%",
                       color: "#fff",
-                      fontWeight: path === "/student/message-chat" ? "600" : "400",
+                      fontWeight: path === "/student/message" ? "600" : "400",
                       textDecoration:
-                        path === "/student/message-chat" ? "underline" : "none",
+                        path === "/student/message" ? "underline" : "none",
                       "&:hover": { fontWeight: "600" },
                     }}
                   >
