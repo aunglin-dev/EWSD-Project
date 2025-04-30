@@ -1,3 +1,3 @@
-export const meetingTypes = ["virtual", "online"]; 
+export const meetingTypes = ["offline", "online"]; 
 
 export default meetingTypes

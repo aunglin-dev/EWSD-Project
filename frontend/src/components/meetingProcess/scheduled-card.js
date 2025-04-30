@@ -72,7 +72,7 @@ export default function ScheduledCard({
           variant={isSmallestScreens ? "caption" : "subtitle2"}
           paddingX="18px"
           borderRadius="20px"
-          backgroundColor="#00c80040"
+          backgroundColor="#0000c840"
         >
           {type}
         </Typography>
